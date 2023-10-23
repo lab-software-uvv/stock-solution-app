@@ -1,0 +1,42 @@
+.crudcontainer-content-wrapper {
+    background-color: white;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+.crudcontainer-content-container {
+    border: 1px solid var(--color-primary);
+    border-radius: 13px;
+    padding: 20px;
+}
+
+.crudcontainer-btn-wrapper {
+    justify-content: flex-end;
+}
+
+.crudcontainer-btn-wrapper div.crudcontainer-btn-on{
+    background: var(--gradient-primary);
+    padding: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.crudcontainer-btn-wrapper div.crudcontainer-btn-off{
+    background: var(--gradient-black);
+    padding: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.crudcontainer-btn-wrapper div.crudcontainer-btn-on p{
+    font-weight: bold;
+    color: var(--color-black);
+}
+.crudcontainer-btn-wrapper div.crudcontainer-btn-off p{
+    font-weight: bold;
+    color: var(--color-primary);
+}

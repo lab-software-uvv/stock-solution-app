@@ -1,0 +1,20 @@
+# Build results
+bin/
+obj/
+
+# Visual Studio cache/options directory
+.vs/
+*.user
+
+# VS Code cache/options directory
+.vscode/
+
+# Jetbrains cache/options directory
+.idea/
+
+# TestResults
+[Tt]est[Rr]esults/
+
+# Secure files
+secrets.json
+Secrets.Targets

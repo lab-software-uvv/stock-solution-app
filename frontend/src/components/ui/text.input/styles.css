@@ -1,0 +1,28 @@
+.inpt-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-width: 100%;
+    background-color: white;
+    border-radius: 500px;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid var(--color-black);
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
+    padding-top: 5.5px;
+    padding-bottom: 5.5px;
+}
+
+.inpt-text {
+    background-color: transparent;
+    border-color: transparent;
+    outline: 0;
+    width: 100%;
+}
+
+.inpt-ico {
+    width: 12.5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

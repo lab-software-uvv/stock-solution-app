@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+
+        <NoWarn>$(NoWarn);CA2016</NoWarn>
+
+        <UserSecretsId>536e9de7-88f0-4c0f-b546-ab5e1537b2d0</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoRegisterInject" Version="1.2.1" />
+        <PackageReference Include="Bogus" Version="34.0.2" />
+        <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.1" />
+        <PackageReference Include="Extensions.Hosting.AsyncInitialization" Version="3.0.0" />
+        <PackageReference Include="FastEndpoints" Version="5.18.0" />
+        <PackageReference Include="FastEndpoints.Generator" Version="5.18.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="FastEndpoints.Security" Version="5.18.0" />
+        <PackageReference Include="FastEndpoints.Swagger" Version="5.18.0" />
+        <PackageReference Include="MediatR" Version="12.1.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.12">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.12">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="NodaTime.Bogus" Version="3.0.2" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="7.0.11" />
+    </ItemGroup>
+</Project>

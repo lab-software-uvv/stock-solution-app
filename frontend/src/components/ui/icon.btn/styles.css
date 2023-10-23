@@ -1,0 +1,9 @@
+.icobtn-wrapper {
+    border-radius: 500px;
+    padding: 6.5px;
+    background-color: var(--color-black);
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

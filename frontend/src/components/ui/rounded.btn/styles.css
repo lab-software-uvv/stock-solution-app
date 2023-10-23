@@ -1,0 +1,18 @@
+.btn-wrapper-primary {
+    border-radius: 500px;
+    width: 100%;
+    background: var(--gradient-primary);
+    border: 1px solid var(--color-primary);
+    color: var(--color-black);
+    font-weight: bold;
+    padding: 5px;
+}
+.btn-wrapper-secondary {
+    border-radius: 500px;
+    width: 100%;
+    background-color: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    font-weight: bold;
+    padding: 5px;
+}

@@ -1,0 +1,18 @@
+.shrinkbtn-wrapper {
+    border-radius: 500px;
+    padding: 6.75px;
+    background-color: var(--color-black);
+    aspect-ratio: 1;
+}
+
+.shrinkbtn-wrapper:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+.shrinkedbtn-wrapper {
+    width: 12vw;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 500px;
+}

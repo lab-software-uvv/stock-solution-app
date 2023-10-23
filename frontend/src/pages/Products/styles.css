@@ -1,0 +1,21 @@
+.products-wrapper {
+    height: 100%;
+    width: 100%;
+}
+
+.products-form {
+    width: 50vw;
+    height: fit-content;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 20px;
+}
+
+.products-form div p {
+    margin-bottom: 2.5px;
+}
+
+.products-form-submit-wrapper{
+    margin-left: 85%;
+    margin-top: 12.5%;
+}

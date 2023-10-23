@@ -1,0 +1,31 @@
+.login-wrapper {
+    background-color: var(--color-black);
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.login-img-bg {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    opacity: 0.05;
+    position: fixed;
+}
+
+.login-logo-wrapper {
+    width: 52.5vw;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+}
+
+.login-logo {
+    width: 495px;
+    height: 97px;
+    object-fit: cover;
+    margin-bottom: 5%;
+}
+

@@ -1,0 +1,90 @@
+.container {
+    width: 100vw;
+    min-height: 100vh;
+    height: fit-content;
+}
+
+.global-wrapper {
+    background-color: var(--color-white);
+    /* transition: all 0.2s ease; */
+}
+
+.global-aside {
+    transition: all 0.2s ease;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.p-title {
+    font-size: 48px;
+}
+
+.p-header {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.p-main {
+    font-size: 24px;
+}
+
+.p-text {
+    font-size: 14px;
+}
+
+.p-subtitle {
+    font-size: 12px;
+}
+
+.p-white {
+    color: white;
+}
+
+.p-bold {
+    font-weight: 500;
+}
+
+.p-grey {
+    color: var(--color-darkgrey);
+}
+
+.p-center {
+    text-align: center;
+}
+
+.p-noselect {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.p-price {
+    color: var(--color-black);
+    padding-left: 15px;
+    padding-bottom: 1px;
+}
+
+
+.button {
+    transition: all 0.2s ease;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.button:hover {
+    cursor: pointer;
+}

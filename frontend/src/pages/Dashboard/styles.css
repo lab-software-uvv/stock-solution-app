@@ -1,0 +1,30 @@
+.dashboard-wrapper {
+    height: 100%;
+    width: 100%;
+}
+
+.dashboard-user-card {
+    align-items: center;
+    gap: 20px;
+    /* width: 100%; */
+    background: var(--gradient-black);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.dashboard-user-card-initials-wrapper {
+    background-color: var(--color-primary);
+    width: 60px;
+    aspect-ratio: 1;
+    border-radius: 500px;
+    border: 1px solid white;
+}
+
+.dasboard-user-card-tools {
+    width: 175px;
+    height: 75px;
+    background-color: rgba(0,0,0,0.25);
+    border-radius: 15px;
+    flex-direction: column;
+
+}
