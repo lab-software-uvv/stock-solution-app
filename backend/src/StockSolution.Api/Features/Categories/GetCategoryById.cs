@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace StockSolution.Api.Features.Categories;
 
-public record GetCategoryByIdQuery(int id) : IRequest<GetCategoryByIdResponse>;
+public record GetCategoryByIdQuery(int Id) : IRequest<GetCategoryByIdResponse>;
 
 public sealed class GetCategoryByIdEndpoint : Endpoint<GetCategoryByIdQuery, GetCategoryByIdResponse>
 {
@@ -21,25 +21,23 @@ public sealed class GetCategoryByIdEndpoint : Endpoint<GetCategoryByIdQuery, Get
         => await SendAsync(await _mediator.Send(req));
 }
 
-public sealed class GetCategoryByIdHandler : IRequestHandler<GetCategoryByIdQuery, GetCategoryByIdResponse>
+public sealed class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery, GetCategoryByIdResponse>
 {
     private readonly AppDbContext _context;
 
-    public GetCategoryByIdHandler(AppDbContext context)
+    public GetCategoryByIdQueryHandler(AppDbContext context)
     {
         _context = context;
     }
 
-    public Task<GetCategoryByIdResponse> Handle(GetCategoryByIdQuery req, CancellationToken ct)
+    public async Task<GetCategoryByIdResponse> Handle(GetCategoryByIdQuery req, CancellationToken ct)
     {
-        var entity = _context.Categories.FirstOrDefault(f => f.Id == req.id);
+        var entity = await _context.Categories.AsNoTracking().FirstOrDefaultAsync(f => f.Id == req.Id, ct);
 
-        if (entity != null)
-            return Task.FromResult(new GetCategoryByIdResponse(entity.Id, entity.Name, entity.Description));
-        else
-            throw new Exception($"Categoria {req.id} Não Encontrada!", new KeyNotFoundException());
-
+        return entity is null
+            ? throw new Exception($"Categoria {req.Id} Não Encontrada!", new KeyNotFoundException())
+            : new GetCategoryByIdResponse(entity!.Id, entity.Name, entity.Description);
     }
 }
 
-public record GetCategoryByIdResponse(int id, string name, string description);
+public record GetCategoryByIdResponse(int Id, string Name, string Description);

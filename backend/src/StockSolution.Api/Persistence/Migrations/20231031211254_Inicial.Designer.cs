@@ -8,11 +8,11 @@ using StockSolution.Api.Persistence;
 
 #nullable disable
 
-namespace StockSolution.Api.Migrations
+namespace StockSolution.Api.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231031021910_Categories_Unique_Key")]
-    partial class Categories_Unique_Key
+    [Migration("20231031211254_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,6 @@ namespace StockSolution.Api.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")

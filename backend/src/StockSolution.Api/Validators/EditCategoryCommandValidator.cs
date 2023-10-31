@@ -3,11 +3,11 @@ using StockSolution.Api.Features.Categories;
 
 namespace StockSolution.Api.Validators
 {
-    public class PutCategoriesRequestValidator : Validator<PutCategoriesRequest>
+    public class EditCategoryCommandValidator : Validator<EditCategoryCommand>
     {
-        public PutCategoriesRequestValidator() 
+        public EditCategoryCommandValidator() 
         {
-            RuleFor(x => x.name)
+            RuleFor(x => x.Name)
                 .NotEmpty()
                 .WithMessage("Campo Nome é de Preenchimento Obrigatório!")
                 .MinimumLength(3)
@@ -16,7 +16,7 @@ namespace StockSolution.Api.Validators
                 .WithMessage("Campo Nome Deve Possuir um Tamanho Máximo de 50 Caracteres")
                 ;
 
-            RuleFor(x => x.description)
+            RuleFor(x => x.Description)
                 .MaximumLength(255)
                 .WithMessage("Campo Descrição Deve Possuir de um Tamanho Máximo de 50 Caracteres");
 

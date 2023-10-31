@@ -7,7 +7,7 @@ using StockSolution.Api.Persistence;
 
 #nullable disable
 
-namespace StockSolution.Api.Migrations
+namespace StockSolution.Api.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -30,7 +30,6 @@ namespace StockSolution.Api.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
