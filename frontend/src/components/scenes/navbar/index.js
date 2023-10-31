@@ -9,7 +9,7 @@ import LogoMini from "../../../assets/logo/LOGO@.png";
 import { Dashboard, ShippingBoxV1, ShoppingBag, PeopleMultiple } from "akar-icons";
 
 //components
-import ShrinkBtn from "../shrink.btn";
+import ShrinkBtn from "../../ui/shrink.btn";
 
 const NavBar = ({ width = 10, shrinkState }) => {
     const navigate = useNavigate();

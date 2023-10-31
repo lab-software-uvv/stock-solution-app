@@ -26,3 +26,12 @@
     justify-content: center;
     align-items: center;
 }
+
+.inpt-text-ico {
+    width: 75%;
+    padding-left: 5%;
+    padding-right: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

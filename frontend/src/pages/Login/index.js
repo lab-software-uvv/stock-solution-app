@@ -3,7 +3,9 @@ import { useSpring } from "@react-spring/web";
 import "./styles.css";
 
 //components
-import LoginBox from "../../components/ui/loginbox";
+import { Toaster } from "react-hot-toast";
+
+import LoginBox from "../../components/ui/login.box";
 import SignIn from "../../components/scenes/signin";
 import SignUp from "../../components/scenes/signup";
 
@@ -66,6 +68,9 @@ const Login = ({ setAuth }) => {
 
     return (
         <div className="container login-wrapper">
+            <div>
+                <Toaster />
+            </div>           
             <img className="login-img-bg" src={BgLogin} alt={"background-restaurant"}></img>
             <div
                 className="login-logo-wrapper"

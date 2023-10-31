@@ -10,7 +10,7 @@ import Navigator from "../../components/scenes/navigator";
 import { TriangleAlert, Gear } from "akar-icons";
 import IconBtn from "../../components/ui/icon.btn";
 
-const Dashboard = ({ user }) => {
+const Dashboard = ({ user, setAuth }) => {
     const [currentTool, setCurrentTool] = useState("Próximos vencimentos");
     const tools = [
         {
@@ -22,7 +22,7 @@ const Dashboard = ({ user }) => {
     ];
 
     return (
-        <Navigator user={user}>
+        <Navigator user={user} setAuth={setAuth}>
             <div className="dashboard-wrapper flex-center">
                 <div className="">
                     <div className="dashboard-user-card flex-row">
