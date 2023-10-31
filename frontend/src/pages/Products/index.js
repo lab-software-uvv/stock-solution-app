@@ -30,9 +30,11 @@ const Products = ({ user, setAuth }) => {
     const categories = ["Vegetais", "Bebidas", "Carnes", "Grãos"];
 
     const List = () => {
-            return <div style={{ height: '50vh', width: '60vw' }}>
-            <DataGrid rows={productList} columns={columns} />
-          </div>;
+        return (
+            <div style={{ height: "50vh", width: "60vw" }}>
+                <DataGrid rows={productList} columns={columns} />
+            </div>
+        );
         // return <></>;
     };
 
@@ -87,7 +89,7 @@ const Products = ({ user, setAuth }) => {
                 </div>
                 <div>
                     <p className="p-text">Descrição</p>
-                    <TextInput type="textarea" placeholder={"Descrição do produto"}></TextInput>                    
+                    <TextInput type="textarea" placeholder={"Descrição do produto"}></TextInput>
                 </div>
                 <div></div>
                 <div></div>
@@ -102,7 +104,7 @@ const Products = ({ user, setAuth }) => {
 
     return (
         <Navigator user={user} setAuth={setAuth}>
-            <div className="products-wrapper flex-center">
+            <div className="products-wrapper flex-center flex-column">
                 <CrudContainer
                     icon={<ShippingBoxV1 color="var(--color-darkgrey)" />}
                     title={"Produtos"}

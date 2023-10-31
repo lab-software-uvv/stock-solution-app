@@ -13,7 +13,7 @@ import RoundedBtn from "../../ui/rounded.btn";
 //assets
 import { Envelope, LockOn, EyeOpen, EyeClosed } from "akar-icons";
 
-const SignIn = ({ setCurrentPage, handleMove, setAuth }) => {
+const SignIn = ({ setCurrentPage, handleMove, setAuth, setUser }) => {
     const [isPassVisible, setIsPassVisible] = useState(false);
 
     const [email, setEmail] = useState("");
@@ -40,7 +40,13 @@ const SignIn = ({ setCurrentPage, handleMove, setAuth }) => {
                     // },
                 })
                     .then((res) => {
-                        // setAuth({ auth: true, token: null });
+                        let a = { auth: true, token: res.token };
+                        let u = res.user || {};
+                        localStorage.setItem("token", res.token);
+                        localStorage.setItem("auth", a);
+                        localStorage.setItem("user", u);
+                        setAuth(a);
+                        setUser(u);
                         console.log(res);
                     })
                     .catch((err) => {
@@ -54,7 +60,7 @@ const SignIn = ({ setCurrentPage, handleMove, setAuth }) => {
                 {
                     loading: "Autenticando...",
                     success: "Login efetuado com sucesso!",
-                    error: (err) => `Erro: ${err.toString()}`,
+                    error: "Erro, tente novamente mais tarde",
                 },
                 {
                     success: {
@@ -62,10 +68,14 @@ const SignIn = ({ setCurrentPage, handleMove, setAuth }) => {
                     },
                 }
             );
-
-            setAuth({ auth: true, token: null });
-
         }
+
+        localStorage.setItem("token", "514564sa87q6we121x");
+        localStorage.setItem("auth", { auth: true, token: "514564sa87q6we121x" });
+        localStorage.setItem("user", {});
+        setAuth({ auth: true, token: "" });
+        
+
     };
 
     const validateFields = () => {
@@ -78,7 +88,7 @@ const SignIn = ({ setCurrentPage, handleMove, setAuth }) => {
         } else {
             colors = { ...colors, email: "var(--color-black)" };
         }
-        
+
         setFormFields(colors);
 
         if (errorCount > 0) {
