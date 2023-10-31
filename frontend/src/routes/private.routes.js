@@ -16,9 +16,9 @@ const PrivateRoutes = ({ setAuth, user, setUser }) => {
 
     return (
         <Routes>
-            <Route path="/" element={<Dashboard user={user} />} />
-            <Route path="/dashboard" element={<Dashboard user={user} />} />
-            <Route path="/products" element={<Products user={user} />} />
+            <Route path="/" element={<Dashboard user={user} setAuth={setAuth}/>} />
+            <Route path="/dashboard" element={<Dashboard user={user} setAuth={setAuth}/>} />
+            <Route path="/products" element={<Products user={user} setAuth={setAuth}/>} />
         </Routes>
     );
 };

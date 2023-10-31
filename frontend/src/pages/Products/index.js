@@ -11,7 +11,6 @@ import { DataGrid } from "@mui/x-data-grid";
 
 //assets
 import { Save, ShippingBoxV1 } from "akar-icons";
-import { TextField } from "@mui/material";
 
 //settings
 const columns = [
@@ -26,7 +25,7 @@ const columns = [
     { field: "date2", headerName: "Vencimento", width: 100 },
 ];
 
-const Products = ({ user }) => {
+const Products = ({ user, setAuth }) => {
     const [productList, setProductList] = useState([]);
     const categories = ["Vegetais", "Bebidas", "Carnes", "Grãos"];
 
@@ -41,23 +40,23 @@ const Products = ({ user }) => {
         return (
             <form className="products-form">
                 <div>
-                    <p className="p-text">Nome do produto</p>
+                    <p className="p-text">Nome do produto *</p>
                     <TextInput placeholder={"Nome do produto"}></TextInput>
                 </div>
                 <div>
-                    <p className="p-text">Código do produto</p>
+                    <p className="p-text">Código do produto *</p>
                     <TextInput placeholder={"Código do produto"}></TextInput>
                 </div>
                 <div>
-                    <p className="p-text">Quantidade adquirida</p>
+                    <p className="p-text">Quantidade adquirida *</p>
                     <TextInput type="number" min="1" placeholder={"0"}></TextInput>
                 </div>
                 <div>
-                    <p className="p-text">Marca</p>
-                    <TextInput placeholder={"Nome do fabricante"}></TextInput>
+                    <p className="p-text">Fornecedor *</p>
+                    <TextInput placeholder={"Nome do fornecedor"}></TextInput>
                 </div>
                 <div>
-                    <p className="p-text">Preço unitário</p>
+                    <p className="p-text">Preço unitário *</p>
                     <TextInput
                         type="number"
                         min="1"
@@ -67,7 +66,7 @@ const Products = ({ user }) => {
                     ></TextInput>
                 </div>
                 <div>
-                    <p className="p-text">Categoria</p>
+                    <p className="p-text">Categoria *</p>
                     <select>
                         {categories.map((element) => {
                             return (
@@ -79,17 +78,16 @@ const Products = ({ user }) => {
                     </select>
                 </div>
                 <div>
-                    <p className="p-text">Data da aquisição</p>
+                    <p className="p-text">Data da aquisição *</p>
                     <TextInput type="date" placeholder={"0,00"}></TextInput>
                 </div>
                 <div>
-                    <p className="p-text">Vencimento</p>
+                    <p className="p-text">Vencimento *</p>
                     <TextInput type="date" placeholder={"0,00"}></TextInput>
                 </div>
                 <div>
                     <p className="p-text">Descrição</p>
-                    <TextInput type="textarea" placeholder={"Descrição do produto"}></TextInput>
-                    
+                    <TextInput type="textarea" placeholder={"Descrição do produto"}></TextInput>                    
                 </div>
                 <div></div>
                 <div></div>
@@ -103,7 +101,7 @@ const Products = ({ user }) => {
     };
 
     return (
-        <Navigator user={user}>
+        <Navigator user={user} setAuth={setAuth}>
             <div className="products-wrapper flex-center">
                 <CrudContainer
                     icon={<ShippingBoxV1 color="var(--color-darkgrey)" />}
