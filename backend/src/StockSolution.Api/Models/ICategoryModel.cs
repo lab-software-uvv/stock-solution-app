@@ -1,8 +1,8 @@
 ﻿
 namespace StockSolution.Api.Models;
 
-public interface IEmployeeRoleModel
+public interface ICategoryModel
 {
-    int Id { get; set; }
+    string Name { get; set; }
     string Description { get; set; }
 }
