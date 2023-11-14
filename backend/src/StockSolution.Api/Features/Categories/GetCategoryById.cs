@@ -15,6 +15,7 @@ public sealed class GetCategoryByIdEndpoint : Endpoint<GetCategoryByIdQuery, Get
     public override void Configure()
     {
         Get("/categories/{id}");
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(GetCategoryByIdQuery req, CancellationToken ct)
