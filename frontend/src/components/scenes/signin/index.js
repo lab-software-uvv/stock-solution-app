@@ -72,7 +72,8 @@ const SignIn = ({ setCurrentPage, handleMove, setAuth, setUser }) => {
 
         localStorage.setItem("token", "514564sa87q6we121x");
         localStorage.setItem("auth", { auth: true, token: "514564sa87q6we121x" });
-        localStorage.setItem("user", {});
+        localStorage.setItem("user", {name: `Fabiano Rabelo`, role: `Gestor`});
+        setUser({name: `Fabiano Rabelo`, role: `Gestor`})
         setAuth({ auth: true, token: "" });
         
 

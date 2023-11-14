@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles.css";
 import Requests from "../../services/requests";
 
@@ -29,7 +29,7 @@ const Categories = ({ user, setAuth }) => {
 
     const [triggerChangePage, setTriggerChangePage] = useState(true);
 
-    const [categoriesList, setCategoriesList] = useState([]);
+    const [categoriesList, setCategoriesList] = useState([{id: 1, name: `Categoria teste`, description: `Desc test`}]);
 
     const [selected, setSelected] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
