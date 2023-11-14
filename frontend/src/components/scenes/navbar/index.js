@@ -6,10 +6,10 @@ import "./styles.css";
 import LogoFull from "../../../assets/logo/LOGO.png";
 import LogoMini from "../../../assets/logo/LOGO@.png";
 
-import { Dashboard, ShippingBoxV1, ShoppingBag, PeopleMultiple } from "akar-icons";
+import { Dashboard, ShippingBoxV1, ShoppingBag, PeopleMultiple, Tag } from "akar-icons";
 
 //components
-import ShrinkBtn from "../shrink.btn";
+import ShrinkBtn from "../../ui/shrink.btn";
 
 const NavBar = ({ width = 10, shrinkState }) => {
     const navigate = useNavigate();
@@ -39,6 +39,12 @@ const NavBar = ({ width = 10, shrinkState }) => {
             action: () => navigate("/products"),
         },
         {
+            name: "Categorias",
+            path: "/categories",
+            icon: <Tag strokeWidth={2} size={20} color="white" />,
+            action: () => navigate("/categories"),
+        },
+        {
             name: "Funcionários",
             path: "/employees",
             icon: <PeopleMultiple strokeWidth={2} size={20} color="white" />,
@@ -48,11 +54,6 @@ const NavBar = ({ width = 10, shrinkState }) => {
         //     icon: <ShoppingBag strokeWidth={2} size={20} color="white" />,
         // },
     ];
-
-    useEffect(() => {
-        console.log(location.pathname);
-    }, [])
-    
 
     return (
         <div className="navbar-wrapper" style={{ width: width + "vw" }}>

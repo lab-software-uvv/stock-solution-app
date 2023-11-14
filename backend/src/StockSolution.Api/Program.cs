@@ -1,5 +1,6 @@
 using StockSolution.Api;
 using FastEndpoints.Swagger;
+using StockSolution.Api.Common.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api");
 
 if (app.Environment.IsDevelopment())

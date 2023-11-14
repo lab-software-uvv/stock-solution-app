@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import "./styles.css";
 
 //components
-import Header from "../../ui/header";
-import NavBar from "../../ui/navbar";
+import { Toaster } from "react-hot-toast";
+
+import Header from "../header";
+import NavBar from "../navbar";
 
 const Navigator = (props) => {
     const [asideWidth, setAsideWidth] = useState(6);
@@ -19,6 +21,9 @@ const Navigator = (props) => {
 
     return (
         <div className="global-wrapper container flex-row">
+            <div>
+                <Toaster />
+            </div>
             <div className="global-aside" style={{ width: asideWidth + "vw" }}>
                 <NavBar shrinkState={shrinkState} width={asideWidth} />
             </div>
@@ -26,6 +31,7 @@ const Navigator = (props) => {
                 <Header
                     width={100 - asideWidth}
                     user={props.user}
+                    setAuth={props.setAuth}
                     setShrinkState={setShrinkState}
                     shrinkState={shrinkState}
                 />

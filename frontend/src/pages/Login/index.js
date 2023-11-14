@@ -3,7 +3,9 @@ import { useSpring } from "@react-spring/web";
 import "./styles.css";
 
 //components
-import LoginBox from "../../components/ui/loginbox";
+import { Toaster } from "react-hot-toast";
+
+import LoginBox from "../../components/ui/login.box";
 import SignIn from "../../components/scenes/signin";
 import SignUp from "../../components/scenes/signup";
 
@@ -11,7 +13,7 @@ import SignUp from "../../components/scenes/signup";
 import BgLogin from "../../assets/background/bg-login.png";
 import SSLogo from "../../assets/logo/LOGO.png";
 
-const Login = ({ setAuth }) => {
+const Login = ({ setAuth, setUser }) => {
     const [currentPage, setCurrentPage] = useState(0);
 
     const pages = [
@@ -20,6 +22,7 @@ const Login = ({ setAuth }) => {
             component: (
                 <SignIn
                     setAuth={setAuth}
+                    setUser={setUser}
                     setCurrentPage={setCurrentPage}
                     handleMove={() => handleMove()}
                 ></SignIn>
@@ -66,6 +69,9 @@ const Login = ({ setAuth }) => {
 
     return (
         <div className="container login-wrapper">
+            <div>
+                <Toaster />
+            </div>           
             <img className="login-img-bg" src={BgLogin} alt={"background-restaurant"}></img>
             <div
                 className="login-logo-wrapper"

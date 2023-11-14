@@ -10,27 +10,74 @@ const TextInput = ({
     placeholder,
     paddingVertical,
     min,
-    step
+    step,
+    required,
+    disabled,
+    style,
+    name,
+    textIco,
+    maxLength,
+    minLength,
+    pattern,
+    onChange = () => {},
 }) => {
     return (
         <div
             className="inpt-wrapper"
-            style={{ paddingTop: paddingVertical, paddingBottom: paddingVertical }}
+            style={{
+                paddingTop: paddingVertical,
+                paddingBottom: paddingVertical,
+                backgroundColor: disabled === true && "var(--color-grey)",
+                borderRadius: type === "textarea" && 15,
+                ...style,
+            }}
         >
             {icoLeft ? (
-                <div className="inpt-ico">{icoLeft}</div>
+                <div className={textIco ? "inpt-text-ico" : "inpt-ico"}>{icoLeft}</div>
             ) : (
                 <div style={{ width: "5%" }}></div>
             )}
-            <input
-                min={min}
-                step={step}
-                className="inpt-text"
-                placeholder={placeholder}
-                type={type}
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-            />
+            {type !== "textarea" ? (
+                <input
+                    minLength={minLength}
+                    maxLength={maxLength}
+                    disabled={disabled}
+                    name={name}
+                    pattern={pattern}
+                    required={required}
+                    min={min}
+                    step={step}
+                    className="inpt-text"
+                    placeholder={placeholder}
+                    type={type}
+                    value={value}
+                    onChange={(e) => {
+                        onChange();
+                        setValue(e.target.value);
+                    }}
+                />
+            ) : (
+                <textarea
+                    minLength={minLength}
+                    maxLength={maxLength}
+                    disabled={disabled}
+                    name={name}
+                    pattern={pattern}
+                    required={required}
+                    min={min}
+                    step={step}
+                    className="inpt-text"
+                    placeholder={placeholder}
+                    type={type}
+                    value={value}
+                    onChange={(e) => {
+                        onChange();
+                        setValue(e.target.value);
+                    }}
+                    style={{resize: "none", height: "20vh"}}
+
+                ></textarea>
+            )}
             {icoRight && <div className="inpt-ico">{icoRight}</div>}
         </div>
     );
