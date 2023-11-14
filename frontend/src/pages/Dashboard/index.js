@@ -27,7 +27,7 @@ const Dashboard = ({ user, setAuth }) => {
                 <div className="">
                     <div className="dashboard-user-card flex-row">
                         <div className="dashboard-user-card-initials-wrapper flex-center">
-                            <p className="p-white p-main">{getInitials(user.name)}</p>
+                            <p className="p-white p-main">{getInitials(user?.name)}</p>
                         </div>
                         <div>
                             <p className="p-white p-main">

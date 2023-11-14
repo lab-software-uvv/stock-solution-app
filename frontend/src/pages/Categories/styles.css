@@ -1,0 +1,24 @@
+.categories-wrapper {
+    height: 100%;
+    width: 100%;
+}
+
+.categories-form {
+    width: 20vw;
+    height: fit-content;
+    gap: 20px;
+}
+
+.categories-form div p {
+    margin-bottom: 2.5px;
+}
+
+.categories-form-submit-wrapper{
+    margin-left: 75%;
+    margin-top: -20px;
+}
+
+.categories-list-btn-wrapper {
+    justify-content: space-between;
+    margin-top: 10px;
+}

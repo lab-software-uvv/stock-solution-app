@@ -71,6 +71,15 @@ const SignUp = ({ setCurrentPage, handleMove }) => {
         );
     };
 
+    const clearForm = () => {
+        setFullName("");
+        setEmail("");
+        setCPF("");
+        setBirthday("");
+        setPassword("");
+        setPasswordC("");
+    };
+
     const handleSignUp = async (e) => {
         e.preventDefault();
         if (validateFields()) {
@@ -88,7 +97,9 @@ const SignUp = ({ setCurrentPage, handleMove }) => {
                     body: objUser,
                 })
                     .then((res) => {
-                        // setAuth({ auth: true, token: null });
+                        clearForm();
+                        handleMove();
+                        setCurrentPage(0);
                         console.log(res);
                     })
                     .catch((err) => {
