@@ -14,29 +14,34 @@ import toast from "react-hot-toast";
 import { DataGrid } from "@mui/x-data-grid";
 
 //assets
-import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, Tag, TrashCan } from "akar-icons";
+import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, ShoppingBag, TrashCan } from "akar-icons";
+import regex from "../../utils/regex";
 
 //settings
 const columns = [
     { field: "id", headerName: "id", width: 25 },
-    { field: "Name", headerName: "Nome", width: 200 },
-    { field: "Description", headerName: "Descrição", width: 400 },
+    { field: "TradingName", headerName: "Nome fantasia", width: 200 },
+    { field: "Code", headerName: "Código", width: 200 },
+    { field: "CNPJ", headerName: "CNPJ", width: 100 },
 ];
 
-const Categories = ({ user, setAuth }) => {
+const Suppliers = ({ user, setAuth }) => {
     const [popupOn, setPopupOn] = useState(false);
     const [popup, setPopup] = useState(<></>);
 
     const [triggerChangePage, setTriggerChangePage] = useState(true);
 
-    const [categoriesList, setCategoriesList] = useState([
-        { id: 1, Name: `Categoria teste`, Description: `Desc test` },
+    const [suppliersList, setSuppliersList] = useState([
+        { id: 1, TradingName: `Categoria teste`, CNPJ: `Desc test`, Code: "teste" },
     ]);
 
     const [selected, setSelected] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [name, setName] = useState("");
-    const [desc, setDesc] = useState("");
+
+    //form fields
+    const [code, setCode] = useState("");
+    const [tradingName, setTradingName] = useState("");
+    const [CNPJ, setCNPJ] = useState("");
 
     useEffect(() => {
         loadContent();
@@ -44,51 +49,52 @@ const Categories = ({ user, setAuth }) => {
 
     const loadContent = async () => {
         const req = async () => {
-            await Requests.get(`/categories`, {
+            await Requests.get(`/suppliers`, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
             })
                 .then((res) => {
-                    setCategoriesList(
+                    setSuppliersList(
                         res.map((element) => {
                             return { id: element?.Id, ...element } || element;
                         })
                     );
-                    console.log(res);
+                    // console.log(res);
                 })
                 .catch((err) => {
-                    console.log(err);
+                    // console.log(err);
                     throw Error;
                 });
         };
 
         toast.promise(req(), {
             loading: "Carregando...",
-            success: "Categorias carregadas!",
+            success: "Fornecedores carregados!",
             error: "Erro, tente novamente mais tarde",
         });
     };
 
     const handleSave = async () => {
-        if (!"/^[A-Za-z0-9]{3,50}/".test(name)) {
-            toast.error("Não é um nome válido");
+        let req = async () => {};
+
+        if (!regex.cnpj.test(CNPJ)) {
+            toast.error("Não é um CNPJ válido");
             return;
         }
-
-        let req = async () => {};
 
         let statuscode;
         let errMsg = "";
 
         let obj = {
-            name: name,
-            description: desc,
+            Code: code,
+            TradingName: tradingName,
+            CNPJ: CNPJ,
         };
 
         if (!isEditing) {
             req = async () => {
-                await Requests.post(`/categories`, {
+                await Requests.post(`/suppliers`, {
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
@@ -96,16 +102,16 @@ const Categories = ({ user, setAuth }) => {
                 })
                     .then((res) => {
                         statuscode = res.status;
-                        console.log(res);
+                        // console.log(res);
                     })
                     .catch((err) => {
-                        console.log(err);
+                        // console.log(err);
                         throw Error;
                     });
             };
         } else {
             req = async () => {
-                await Requests.put(`/categories/${selected.id}`, {
+                await Requests.put(`/suppliers/${selected.id}`, {
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
@@ -113,10 +119,10 @@ const Categories = ({ user, setAuth }) => {
                 })
                     .then((res) => {
                         statuscode = res.status;
-                        console.log(res);
+                        // console.log(res);
                     })
                     .catch((err) => {
-                        console.log(err);
+                        // console.log(err);
                         throw Error;
                     });
             };
@@ -124,7 +130,7 @@ const Categories = ({ user, setAuth }) => {
 
         switch (statuscode) {
             case 404:
-                errMsg = "Categoria não encontrada";
+                errMsg = "Fornecedor não encontrado";
                 throw Error;
             case 400:
                 errMsg = "Erro no formulário";
@@ -139,7 +145,7 @@ const Categories = ({ user, setAuth }) => {
 
         toast.promise(req(), {
             loading: "Salvando...",
-            success: "Categoria salva!",
+            success: "Fornecedor salvo!",
             error: `Erro: ${errMsg}`,
         });
     };
@@ -147,23 +153,23 @@ const Categories = ({ user, setAuth }) => {
     const handleDelete = async (selected) => {
         if (selected) {
             const req = async () => {
-                await Requests.delete(`/categories/${selected.id}`, {
+                await Requests.delete(`/suppliers/${selected.id}`, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
                 })
                     .then((res) => {
-                        console.log(res);
+                        // console.log(res);
                     })
                     .catch((err) => {
-                        console.log(err);
+                        // console.log(err);
                         throw Error;
                     });
             };
 
             toast.promise(req(), {
                 loading: "Deletando...",
-                success: "Categoria excluida!",
+                success: "Fornecedor deletado!",
                 error: "Erro, tente novamente mais tarde!",
             });
         }
@@ -179,14 +185,15 @@ const Categories = ({ user, setAuth }) => {
     };
 
     const clearForm = () => {
-        setName("");
-        setDesc("");
+        setCode("");
+        setTradingName("");
+        setCNPJ("");
         setIsEditing(false);
         setSelected(null);
     };
 
     const List = () => {
-        console.log("create list");
+        console.log("create");
     };
 
     const Form = () => {
@@ -196,23 +203,23 @@ const Categories = ({ user, setAuth }) => {
     return (
         <Navigator user={user} setAuth={setAuth}>
             {popupOn && <Popup>{popup}</Popup>}
-            <div className="categories-wrapper flex-center flex-column">
+            <div className="suppliers-wrapper flex-center flex-column">
                 <CrudContainer
                     changePage={triggerChangePage}
-                    icon={<Tag color="var(--color-darkgrey)" />}
-                    title={"Categorias"}
+                    icon={<ShoppingBag color="var(--color-darkgrey)" />}
+                    title={"Fornecedores"}
                     list={
                         <>
                             <div style={{ height: "50vh", width: "60vw" }}>
                                 <DataGrid
-                                    rows={categoriesList}
+                                    rows={suppliersList}
                                     columns={columns}
                                     onRowClick={(e) => {
                                         handleSelectItem(e);
                                     }}
                                 />
                             </div>
-                            <div className="flex-row categories-list-btn-wrapper">
+                            <div className="flex-row suppliers-list-btn-wrapper">
                                 <IconBtn
                                     onClick={() => {
                                         loadContent();
@@ -236,14 +243,14 @@ const Categories = ({ user, setAuth }) => {
                                                                 size={58}
                                                                 color="var(--color-red)"
                                                             />
-                                                            <p>Deletar categoria selecionada?</p>
+                                                            <p>Deletar fornecedor selecionado?</p>
                                                             <p className="p-subtitle">{`id: ${selected.id}`}</p>
-                                                            <p className="p-subtitle">{`Nome: ${selected.Name}`}</p>
+                                                            <p className="p-subtitle">{`Nome: ${selected.TradingName}`}</p>
                                                             <p
                                                                 className="p-subtitle"
                                                                 style={{ marginBottom: 10 }}
                                                             >
-                                                                {`Descrição: ${selected.Description}`}
+                                                                {`Código: ${selected.Code}`}
                                                             </p>
                                                             <RoundedBtn
                                                                 onClick={() => {
@@ -272,8 +279,9 @@ const Categories = ({ user, setAuth }) => {
                                     <IconBtn
                                         onClick={() => {
                                             if (selected) {
-                                                setName(selected?.Name);
-                                                setDesc(selected?.Description);
+                                                setCode(selected?.Code);
+                                                setCNPJ(selected?.CNPJ);
+                                                setTradingName(selected?.TradingName);
                                                 setTriggerChangePage(!triggerChangePage);
                                                 setIsEditing(true);
                                             }
@@ -289,32 +297,45 @@ const Categories = ({ user, setAuth }) => {
                     }
                     form={
                         <>
-                            <form className="categories-form flex-column">
+                            <form className="suppliers-form flex-column">
                                 {isEditing && <p>{`Editando registro ${selected?.id}`}</p>}
                                 <div>
-                                    <p className="p-text">Nome da categoria *</p>
+                                    <p className="p-text">Nome fantasia *</p>
                                     <TextInput
-                                        value={name}
-                                        setValue={setName}
+                                        value={tradingName}
+                                        setValue={setTradingName}
+                                        required={true}
+                                        minLength={3}
+                                        maxLength={100}
+                                        placeholder={"Nome do fornecedor"}
+                                    ></TextInput>
+                                </div>
+                                <div>
+                                    <p className="p-text">Código do fornecedor</p>
+                                    <TextInput
+                                        value={code}
+                                        setValue={setCode}
                                         required={true}
                                         minLength={3}
                                         maxLength={50}
-                                        placeholder={"Nome da categoria"}
+                                        placeholder={"Código do fornecedor"}
                                     ></TextInput>
                                 </div>
                                 <div>
-                                    <p className="p-text">Descrição da categoria</p>
+                                    <p className="p-text">CNPJ</p>
                                     <TextInput
-                                        value={desc}
-                                        setValue={setDesc}
-                                        type={"textarea"}
-                                        maxLength={255}
-                                        placeholder={"Descreva a categoria (opcional)"}
+                                        value={CNPJ}
+                                        setValue={setCNPJ}
+                                        required={true}
+                                        minLength={3}
+                                        maxLength={50}
+                                        pattern={regex.cnpj}
+                                        placeholder={"CNPJ"}
                                     ></TextInput>
                                 </div>
                                 <div></div>
                                 <div></div>
-                                <div className="categories-form-submit-wrapper flex-row gap-10">
+                                <div className="suppliers-form-submit-wrapper flex-row gap-10">
                                     <IconBtn
                                         onClick={() => {
                                             clearForm();
@@ -372,4 +393,4 @@ const Categories = ({ user, setAuth }) => {
     );
 };
 
-export default Categories;
+export default Suppliers;

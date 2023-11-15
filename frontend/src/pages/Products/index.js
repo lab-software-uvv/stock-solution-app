@@ -141,7 +141,7 @@ const Products = ({ user, setAuth }) => {
             };
         } else {
             req = async () => {
-                await Requests.put(`/products/${selected.Id}`, {
+                await Requests.put(`/products/${selected.id}`, {
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
@@ -183,7 +183,7 @@ const Products = ({ user, setAuth }) => {
     const handleDelete = async (selected) => {
         if (selected) {
             const req = async () => {
-                await Requests.delete(`/products/${selected.Id}`, {
+                await Requests.delete(`/products/${selected.id}`, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
@@ -228,250 +228,11 @@ const Products = ({ user, setAuth }) => {
     };
 
     const List = () => {
-        return (
-            <>
-                <div style={{ height: "50vh", width: "60vw" }}>
-                    <DataGrid
-                        rows={productList}
-                        columns={columns}
-                        onRowClick={(e) => {
-                            handleSelectItem(e);
-                        }}
-                    />
-                </div>
-                <div className="flex-row categories-list-btn-wrapper">
-                    <IconBtn
-                        onClick={() => {
-                            loadContent();
-                        }}
-                        className=""
-                        backgroundColor={"var(--color-darkgrey)"}
-                    >
-                        <ArrowCycle color="var(--color-white)" />
-                    </IconBtn>
-                    <div className="flex-row  gap-10 ">
-                        <IconBtn
-                            onClick={() => {
-                                if (selected) {
-                                    setPopup(
-                                        <>
-                                            <div
-                                                className="flex-center flex-column gap-10"
-                                                style={{ padding: 20 }}
-                                            >
-                                                <TrashCan size={58} color="var(--color-red)" />
-                                                <p>Deletar categoria selecionada?</p>
-                                                <p className="p-subtitle">{`id: ${selected.Id}`}</p>
-                                                <p className="p-subtitle">{`Nome: ${selected.Name}`}</p>
-                                                <p
-                                                    className="p-subtitle"
-                                                    style={{ marginBottom: 10 }}
-                                                >
-                                                    {`Descrição: ${selected.Description}`}
-                                                </p>
-                                                <RoundedBtn
-                                                    onClick={() => {
-                                                        handleDelete(selected);
-                                                    }}
-                                                    title={"Deletar"}
-                                                />
-                                                <RoundedBtn
-                                                    onClick={() => {
-                                                        setPopupOn(false);
-                                                    }}
-                                                    title={"Voltar"}
-                                                    hierarchy="secondary"
-                                                />
-                                            </div>
-                                        </>
-                                    );
-                                    setPopupOn(true);
-                                }
-                            }}
-                            className=""
-                            backgroundColor={"var(--color-red)"}
-                        >
-                            <TrashCan color="white" />
-                        </IconBtn>
-                        <IconBtn
-                            onClick={() => {
-                                console.log(selected);
-                                if (selected) {
-                                    setName("");
-                                    setCode("");
-                                    setQuantity(0);
-                                    setSupplier("");
-                                    setPrice(0);
-                                    setAquisitionDate(new Date());
-                                    setExpirationDate(new Date());
-                                    setDescription("");
-                                    setTriggerChangePage(!triggerChangePage);
-                                    setIsEditing(true);
-                                }
-                            }}
-                            className=""
-                            backgroundColor={"var(--color-black)"}
-                        >
-                            <Pencil color="white" />
-                        </IconBtn>
-                    </div>
-                </div>
-            </>
-        );
+        console.log("create list");
     };
 
     const Form = () => {
-        return (
-            <>
-                {isEditing && <p>{`Editando registro ${selected?.Id}`}</p>}
-                <form className="products-form">
-                    <div>
-                        <p className="p-text">Nome do produto *</p>
-                        <TextInput
-                            value={name}
-                            setValue={setName}
-                            required={true}
-                            placeholder={"Nome do produto"}
-                        ></TextInput>
-                    </div>
-                    <div>
-                        <p className="p-text">Código do produto *</p>
-                        <TextInput
-                            value={code}
-                            setValue={setCode}
-                            required={true}
-                            placeholder={"Código do produto"}
-                        ></TextInput>
-                    </div>
-                    <div>
-                        <p className="p-text">Quantidade adquirida *</p>
-                        <TextInput
-                            value={quantity}
-                            setValue={setQuantity}
-                            required={true}
-                            type="number"
-                            min="1"
-                            placeholder={"0"}
-                        ></TextInput>
-                    </div>
-                    <div>
-                        <p className="p-text">Fornecedor *</p>
-                        <TextInput
-                            value={supplier}
-                            setValue={setSupplier}
-                            required={true}
-                            placeholder={"Nome do fornecedor"}
-                        ></TextInput>
-                    </div>
-                    <div>
-                        <p className="p-text">Preço unitário *</p>
-                        <TextInput
-                            value={price}
-                            setValue={setPrice}
-                            required={true}
-                            type="number"
-                            min="1"
-                            step="any"
-                            icoLeft={<p className="p-text p-price">R$</p>}
-                            placeholder={"0,00"}
-                        ></TextInput>
-                    </div>
-                    <div>
-                        <p className="p-text">Categoria</p>
-                        <select
-                            value={category}
-                            onChange={(e) => setCategory(e.currentTarget.value)}
-                        >
-                            {categoriesList.map((element) => {
-                                return (
-                                    <option key={element.title} value={element.id}>
-                                        {element.title}
-                                    </option>
-                                );
-                            })}
-                        </select>
-                    </div>
-                    <div>
-                        <p className="p-text">Data da aquisição *</p>
-                        <TextInput
-                            value={aquisitionDate}
-                            setValue={setAquisitionDate}
-                            required={true}
-                            type="date"
-                            placeholder={"0,00"}
-                        ></TextInput>
-                    </div>
-                    <div>
-                        <p className="p-text">Vencimento *</p>
-                        <TextInput
-                            value={expirationDate}
-                            setValue={setExpirationDate}
-                            required={true}
-                            type="date"
-                            placeholder={"0,00"}
-                        ></TextInput>
-                    </div>
-                    <div>
-                        <p className="p-text">Descrição</p>
-                        <TextInput
-                            value={description}
-                            setValue={setDescription}
-                            required={true}
-                            type="textarea"
-                            placeholder={"Descrição do produto"}
-                        ></TextInput>
-                    </div>
-                    <div></div>
-                    <div></div>
-                    <div className="products-form-submit-wrapper flex-row gap-10">
-                        <IconBtn
-                            onClick={() => {
-                                clearForm();
-                            }}
-                            backgroundColor={"var(--color-darkgrey)"}
-                        >
-                            <Cross color="white" />
-                        </IconBtn>
-                        <IconBtn
-                            onClick={() => {
-                                setPopup(
-                                    <>
-                                        <div
-                                            className="flex-center flex-column gap-10"
-                                            style={{ padding: 20 }}
-                                        >
-                                            <Save size={58} color="var(--color-green)" />
-                                            <p style={{ marginBottom: 10 }}>
-                                                {isEditing
-                                                    ? "Deseja salvar suas mudanças?"
-                                                    : "Deseja confirmar o cadastro?"}
-                                            </p>
-                                            <RoundedBtn
-                                                onClick={() => {
-                                                    handleSave();
-                                                }}
-                                                title={"Salvar"}
-                                            />
-                                            <RoundedBtn
-                                                onClick={() => {
-                                                    setPopupOn(false);
-                                                }}
-                                                title={"Voltar"}
-                                                hierarchy="secondary"
-                                            />
-                                        </div>
-                                    </>
-                                );
-                                setPopupOn(true);
-                            }}
-                            backgroundColor={"var(--color-primary)"}
-                        >
-                            <Save color="white" />
-                        </IconBtn>
-                    </div>
-                </form>
-            </>
-        );
+        console.log("create form");
     };
 
     return (
@@ -482,8 +243,253 @@ const Products = ({ user, setAuth }) => {
                     changePage={triggerChangePage}
                     icon={<ShippingBoxV1 color="var(--color-darkgrey)" />}
                     title={"Produtos"}
-                    list={<List />}
-                    form={<Form />}
+                    list={
+                        <>
+                            <div style={{ height: "50vh", width: "60vw" }}>
+                                <DataGrid
+                                    rows={productList}
+                                    columns={columns}
+                                    onRowClick={(e) => {
+                                        handleSelectItem(e);
+                                    }}
+                                />
+                            </div>
+                            <div className="flex-row categories-list-btn-wrapper">
+                                <IconBtn
+                                    onClick={() => {
+                                        loadContent();
+                                    }}
+                                    className=""
+                                    backgroundColor={"var(--color-darkgrey)"}
+                                >
+                                    <ArrowCycle color="var(--color-white)" />
+                                </IconBtn>
+                                <div className="flex-row  gap-10 ">
+                                    <IconBtn
+                                        onClick={() => {
+                                            if (selected) {
+                                                setPopup(
+                                                    <>
+                                                        <div
+                                                            className="flex-center flex-column gap-10"
+                                                            style={{ padding: 20 }}
+                                                        >
+                                                            <TrashCan
+                                                                size={58}
+                                                                color="var(--color-red)"
+                                                            />
+                                                            <p>Deletar categoria selecionada?</p>
+                                                            <p className="p-subtitle">{`id: ${selected.id}`}</p>
+                                                            <p className="p-subtitle">{`Nome: ${selected.Name}`}</p>
+                                                            <p
+                                                                className="p-subtitle"
+                                                                style={{ marginBottom: 10 }}
+                                                            >
+                                                                {`Descrição: ${selected.Description}`}
+                                                            </p>
+                                                            <RoundedBtn
+                                                                onClick={() => {
+                                                                    handleDelete(selected);
+                                                                }}
+                                                                title={"Deletar"}
+                                                            />
+                                                            <RoundedBtn
+                                                                onClick={() => {
+                                                                    setPopupOn(false);
+                                                                }}
+                                                                title={"Voltar"}
+                                                                hierarchy="secondary"
+                                                            />
+                                                        </div>
+                                                    </>
+                                                );
+                                                setPopupOn(true);
+                                            }
+                                        }}
+                                        className=""
+                                        backgroundColor={"var(--color-red)"}
+                                    >
+                                        <TrashCan color="white" />
+                                    </IconBtn>
+                                    <IconBtn
+                                        onClick={() => {
+                                            console.log(selected);
+                                            if (selected) {
+                                                setName("");
+                                                setCode("");
+                                                setQuantity(0);
+                                                setSupplier("");
+                                                setPrice(0);
+                                                setAquisitionDate(new Date());
+                                                setExpirationDate(new Date());
+                                                setDescription("");
+                                                setTriggerChangePage(!triggerChangePage);
+                                                setIsEditing(true);
+                                            }
+                                        }}
+                                        className=""
+                                        backgroundColor={"var(--color-black)"}
+                                    >
+                                        <Pencil color="white" />
+                                    </IconBtn>
+                                </div>
+                            </div>
+                        </>
+                    }
+                    form={
+                        <>
+                            {isEditing && <p>{`Editando registro ${selected?.id}`}</p>}
+                            <form className="products-form">
+                                <div>
+                                    <p className="p-text">Nome do produto *</p>
+                                    <TextInput
+                                        value={name}
+                                        setValue={setName}
+                                        required={true}
+                                        placeholder={"Nome do produto"}
+                                    ></TextInput>
+                                </div>
+                                <div>
+                                    <p className="p-text">Código do produto *</p>
+                                    <TextInput
+                                        value={code}
+                                        setValue={setCode}
+                                        required={true}
+                                        placeholder={"Código do produto"}
+                                    ></TextInput>
+                                </div>
+                                <div>
+                                    <p className="p-text">Quantidade adquirida *</p>
+                                    <TextInput
+                                        value={quantity}
+                                        setValue={setQuantity}
+                                        required={true}
+                                        type="number"
+                                        min="1"
+                                        placeholder={"0"}
+                                    ></TextInput>
+                                </div>
+                                <div>
+                                    <p className="p-text">Fornecedor *</p>
+                                    <TextInput
+                                        value={supplier}
+                                        setValue={setSupplier}
+                                        required={true}
+                                        placeholder={"Nome do fornecedor"}
+                                    ></TextInput>
+                                </div>
+                                <div>
+                                    <p className="p-text">Preço unitário *</p>
+                                    <TextInput
+                                        value={price}
+                                        setValue={setPrice}
+                                        required={true}
+                                        type="number"
+                                        min="1"
+                                        step="any"
+                                        icoLeft={<p className="p-text p-price">R$</p>}
+                                        placeholder={"0,00"}
+                                    ></TextInput>
+                                </div>
+                                <div>
+                                    <p className="p-text">Categoria</p>
+                                    <select
+                                        value={category}
+                                        onChange={(e) => setCategory(e.currentTarget.value)}
+                                    >
+                                        {categoriesList.map((element) => {
+                                            return (
+                                                <option key={element.title} value={element.id}>
+                                                    {element.title}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </div>
+                                <div>
+                                    <p className="p-text">Data da aquisição *</p>
+                                    <TextInput
+                                        value={aquisitionDate}
+                                        setValue={setAquisitionDate}
+                                        required={true}
+                                        type="date"
+                                        placeholder={"0,00"}
+                                    ></TextInput>
+                                </div>
+                                <div>
+                                    <p className="p-text">Vencimento *</p>
+                                    <TextInput
+                                        value={expirationDate}
+                                        setValue={setExpirationDate}
+                                        required={true}
+                                        type="date"
+                                        placeholder={"0,00"}
+                                    ></TextInput>
+                                </div>
+                                <div>
+                                    <p className="p-text">Descrição</p>
+                                    <TextInput
+                                        value={description}
+                                        setValue={setDescription}
+                                        required={true}
+                                        type="textarea"
+                                        placeholder={"Descrição do produto"}
+                                    ></TextInput>
+                                </div>
+                                <div></div>
+                                <div></div>
+                                <div className="products-form-submit-wrapper flex-row gap-10">
+                                    <IconBtn
+                                        onClick={() => {
+                                            clearForm();
+                                        }}
+                                        backgroundColor={"var(--color-darkgrey)"}
+                                    >
+                                        <Cross color="white" />
+                                    </IconBtn>
+                                    <IconBtn
+                                        onClick={() => {
+                                            setPopup(
+                                                <>
+                                                    <div
+                                                        className="flex-center flex-column gap-10"
+                                                        style={{ padding: 20 }}
+                                                    >
+                                                        <Save
+                                                            size={58}
+                                                            color="var(--color-green)"
+                                                        />
+                                                        <p style={{ marginBottom: 10 }}>
+                                                            {isEditing
+                                                                ? "Deseja salvar suas mudanças?"
+                                                                : "Deseja confirmar o cadastro?"}
+                                                        </p>
+                                                        <RoundedBtn
+                                                            onClick={() => {
+                                                                handleSave();
+                                                            }}
+                                                            title={"Salvar"}
+                                                        />
+                                                        <RoundedBtn
+                                                            onClick={() => {
+                                                                setPopupOn(false);
+                                                            }}
+                                                            title={"Voltar"}
+                                                            hierarchy="secondary"
+                                                        />
+                                                    </div>
+                                                </>
+                                            );
+                                            setPopupOn(true);
+                                        }}
+                                        backgroundColor={"var(--color-primary)"}
+                                    >
+                                        <Save color="white" />
+                                    </IconBtn>
+                                </div>
+                            </form>
+                        </>
+                    }
                 ></CrudContainer>
             </div>
         </Navigator>

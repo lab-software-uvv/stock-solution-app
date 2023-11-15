@@ -4,6 +4,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Dashboard from "../pages/Dashboard/index";
 import Products from "../pages/Products/index";
 import Categories from "../pages/Categories/index";
+import Suppliers from "../pages/Suppliers";
 
 const PrivateRoutes = ({ setAuth, user, setUser }) => {
     const navigate = useNavigate();
@@ -20,6 +21,7 @@ const PrivateRoutes = ({ setAuth, user, setUser }) => {
             <Route path="/" element={<Dashboard user={user} setAuth={setAuth}/>} />
             <Route path="/dashboard" element={<Dashboard user={user} setAuth={setAuth}/>} />
             <Route path="/products" element={<Products user={user} setAuth={setAuth}/>} />
+            <Route path="/suppliers" element={<Suppliers user={user} setAuth={setAuth}/>} />
             <Route path="/categories" element={<Categories user={user} setAuth={setAuth}/>} />
         </Routes>
     );
