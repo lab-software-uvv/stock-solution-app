@@ -36,8 +36,7 @@ const CrudContainer = ({ title = "", form = <></>, list = <></>, icon, changePag
                     <p>{handleGetName(currentPage) + " " + (title.toLowerCase() || "")}</p>
                 </div>
                 <div className="crudcontainer-content-container">
-                    {currentPage === 0 && list}
-                    {currentPage === 1 && form}
+                    {currentPage === 0? list : form}
                 </div>
             </div>
             <div className="crudcontainer-btn-wrapper flex-row">
