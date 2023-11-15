@@ -51,12 +51,9 @@ const Products = ({ user, setAuth }) => {
             Description: "description",
         },
     ]);
-    const categoriesList = [
-        { id: 1, title: "Vegetais" },
-        { id: 2, title: "Bebidas" },
-        { id: 3, title: "Carnes" },
-        { id: 4, title: "Grãos" },
-    ];
+
+    const [categoriesList, setCategoriesList] = useState([]);
+    const [suppliersList, setSuppliersList] = useState([]);
 
     const [selected, setSelected] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -65,7 +62,7 @@ const Products = ({ user, setAuth }) => {
     const [name, setName] = useState("");
     const [code, setCode] = useState("");
     const [quantity, setQuantity] = useState(0);
-    const [supplier, setSupplier] = useState("");
+    const [supplier, setSupplier] = useState(1);
     const [price, setPrice] = useState(0);
     const [aquisitionDate, setAquisitionDate] = useState(new Date());
     const [expirationDate, setExpirationDate] = useState(new Date());
@@ -74,6 +71,8 @@ const Products = ({ user, setAuth }) => {
 
     useEffect(() => {
         loadContent();
+        reqCategories();
+        reqSuppliers();
     }, []);
 
     const loadContent = async () => {
@@ -99,6 +98,41 @@ const Products = ({ user, setAuth }) => {
             success: "Produtos carregados!",
             error: "Erro, tente novamente mais tarde",
         });
+
+    };
+
+    const reqCategories = async () => {
+        await Requests.get(`/categories`/*, {
+            headers: {
+                authentication: `bearer ${localStorage.getItem("token")}`,
+            },
+        }*/)
+            .then((res) => {
+                setCategoriesList(res.data);
+                setCategory(res.data[0].id)
+                // console.log(res);
+            })
+            .catch((err) => {
+                // console.log(err);
+                throw Error;
+            });
+    };
+
+    const reqSuppliers = async () => {
+        await Requests.get(`/suppliers`/*, {
+            headers: {
+                authentication: `bearer ${localStorage.getItem("token")}`,
+            },
+        }*/)
+            .then((res) => {
+                setSuppliersList(res.data);
+                setSupplier(res.data[0].id)
+                // console.log(res);
+            })
+            .catch((err) => {
+                // console.log(err);
+                throw Error;
+            });
     };
 
     const handleSave = async () => {
@@ -372,12 +406,18 @@ const Products = ({ user, setAuth }) => {
                                 </div>
                                 <div>
                                     <p className="p-text">Fornecedor *</p>
-                                    <TextInput
+                                    <select
                                         value={supplier}
-                                        setValue={setSupplier}
-                                        required={true}
-                                        placeholder={"Nome do fornecedor"}
-                                    ></TextInput>
+                                        onChange={(e) => setSupplier(e.currentTarget.value)}
+                                    >
+                                        {suppliersList.map((element) => {
+                                            return (
+                                                <option key={element.id} value={element.id}>
+                                                    {element.code}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
                                 </div>
                                 <div>
                                     <p className="p-text">Preço unitário *</p>
@@ -400,8 +440,8 @@ const Products = ({ user, setAuth }) => {
                                     >
                                         {categoriesList.map((element) => {
                                             return (
-                                                <option key={element.title} value={element.id}>
-                                                    {element.title}
+                                                <option key={element.id} value={element.id}>
+                                                    {element.name}
                                                 </option>
                                             );
                                         })}

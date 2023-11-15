@@ -45,7 +45,7 @@ public class ExceptionHandlingMiddleware
                 return;
             }
         }
-        else if (exception.InnerException.Message.Equals("The given key was not present in the dictionary."))
+        else if (exception!.InnerException?.Message == "The given key was not present in the dictionary.")
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             context.Response.ContentType = "application/json";
@@ -59,7 +59,7 @@ public class ExceptionHandlingMiddleware
 
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
         context.Response.ContentType = "application/json";
-        errorMessage = new { Erro = "Um Erro Interno do Servidor Ocorreu. "};
+        errorMessage = new { Erro = exception.Message ?? "Um Erro Interno do Servidor Ocorreu. " };
 
         jsonResponse = Newtonsoft.Json.JsonConvert.SerializeObject(errorMessage, Newtonsoft.Json.Formatting.Indented);
         await context.Response.WriteAsync(jsonResponse);

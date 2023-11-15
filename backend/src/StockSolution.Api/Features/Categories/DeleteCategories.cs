@@ -38,6 +38,14 @@ public sealed class DeleteCategoriesCommandHandler : IRequestHandler<DeleteCateg
 
     public async Task Handle(DeleteCategories req, CancellationToken ct)
     {
+        var produtosComCategoria = await _context.Products.Where(p => p.CategoryId == req.Id).ToListAsync(ct);
+        if (produtosComCategoria.Any())
+        {
+            produtosComCategoria.ForEach(p => p.CategoryId = null);
+            await _context.SaveChangesAsync(ct);
+        }
+
+
         await _context.Categories.Where(c => c.Id == req.Id).ExecuteDeleteAsync(ct);
 
         return;
