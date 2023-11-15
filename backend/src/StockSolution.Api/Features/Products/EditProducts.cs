@@ -42,7 +42,6 @@ public sealed class EditProductCommandHandler  : IRequestHandler<EditProductComm
         var category = await _context.Categories.FirstOrDefaultAsync(f => f.Id == req.CategoryId, ct);
 
         entity.Name = req.Name;
-        entity.Code = req.Code;
         entity.Quantity = req.Quantity;
         entity.Supplier = supplier!;
         entity.Price = req.Price;
