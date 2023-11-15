@@ -36,7 +36,13 @@ public class AppDbContext : DbContext
 
         builder.Entity<Supplier>()
             .HasIndex(c => c.CNPJ)
-            .IsUnique(true);
+            .IsUnique(true)
+            ;
+
+        builder.Entity<Supplier>()
+            .HasIndex(c => c.Code)
+            .IsUnique(true)
+            ;
 
         base.OnModelCreating(builder);
     }
