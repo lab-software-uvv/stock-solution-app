@@ -19,15 +19,15 @@ import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, TrashCan } from "akar-i
 
 //settings
 const columns = [
-    { field: "Name", headerName: "Nome", width: 100 },
-    { field: "Code", headerName: "Código", width: 125 },
-    { field: "Quantity", headerName: "Quantidade", width: 100 },
-    { field: "SupplierId", headerName: "Fornecedor", width: 100 },
-    { field: "Price", headerName: "Preço unitário", width: 75 },
-    { field: "CategoryId", headerName: "Categoria", width: 100 },
-    { field: "AquisitionDate", headerName: "Data de aquisição", width: 100 },
-    { field: "ExpirationDate", headerName: "Data de vencimento", width: 100 },
-    { field: "Description", headerName: "Descrição", width: 100 },
+    { field: "name", headerName: "Nome", width: 100 },
+    { field: "code", headerName: "Código", width: 125 },
+    { field: "quantity", headerName: "Quantidade", width: 100 },
+    { field: "supplierId", headerName: "Fornecedor", width: 100 },
+    { field: "price", headerName: "Preço unitário", width: 75 },
+    { field: "categoryId", headerName: "Categoria", width: 100 },
+    { field: "aquisitionDate", headerName: "Data de aquisição", width: 100 },
+    { field: "expirationDate", headerName: "Data de vencimento", width: 100 },
+    { field: "description", headerName: "Descrição", width: 100 },
 ];
 
 const Products = ({ user, setAuth }) => {
@@ -78,17 +78,14 @@ const Products = ({ user, setAuth }) => {
 
     const loadContent = async () => {
         const req = async () => {
-            await Requests.get(`/products`, {
+            await Requests.get(`/products`/*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
-            })
+            }*/)
                 .then((res) => {
-                    setProductList(
-                        res.map((element) => {
-                            return { id: element?.Id, ...element } || element;
-                        })
-                    );
+                    setProductList(res.data);
+                    setPopupOn(false);
                     console.log(res);
                 })
                 .catch((err) => {
@@ -124,14 +121,15 @@ const Products = ({ user, setAuth }) => {
 
         if (!isEditing) {
             req = async () => {
-                await Requests.post(`/products`, {
+                await Requests.post(`/products`, obj /*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                })
+                }*/)
                     .then((res) => {
                         statuscode = res.status;
+                        setPopupOn(false);
                         console.log(res);
                     })
                     .catch((err) => {
@@ -141,14 +139,15 @@ const Products = ({ user, setAuth }) => {
             };
         } else {
             req = async () => {
-                await Requests.put(`/products/${selected.id}`, {
+                await Requests.put(`/products/${selected.id}`, obj /*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                })
+                }*/)
                     .then((res) => {
                         statuscode = res.status;
+                        setPopupOn(false);
                         console.log(res);
                     })
                     .catch((err) => {
@@ -183,13 +182,14 @@ const Products = ({ user, setAuth }) => {
     const handleDelete = async (selected) => {
         if (selected) {
             const req = async () => {
-                await Requests.delete(`/products/${selected.id}`, {
+                await Requests.delete(`/products/${selected.id}`/*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                })
+                }*/)
                     .then((res) => {
                         console.log(res);
+                        setPopupOn(false);
                     })
                     .catch((err) => {
                         console.log(err);
@@ -280,12 +280,12 @@ const Products = ({ user, setAuth }) => {
                                                             />
                                                             <p>Deletar categoria selecionada?</p>
                                                             <p className="p-subtitle">{`id: ${selected.id}`}</p>
-                                                            <p className="p-subtitle">{`Nome: ${selected.Name}`}</p>
+                                                            <p className="p-subtitle">{`Nome: ${selected.name}`}</p>
                                                             <p
                                                                 className="p-subtitle"
                                                                 style={{ marginBottom: 10 }}
                                                             >
-                                                                {`Descrição: ${selected.Description}`}
+                                                                {`Descrição: ${selected.description}`}
                                                             </p>
                                                             <RoundedBtn
                                                                 onClick={() => {
@@ -315,14 +315,15 @@ const Products = ({ user, setAuth }) => {
                                         onClick={() => {
                                             console.log(selected);
                                             if (selected) {
-                                                setName("");
-                                                setCode("");
-                                                setQuantity(0);
-                                                setSupplier("");
-                                                setPrice(0);
-                                                setAquisitionDate(new Date());
-                                                setExpirationDate(new Date());
-                                                setDescription("");
+                                                setName(selected.name);
+                                                setCode(selected.code);
+                                                setQuantity(selected.quantity);
+                                                setSupplier(selected.supplierId);
+                                                setCategory(selected.categoryId);
+                                                setPrice(selected.price);
+                                                setAquisitionDate(selected.aquisitionDate.split("T")[0]);
+                                                setExpirationDate(selected.expirationDate.split("T")[0]);
+                                                setDescription(selected.description);
                                                 setTriggerChangePage(!triggerChangePage);
                                                 setIsEditing(true);
                                             }

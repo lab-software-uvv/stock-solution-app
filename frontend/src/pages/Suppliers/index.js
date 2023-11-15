@@ -20,9 +20,9 @@ import regex from "../../utils/regex";
 //settings
 const columns = [
     { field: "id", headerName: "id", width: 25 },
-    { field: "TradingName", headerName: "Nome fantasia", width: 200 },
-    { field: "Code", headerName: "Código", width: 200 },
-    { field: "CNPJ", headerName: "CNPJ", width: 100 },
+    { field: "tradingName", headerName: "Nome fantasia", width: 200 },
+    { field: "code", headerName: "Código", width: 200 },
+    { field: "cnpj", headerName: "CNPJ", width: 100 },
 ];
 
 const Suppliers = ({ user, setAuth }) => {
@@ -49,17 +49,14 @@ const Suppliers = ({ user, setAuth }) => {
 
     const loadContent = async () => {
         const req = async () => {
-            await Requests.get(`/suppliers`, {
+            await Requests.get(`/suppliers`/*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
-            })
+            }*/)
                 .then((res) => {
-                    setSuppliersList(
-                        res.map((element) => {
-                            return { id: element?.Id, ...element } || element;
-                        })
-                    );
+                    setSuppliersList(res.data);
+                    setPopupOn(false);
                     // console.log(res);
                 })
                 .catch((err) => {
@@ -94,14 +91,15 @@ const Suppliers = ({ user, setAuth }) => {
 
         if (!isEditing) {
             req = async () => {
-                await Requests.post(`/suppliers`, {
+                await Requests.post(`/suppliers`, obj/*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                })
+                }*/)
                     .then((res) => {
                         statuscode = res.status;
+                        setPopupOn(false);
                         // console.log(res);
                     })
                     .catch((err) => {
@@ -111,14 +109,15 @@ const Suppliers = ({ user, setAuth }) => {
             };
         } else {
             req = async () => {
-                await Requests.put(`/suppliers/${selected.id}`, {
+                await Requests.put(`/suppliers/${selected.id}`, obj /*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                })
+                }*/)
                     .then((res) => {
                         statuscode = res.status;
+                        setPopupOn(false);
                         // console.log(res);
                     })
                     .catch((err) => {
@@ -153,13 +152,14 @@ const Suppliers = ({ user, setAuth }) => {
     const handleDelete = async (selected) => {
         if (selected) {
             const req = async () => {
-                await Requests.delete(`/suppliers/${selected.id}`, {
+                await Requests.delete(`/suppliers/${selected.id}`/*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                })
+                }*/)
                     .then((res) => {
                         // console.log(res);
+                        setPopupOn(false);
                     })
                     .catch((err) => {
                         // console.log(err);
@@ -245,12 +245,12 @@ const Suppliers = ({ user, setAuth }) => {
                                                             />
                                                             <p>Deletar fornecedor selecionado?</p>
                                                             <p className="p-subtitle">{`id: ${selected.id}`}</p>
-                                                            <p className="p-subtitle">{`Nome: ${selected.TradingName}`}</p>
+                                                            <p className="p-subtitle">{`Nome: ${selected.tradingName}`}</p>
                                                             <p
                                                                 className="p-subtitle"
                                                                 style={{ marginBottom: 10 }}
                                                             >
-                                                                {`Código: ${selected.Code}`}
+                                                                {`Código: ${selected.code}`}
                                                             </p>
                                                             <RoundedBtn
                                                                 onClick={() => {
@@ -279,9 +279,9 @@ const Suppliers = ({ user, setAuth }) => {
                                     <IconBtn
                                         onClick={() => {
                                             if (selected) {
-                                                setCode(selected?.Code);
-                                                setCNPJ(selected?.CNPJ);
-                                                setTradingName(selected?.TradingName);
+                                                setCode(selected?.code);
+                                                setCNPJ(selected?.cnpj);
+                                                setTradingName(selected?.tradingName);
                                                 setTriggerChangePage(!triggerChangePage);
                                                 setIsEditing(true);
                                             }

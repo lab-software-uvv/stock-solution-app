@@ -44,6 +44,14 @@ public class AppDbContext : DbContext
             .IsUnique(true)
             ;
 
+        builder.Entity<Product>()
+            .Property(e => e.AquisitionDate)
+            .HasColumnType("date");
+
+        builder.Entity<Product>()
+            .Property(e => e.ExpirationDate)
+            .HasColumnType("date");
+
         base.OnModelCreating(builder);
     }
 

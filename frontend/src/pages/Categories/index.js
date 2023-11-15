@@ -19,8 +19,8 @@ import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, Tag, TrashCan } from "a
 //settings
 const columns = [
     { field: "id", headerName: "id", width: 25 },
-    { field: "Name", headerName: "Nome", width: 200 },
-    { field: "Description", headerName: "Descrição", width: 400 },
+    { field: "name", headerName: "Nome", width: 200 },
+    { field: "description", headerName: "Descrição", width: 400 },
 ];
 
 const Categories = ({ user, setAuth }) => {
@@ -44,17 +44,14 @@ const Categories = ({ user, setAuth }) => {
 
     const loadContent = async () => {
         const req = async () => {
-            await Requests.get(`/categories`, {
+            await Requests.get(`/categories`/*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
-            })
+            }*/)
                 .then((res) => {
-                    setCategoriesList(
-                        res.map((element) => {
-                            return { id: element?.Id, ...element } || element;
-                        })
-                    );
+                    setCategoriesList(res.data);
+                    setPopupOn(false);
                     console.log(res);
                 })
                 .catch((err) => {
@@ -71,11 +68,7 @@ const Categories = ({ user, setAuth }) => {
     };
 
     const handleSave = async () => {
-        if (!"/^[A-Za-z0-9]{3,50}/".test(name)) {
-            toast.error("Não é um nome válido");
-            return;
-        }
-
+        
         let req = async () => {};
 
         let statuscode;
@@ -88,14 +81,15 @@ const Categories = ({ user, setAuth }) => {
 
         if (!isEditing) {
             req = async () => {
-                await Requests.post(`/categories`, {
-                    body: obj,
+                await Requests.post(`/categories`, obj/*{
+                    obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
-                    },
-                })
+                    }
+                }*/)
                     .then((res) => {
                         statuscode = res.status;
+                        setPopupOn(false);
                         console.log(res);
                     })
                     .catch((err) => {
@@ -105,14 +99,15 @@ const Categories = ({ user, setAuth }) => {
             };
         } else {
             req = async () => {
-                await Requests.put(`/categories/${selected.id}`, {
+                await Requests.put(`/categories/${selected.id}`, obj/*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
-                    },
-                })
+                    }
+                }*/)
                     .then((res) => {
                         statuscode = res.status;
+                        setPopupOn(false);
                         console.log(res);
                     })
                     .catch((err) => {
@@ -147,12 +142,13 @@ const Categories = ({ user, setAuth }) => {
     const handleDelete = async (selected) => {
         if (selected) {
             const req = async () => {
-                await Requests.delete(`/categories/${selected.id}`, {
+                await Requests.delete(`/categories/${selected.id}`/*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                })
+                }*/)
                     .then((res) => {
+                        setPopupOn(false);
                         console.log(res);
                     })
                     .catch((err) => {
@@ -238,12 +234,12 @@ const Categories = ({ user, setAuth }) => {
                                                             />
                                                             <p>Deletar categoria selecionada?</p>
                                                             <p className="p-subtitle">{`id: ${selected.id}`}</p>
-                                                            <p className="p-subtitle">{`Nome: ${selected.Name}`}</p>
+                                                            <p className="p-subtitle">{`Nome: ${selected.name}`}</p>
                                                             <p
                                                                 className="p-subtitle"
                                                                 style={{ marginBottom: 10 }}
                                                             >
-                                                                {`Descrição: ${selected.Description}`}
+                                                                {`Descrição: ${selected.description}`}
                                                             </p>
                                                             <RoundedBtn
                                                                 onClick={() => {
@@ -272,8 +268,8 @@ const Categories = ({ user, setAuth }) => {
                                     <IconBtn
                                         onClick={() => {
                                             if (selected) {
-                                                setName(selected?.Name);
-                                                setDesc(selected?.Description);
+                                                setName(selected?.name);
+                                                setDesc(selected?.description);
                                                 setTriggerChangePage(!triggerChangePage);
                                                 setIsEditing(true);
                                             }

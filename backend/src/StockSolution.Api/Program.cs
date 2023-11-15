@@ -7,6 +7,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddStockSolution(builder.Configuration);
 builder.Services.SwaggerDocument();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithExposedHeaders("Content-Disposition"));
+});
+
 var app = builder.Build();
 await app.InitAsync();
 
@@ -15,6 +25,7 @@ await app.InitAsync();
 app.UseAuthentication();
 
 app.UseAuthorization();
+app.UseCors("CorsPolicy");
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api");
