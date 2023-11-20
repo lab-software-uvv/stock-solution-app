@@ -4,6 +4,8 @@ using StockSolution.Api.Common.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables();
+
 builder.Services.AddStockSolution(builder.Configuration);
 builder.Services.SwaggerDocument();
 
