@@ -6,37 +6,39 @@
         <ImplicitUsings>enable</ImplicitUsings>
 
         <NoWarn>$(NoWarn);CA2016</NoWarn>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
 
         <UserSecretsId>536e9de7-88f0-4c0f-b546-ab5e1537b2d0</UserSecretsId>
+
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="AutoRegisterInject" Version="1.2.1" />
         <PackageReference Include="Bogus" Version="34.0.2" />
-        <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.1" />
+        <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.2" />
+        <PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="6.0.3" />
         <PackageReference Include="Extensions.Hosting.AsyncInitialization" Version="3.0.0" />
-        <PackageReference Include="FastEndpoints" Version="5.18.0" />
-        <PackageReference Include="FastEndpoints.Generator" Version="5.18.0">
+        <PackageReference Include="FastEndpoints" Version="5.19.1" />
+        <PackageReference Include="FastEndpoints.Generator" Version="5.19.1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="FastEndpoints.Security" Version="5.18.0" />
-        <PackageReference Include="FastEndpoints.Swagger" Version="5.18.0" />
+        <PackageReference Include="FastEndpoints.Security" Version="5.19.1" />
+        <PackageReference Include="FastEndpoints.Swagger" Version="5.19.1" />
+        <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
         <PackageReference Include="MediatR" Version="12.1.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.12">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.12">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.11">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="NodaTime.Bogus" Version="3.0.2" />
+        <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.1.2" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="7.0.11" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Persistence\Migrations\" />
     </ItemGroup>
 </Project>

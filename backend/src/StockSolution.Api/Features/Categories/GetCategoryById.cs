@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace StockSolution.Api.Features.Categories;
 
@@ -14,7 +13,9 @@ public sealed class GetCategoryByIdEndpoint : Endpoint<GetCategoryByIdQuery, Get
 
     public override void Configure()
     {
-        Get("/categories/{id}");
+        Get("{id}");
+        Description(b => b.Accepts<GetCategoryByIdQuery>("text/plain", "text/json"));
+        Group<CategoriesGroup>();
     }
 
     public override async Task HandleAsync(GetCategoryByIdQuery req, CancellationToken ct)
@@ -36,8 +37,8 @@ public sealed class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByI
 
         return entity is null
             ? throw new Exception($"Categoria {req.Id} Não Encontrada!", new KeyNotFoundException())
-            : new GetCategoryByIdResponse(entity!.Id, entity.Name, entity.Description);
+            : new GetCategoryByIdResponse(entity.Id, entity.Name, entity.Description);
     }
 }
 
-public record GetCategoryByIdResponse(int Id, string Name, string Description);
+public record GetCategoryByIdResponse(int Id, string Name, string? Description);

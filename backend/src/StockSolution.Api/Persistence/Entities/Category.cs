@@ -3,7 +3,7 @@
 namespace StockSolution.Api.Persistence.Entities;
 
 /// <summary>
-/// This entity represents a employee associated to the organization.
+/// This entity represents a category in which products are going to be associated with.
 /// </summary>
 public class Category : BaseEntity, ICategoryModel
 {

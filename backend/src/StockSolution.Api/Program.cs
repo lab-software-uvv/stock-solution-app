@@ -1,23 +1,29 @@
 using StockSolution.Api;
 using FastEndpoints.Swagger;
-using StockSolution.Api.Common.Exceptions;
+using Hellang.Middleware.ProblemDetails;
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddMvcCore();
 builder.Services.AddStockSolution(builder.Configuration);
 builder.Services.SwaggerDocument();
 
 var app = builder.Build();
-await app.InitAsync();
+await app.InitAsync(app.Lifetime.ApplicationStarted).ConfigureAwait(false);
 
-// app.UseHttpsRedirection();
+app.UseProblemDetails();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api");
+app.UseFastEndpoints(c =>
+{
+    c.Endpoints.RoutePrefix = "api";
+    c.Serializer.Options.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+});
 
 if (app.Environment.IsDevelopment())
 {
@@ -26,3 +32,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
+
+public partial class Program { }

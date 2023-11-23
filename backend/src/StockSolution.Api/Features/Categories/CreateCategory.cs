@@ -1,4 +1,5 @@
-﻿using StockSolution.Api.Persistence.Entities;
+﻿using FluentValidation;
+using StockSolution.Api.Persistence.Entities;
 
 namespace StockSolution.Api.Features.Categories;
 
@@ -13,17 +14,35 @@ public sealed class CreateCategoryEndpoint : Endpoint<CreateCategoryRequest, Cre
 
     public override void Configure()
     {
-        Post("/categories");
-        AllowAnonymous();
+        Post("/");
+        Group<CategoriesGroup>();
         Description(c => c
-                    .Accepts<CreateCategoryRequest>("application/json")
-                    .Produces<CreateCategoryResponse>(201, "application/json")
-                    .ProducesValidationProblem(400)
-                    );
+            .Accepts<CreateCategoryRequest>("application/json")
+            .Produces<CreateCategoryResponse>(201, "application/json")
+            .ProducesValidationProblem()
+        );
     }
 
     public override async Task HandleAsync(CreateCategoryRequest req, CancellationToken ct)
         => await SendAsync(await _mediator.Send(req));
+}
+
+public class CreateCategoryRequestValidator : Validator<CreateCategoryRequest>
+{
+    public CreateCategoryRequestValidator()
+    {
+        RuleFor(x => x.Name)
+            .NotEmpty()
+            .WithMessage("Campo Nome é de Preenchimento Obrigatório!")
+            .MinimumLength(3)
+            .WithMessage("Campo Nome Deve Possuir um Tamanho Mínimo de 3 Caracteres")
+            .MaximumLength(50)
+            .WithMessage("Campo Nome Deve Possuir um Tamanho Máximo de 50 Caracteres");
+
+        RuleFor(x => x.Description)
+            .MaximumLength(255)
+            .WithMessage("Campo Descrição Deve Possuir de um Tamanho Máximo de 50 Caracteres");
+    }
 }
 
 public sealed class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryRequest, CreateCategoryResponse>

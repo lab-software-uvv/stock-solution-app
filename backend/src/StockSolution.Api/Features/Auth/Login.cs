@@ -1,16 +1,19 @@
-﻿using StockSolution.Api.Services;
+﻿using FluentValidation;
+using StockSolution.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace StockSolution.Api.Features.Auth;
 
-public record LoginCommand(string Username, string Password) : IRequest<LoginResponse>;
+public record LoginCommand(string Email, string Password) : IRequest<TokenResponse>;
 
-public sealed class LoginEndpoint : Endpoint<LoginCommand, LoginResponse>
+public sealed class LoginEndpoint : Endpoint<LoginCommand, TokenResponse>
 {
     private readonly ISender _mediator;
 
     public LoginEndpoint(ISender mediator)
-        => _mediator = mediator;
+    {
+        _mediator = mediator;
+    }
 
     public override void Configure()
     {
@@ -22,29 +25,44 @@ public sealed class LoginEndpoint : Endpoint<LoginCommand, LoginResponse>
         => await SendAsync(await _mediator.Send(req, ct));
 }
 
-public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
+public sealed class LoginCommandValidator : Validator<LoginCommand>
+{
+    public LoginCommandValidator()
+    {
+        RuleFor(x => x.Email)
+            .NotEmpty().WithMessage("O e-mail é obrigatório.")
+            .EmailAddress().WithMessage("O e-mail não é válido.");
+
+        RuleFor(x => x.Password)
+            .NotEmpty()
+            .MinimumLength(5);
+    }
+}
+
+public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, TokenResponse>
 {
     private readonly AppDbContext _context;
-    private PasswordHasher _passwordHasher;
+    private readonly PasswordHasher _passwordHasher;
+    private readonly JwtGenerator _jwtGenerator;
 
-    public LoginCommandHandler(AppDbContext context, PasswordHasher passwordHasher)
-        => (_context, _passwordHasher) = (context, passwordHasher);
+    public LoginCommandHandler(AppDbContext context, PasswordHasher passwordHasher, JwtGenerator jwtGenerator)
+        => (_context, _passwordHasher, _jwtGenerator) = (context, passwordHasher, jwtGenerator);
 
-    public async Task<LoginResponse> Handle(LoginCommand req, CancellationToken ct)
+    public async Task<TokenResponse> Handle(LoginCommand req, CancellationToken ct)
     {
-        var lowercaseUsername = req.Username.ToLower();
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Username.ToLower() == lowercaseUsername, ct);
+        var emailLower = req.Email.ToLower();
+        var user = await _context.Users
+            .Include(x => x.Role)
+            .FirstOrDefaultAsync(x => x.Email.ToLower() == emailLower, ct);
 
         // TODO: Create a Guard clause class, to handle NotFound and other kinds of exceptions.
         if (user is null)
             throw new UnauthorizedAccessException();
-        
+
         if (!_passwordHasher.Verify(user.PasswordHash, req.Password))
             throw new UnauthorizedAccessException();
-        
-        // TODO: Generate Token and Access Token
-        return new LoginResponse();
+
+        var jwtToken = _jwtGenerator.GenerateToken(user, user.Role!);
+        return new TokenResponse(jwtToken);
     }
 }
-
-public record LoginResponse();

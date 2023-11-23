@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 namespace StockSolution.Api.Features.Categories;
 
-public record GetCategoriesQuery() : IRequest<List<GetCategoriesResponse>>;
+public record GetCategoriesQuery : IRequest<List<GetCategoriesResponse>>;
 
 public sealed class GetCategoriesEndpoint : Endpoint<GetCategoriesQuery, List<GetCategoriesResponse>>
 {
@@ -12,8 +13,8 @@ public sealed class GetCategoriesEndpoint : Endpoint<GetCategoriesQuery, List<Ge
 
     public override void Configure()
     {
-        Get("/categories");
-        AllowAnonymous();
+        Get("/");
+        Group<CategoriesGroup>();
     }
 
     public override async Task HandleAsync(GetCategoriesQuery req, CancellationToken ct)
@@ -29,12 +30,12 @@ public sealed class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQue
         _context = context;
     }
 
-    public async Task<List<GetCategoriesResponse>> Handle(GetCategoriesQuery req, CancellationToken ct)
+    public Task<List<GetCategoriesResponse>> Handle(GetCategoriesQuery req, CancellationToken ct)
     {
-        return await _context.Categories.AsNoTracking()
-                    .Select(x => new GetCategoriesResponse(x.Id, x.Name, x.Description))
-                    .ToListAsync(ct);
+        return _context.Categories.AsNoTracking()
+            .Select(x => new GetCategoriesResponse(x.Id, x.Name, x.Description))
+            .ToListAsync(ct);
     }
 }
 
-public record GetCategoriesResponse(int Id, string Name, string Description);
+public record GetCategoriesResponse(int Id, string Name, string? Description);

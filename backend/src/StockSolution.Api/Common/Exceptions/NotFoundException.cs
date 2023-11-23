@@ -1,6 +1,8 @@
-﻿namespace StockSolution.Api.Common;
+﻿namespace StockSolution.Api.Common.Exceptions;
 
 public class NotFoundException : Exception
 {
-    
+    public NotFoundException(string message) : base(message)
+    {
+    }
 }
