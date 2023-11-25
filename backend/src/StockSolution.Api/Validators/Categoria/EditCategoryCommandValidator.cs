@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using StockSolution.Api.Features.Categories;
 
-namespace StockSolution.Api.Validators
+namespace StockSolution.Api.Validators.Categoria
 {
     public class EditCategoryCommandValidator : Validator<EditCategoryCommand>
     {
-        public EditCategoryCommandValidator() 
+        public EditCategoryCommandValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty()

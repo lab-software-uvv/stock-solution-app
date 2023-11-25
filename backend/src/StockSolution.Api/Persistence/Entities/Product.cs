@@ -32,4 +32,5 @@ public class Product : BaseEntity, IProductModel
     public int? CategoryId { get; set; }
     public DateTime AquisitionDate { get; set; }
     public DateTime ExpirationDate { get; set; }
+    public ICollection<ProductComercialProduct> ProductComercialProduct { get; set; }
 }

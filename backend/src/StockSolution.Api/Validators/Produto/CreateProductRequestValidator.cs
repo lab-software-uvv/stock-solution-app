@@ -1,16 +1,16 @@
 ﻿using FluentValidation;
 using StockSolution.Api.Features.Products;
 
-namespace StockSolution.Api.Validators
+namespace StockSolution.Api.Validators.Produto
 {
     public class CreateProductRequestValidator : Validator<CreateProductRequest>
     {
-        public CreateProductRequestValidator() 
+        public CreateProductRequestValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .MaximumLength(255)
-                .WithMessage("Campo Descrição Deve Possuir de um Tamanho Máximo de 50 Caracteres");
+                .WithMessage("Campo Descrição Deve Possuir de um Tamanho Máximo de 255 Caracteres");
 
             RuleFor(x => x.Code)
                 .NotEmpty()

@@ -2,7 +2,7 @@
 using StockSolution.Api.Features.Categories;
 using StockSolution.Api.Features.Products;
 
-namespace StockSolution.Api.Validators
+namespace StockSolution.Api.Validators.Produto
 {
     public class EditProductCommandValidator : Validator<EditProductCommand>
     {
@@ -53,7 +53,7 @@ namespace StockSolution.Api.Validators
 
             RuleFor(x => x.Description)
                 .MaximumLength(255)
-                .WithMessage("Campo Descrição Deve Possuir de um Tamanho Máximo de 50 Caracteres");
+                .WithMessage("Campo Descrição Deve Possuir de um Tamanho Máximo de 255 Caracteres");
 
         }
     }

@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using StockSolution.Api.Features.Categories;
 
-namespace StockSolution.Api.Validators
+namespace StockSolution.Api.Validators.Categoria
 {
-    public class CreateCategoryRequestValidator: Validator<CreateCategoryRequest>
+    public class CreateCategoryRequestValidator : Validator<CreateCategoryRequest>
     {
-        public CreateCategoryRequestValidator() 
+        public CreateCategoryRequestValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty()

@@ -2,7 +2,7 @@
 using StockSolution.Api.Features.Suppliers;
 using System.Text.RegularExpressions;
 
-namespace StockSolution.Api.Validators
+namespace StockSolution.Api.Validators.Fornecedor
 {
     public class EditSupplierCommandValidator : Validator<EditSupplierCommand>
     {

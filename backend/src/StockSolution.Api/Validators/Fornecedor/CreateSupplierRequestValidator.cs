@@ -2,11 +2,11 @@
 using StockSolution.Api.Features.Suppliers;
 using System.Text.RegularExpressions;
 
-namespace StockSolution.Api.Validators
+namespace StockSolution.Api.Validators.Fornecedor
 {
     public class CreateSupplierRequestValidator : Validator<CreateSupplierRequest>
     {
-        public CreateSupplierRequestValidator() 
+        public CreateSupplierRequestValidator()
         {
             RuleFor(x => x.Code)
                 .NotEmpty()
@@ -30,7 +30,7 @@ namespace StockSolution.Api.Validators
                 .WithMessage("Campo CNPJ Deve Possuir 14 Caracteres")
                 .Must(s => ValidarCNPJ(s!))
                 .WithMessage("CNPJ Informado Não é Valido!");
-                
+
 
         }
 
