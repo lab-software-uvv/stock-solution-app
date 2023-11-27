@@ -6,7 +6,7 @@ import "./styles.css";
 import LogoFull from "../../../assets/logo/LOGO.png";
 import LogoMini from "../../../assets/logo/LOGO@.png";
 
-import { Dashboard, ShippingBoxV1, ShoppingBag, PeopleMultiple, Tag, } from "akar-icons";
+import { Dashboard, ShippingBoxV1, ShoppingBag, PeopleMultiple, Tag, Utensils, Money, } from "akar-icons";
 
 //components
 import ShrinkBtn from "../../ui/shrink.btn";
@@ -33,6 +33,12 @@ const NavBar = ({ width = 10, shrinkState }) => {
             action: () => navigate("/dashboard"),
         },
         {
+            name: "Vendas",
+            path: "/sales",
+            icon: <Money strokeWidth={2} size={20} color="white" />,
+            action: () => navigate("/sales"),
+        },
+        {
             name: "Produtos",
             path: "/products",
             icon: <ShippingBoxV1 strokeWidth={2} size={20} color="white" />,
@@ -43,6 +49,12 @@ const NavBar = ({ width = 10, shrinkState }) => {
             path: "/categories",
             icon: <Tag strokeWidth={2} size={20} color="white" />,
             action: () => navigate("/categories"),
+        },
+        {
+            name: "Produtos Comerciais",
+            path: "/comercial-products",
+            icon: <Utensils strokeWidth={2} size={20} color="white" />,
+            action: () => navigate("/comercial-products"),
         },
         {
             name: "Fornecedores",

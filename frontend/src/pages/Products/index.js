@@ -77,11 +77,13 @@ const Products = ({ user, setAuth }) => {
 
     const loadContent = async () => {
         const req = async () => {
-            await Requests.get(`/products`/*, {
+            await Requests.get(
+                `/products` /*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
-            }*/)
+            }*/
+            )
                 .then((res) => {
                     setProductList(res.data);
                     setPopupOn(false);
@@ -98,18 +100,19 @@ const Products = ({ user, setAuth }) => {
             success: "Produtos carregados!",
             error: "Erro, tente novamente mais tarde",
         });
-
     };
 
     const reqCategories = async () => {
-        await Requests.get(`/categories`/*, {
+        await Requests.get(
+            `/categories` /*, {
             headers: {
                 authentication: `bearer ${localStorage.getItem("token")}`,
             },
-        }*/)
+        }*/
+        )
             .then((res) => {
                 setCategoriesList(res.data);
-                setCategory(res.data[0].id)
+                setCategory(res.data[0].id);
                 // console.log(res);
             })
             .catch((err) => {
@@ -119,14 +122,16 @@ const Products = ({ user, setAuth }) => {
     };
 
     const reqSuppliers = async () => {
-        await Requests.get(`/suppliers`/*, {
+        await Requests.get(
+            `/suppliers` /*, {
             headers: {
                 authentication: `bearer ${localStorage.getItem("token")}`,
             },
-        }*/)
+        }*/
+        )
             .then((res) => {
                 setSuppliersList(res.data);
-                setSupplier(res.data[0].id)
+                setSupplier(res.data[0].id);
                 // console.log(res);
             })
             .catch((err) => {
@@ -155,15 +160,19 @@ const Products = ({ user, setAuth }) => {
 
         if (!isEditing) {
             req = async () => {
-                await Requests.post(`/products`, obj /*{
+                await Requests.post(
+                    `/products`,
+                    obj /*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                }*/)
+                }*/
+                )
                     .then((res) => {
                         statuscode = res.status;
                         setPopupOn(false);
+                        clearForm();
                         console.log(res);
                     })
                     .catch((err) => {
@@ -173,15 +182,19 @@ const Products = ({ user, setAuth }) => {
             };
         } else {
             req = async () => {
-                await Requests.put(`/products/${selected.id}`, obj /*{
+                await Requests.put(
+                    `/products/${selected.id}`,
+                    obj /*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                }*/)
+                }*/
+                )
                     .then((res) => {
                         statuscode = res.status;
                         setPopupOn(false);
+                        clearForm();
                         console.log(res);
                     })
                     .catch((err) => {
@@ -211,19 +224,24 @@ const Products = ({ user, setAuth }) => {
             success: "Produto salvo!",
             error: `Erro: ${errMsg}`,
         });
+
+        loadContent();
     };
 
     const handleDelete = async (selected) => {
         if (selected) {
             const req = async () => {
-                await Requests.delete(`/products/${selected.id}`/*, {
+                await Requests.delete(
+                    `/products/${selected.id}` /*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                }*/)
+                }*/
+                )
                     .then((res) => {
                         console.log(res);
                         setPopupOn(false);
+                        loadContent();
                     })
                     .catch((err) => {
                         console.log(err);
@@ -355,8 +373,12 @@ const Products = ({ user, setAuth }) => {
                                                 setSupplier(selected.supplierId);
                                                 setCategory(selected.categoryId);
                                                 setPrice(selected.price);
-                                                setAquisitionDate(selected.aquisitionDate.split("T")[0]);
-                                                setExpirationDate(selected.expirationDate.split("T")[0]);
+                                                setAquisitionDate(
+                                                    selected.aquisitionDate.split("T")[0]
+                                                );
+                                                setExpirationDate(
+                                                    selected.expirationDate.split("T")[0]
+                                                );
                                                 setDescription(selected.description);
                                                 setTriggerChangePage(!triggerChangePage);
                                                 setIsEditing(true);
