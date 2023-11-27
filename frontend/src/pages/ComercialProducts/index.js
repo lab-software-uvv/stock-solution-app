@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./styles.css";
 import Requests from "../../services/requests";
+import { useNavigate } from "react-router-dom";
 
 //components
 import toast from "react-hot-toast";
@@ -15,42 +16,32 @@ import Popup from "../../components/scenes/popup";
 import { DataGrid } from "@mui/x-data-grid";
 
 //assets
-import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, TrashCan } from "akar-icons";
+import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, TrashCan, Utensils } from "akar-icons";
+import ShrinkBtn from "../../components/ui/shrink.btn";
 
 //settings
 const columns = [
     { field: "name", headerName: "Nome", width: 100 },
     { field: "code", headerName: "Código", width: 125 },
-    { field: "quantity", headerName: "Quantidade", width: 100 },
-    { field: "supplierCode", headerName: "Fornecedor", width: 100 },
-    { field: "price", headerName: "Preço unitário", width: 75 },
-    { field: "categoryName", headerName: "Categoria", width: 100 },
-    { field: "aquisitionDate", headerName: "Data de aquisição", width: 100 },
-    { field: "expirationDate", headerName: "Data de vencimento", width: 100 },
-    { field: "description", headerName: "Descrição", width: 100 },
+    { field: "price", headerName: "Valor", width: 75 },
+    { field: "description", headerName: "Descrição", width: 250 },
 ];
 
-const Products = ({ user, setAuth }) => {
+const ComercialProducts = ({ user, setAuth }) => {
+    const navigate = useNavigate();
+
     const [popupOn, setPopupOn] = useState(false);
     const [popup, setPopup] = useState(<></>);
 
     const [triggerChangePage, setTriggerChangePage] = useState(true);
 
-    const [productList, setProductList] = useState([
+    const [comercialProductList, setComercialProductList] = useState([
         {
             id: 1,
-            Id: 1,
-            Name: "name",
-            Code: "code",
-            Quantity: 5,
-            SupplierId: "supplier",
-            SupplierCode: "supplier",
-            Price: 20,
-            CategoryName: 1,
-            CategoryId: 1,
-            AquisitionDate: new Date(),
-            ExpirationDate: new Date(),
-            Description: "description",
+            name: "name",
+            code: "code",
+            price: 20,
+            description: "description",
         },
     ]);
 
@@ -80,14 +71,14 @@ const Products = ({ user, setAuth }) => {
     const loadContent = async () => {
         const req = async () => {
             await Requests.get(
-                `/products` /*, {
+                `/comercial-products` /*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
             }*/
             )
                 .then((res) => {
-                    setProductList(res.data);
+                    setComercialProductList(res.data);
                     setPopupOn(false);
                     console.log(res);
                 })
@@ -151,19 +142,14 @@ const Products = ({ user, setAuth }) => {
         let obj = {
             Name: name,
             Code: code,
-            Quantity: quantity,
-            SupplierId: supplier,
             Price: price,
-            CategoryId: category,
-            AquisitionDate: aquisitionDate,
-            ExpirationDate: expirationDate,
             Description: description,
         };
 
         if (!isEditing) {
             req = async () => {
                 await Requests.post(
-                    `/products`,
+                    `/comercial-products`,
                     obj /*{
                     body: obj,
                     headers: {
@@ -185,7 +171,7 @@ const Products = ({ user, setAuth }) => {
         } else {
             req = async () => {
                 await Requests.put(
-                    `/products/${selected.id}`,
+                    `/comercial-products/${selected.id}`,
                     obj /*{
                     body: obj,
                     headers: {
@@ -197,6 +183,7 @@ const Products = ({ user, setAuth }) => {
                         statuscode = res.status;
                         setPopupOn(false);
                         clearForm();
+
                         console.log(res);
                     })
                     .catch((err) => {
@@ -234,7 +221,7 @@ const Products = ({ user, setAuth }) => {
         if (selected) {
             const req = async () => {
                 await Requests.delete(
-                    `/products/${selected.id}` /*, {
+                    `/comercial-products/${selected.id}` /*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
@@ -242,8 +229,8 @@ const Products = ({ user, setAuth }) => {
                 )
                     .then((res) => {
                         console.log(res);
-                        setPopupOn(false);
                         loadContent();
+                        setPopupOn(false);
                     })
                     .catch((err) => {
                         console.log(err);
@@ -292,16 +279,16 @@ const Products = ({ user, setAuth }) => {
     return (
         <Navigator user={user} setAuth={setAuth}>
             {popupOn && <Popup>{popup}</Popup>}
-            <div className="products-wrapper flex-center flex-column">
+            <div className="c-products-wrapper flex-center flex-column">
                 <CrudContainer
                     changePage={triggerChangePage}
-                    icon={<ShippingBoxV1 color="var(--color-darkgrey)" />}
-                    title={"Produtos"}
+                    icon={<Utensils color="var(--color-darkgrey)" />}
+                    title={"Produtos Comerciais"}
                     list={
                         <>
                             <div style={{ height: "50vh", width: "60vw" }}>
                                 <DataGrid
-                                    rows={productList}
+                                    rows={comercialProductList}
                                     columns={columns}
                                     onRowClick={(e) => {
                                         handleSelectItem(e);
@@ -319,6 +306,22 @@ const Products = ({ user, setAuth }) => {
                                     <ArrowCycle color="var(--color-white)" />
                                 </IconBtn>
                                 <div className="flex-row  gap-10 ">
+                                    <ShrinkBtn
+                                        action={() =>
+                                            selected
+                                                ? navigate(
+                                                      `/comercial-products/products/${selected.id}`
+                                                  )
+                                                : toast("Selecione um produto comercial!")
+                                        }
+                                        text={"Associação de produtos"}
+                                        backgroundColor={"var(--color-green)"}
+                                        mouseOnBg={"var(--color-green)"}
+                                        shrink={true}
+                                        width={250}
+                                    >
+                                        <ShippingBoxV1 color="white"></ShippingBoxV1>
+                                    </ShrinkBtn>
                                     <IconBtn
                                         onClick={() => {
                                             if (selected) {
@@ -332,7 +335,7 @@ const Products = ({ user, setAuth }) => {
                                                                 size={58}
                                                                 color="var(--color-red)"
                                                             />
-                                                            <p>Deletar categoria selecionada?</p>
+                                                            <p>Deletar produto selecionado?</p>
                                                             <p className="p-subtitle">{`id: ${selected.id}`}</p>
                                                             <p className="p-subtitle">{`Nome: ${selected.name}`}</p>
                                                             <p
@@ -371,16 +374,7 @@ const Products = ({ user, setAuth }) => {
                                             if (selected) {
                                                 setName(selected.name);
                                                 setCode(selected.code);
-                                                setQuantity(selected.quantity);
-                                                setSupplier(selected.supplierCode);
-                                                setCategory(selected.categoryName);
                                                 setPrice(selected.price);
-                                                setAquisitionDate(
-                                                    selected.aquisitionDate.split("T")[0]
-                                                );
-                                                setExpirationDate(
-                                                    selected.expirationDate.split("T")[0]
-                                                );
                                                 setDescription(selected.description);
                                                 setTriggerChangePage(!triggerChangePage);
                                                 setIsEditing(true);
@@ -398,99 +392,44 @@ const Products = ({ user, setAuth }) => {
                     form={
                         <>
                             {isEditing && <p>{`Editando registro ${selected?.id}`}</p>}
-                            <form className="products-form">
-                                <div>
-                                    <p className="p-text">Nome do produto *</p>
-                                    <TextInput
-                                        value={name}
-                                        setValue={setName}
-                                        required={true}
-                                        placeholder={"Nome do produto"}
-                                    ></TextInput>
+                            <form className="c-products-form">
+                                <div
+                                    className="flex-row"
+                                    style={{ justifyContent: "space-between" }}
+                                >
+                                    <div>
+                                        <p className="p-text">Nome do produto *</p>
+                                        <TextInput
+                                            value={name}
+                                            setValue={setName}
+                                            required={true}
+                                            placeholder={"Nome do produto"}
+                                        ></TextInput>
+                                    </div>
+                                    <div>
+                                        <p className="p-text">Código do produto *</p>
+                                        <TextInput
+                                            value={code}
+                                            setValue={setCode}
+                                            required={true}
+                                            placeholder={"Código do produto"}
+                                        ></TextInput>
+                                    </div>
+                                    <div>
+                                        <p className="p-text">Valor *</p>
+                                        <TextInput
+                                            value={price}
+                                            setValue={setPrice}
+                                            required={true}
+                                            type="number"
+                                            min="1"
+                                            step="any"
+                                            icoLeft={<p className="p-text p-price">R$</p>}
+                                            placeholder={"0,00"}
+                                        ></TextInput>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="p-text">Código do produto *</p>
-                                    <TextInput
-                                        value={code}
-                                        setValue={setCode}
-                                        required={true}
-                                        placeholder={"Código do produto"}
-                                    ></TextInput>
-                                </div>
-                                <div>
-                                    <p className="p-text">Quantidade adquirida *</p>
-                                    <TextInput
-                                        value={quantity}
-                                        setValue={setQuantity}
-                                        required={true}
-                                        type="number"
-                                        min="1"
-                                        placeholder={"0"}
-                                    ></TextInput>
-                                </div>
-                                <div>
-                                    <p className="p-text">Fornecedor *</p>
-                                    <select
-                                        value={supplier}
-                                        onChange={(e) => setSupplier(e.currentTarget.value)}
-                                    >
-                                        {suppliersList.map((element) => {
-                                            return (
-                                                <option key={element.id} value={element.id}>
-                                                    {element.code}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                </div>
-                                <div>
-                                    <p className="p-text">Preço unitário *</p>
-                                    <TextInput
-                                        value={price}
-                                        setValue={setPrice}
-                                        required={true}
-                                        type="number"
-                                        min="1"
-                                        step="any"
-                                        icoLeft={<p className="p-text p-price">R$</p>}
-                                        placeholder={"0,00"}
-                                    ></TextInput>
-                                </div>
-                                <div>
-                                    <p className="p-text">Categoria</p>
-                                    <select
-                                        value={category}
-                                        onChange={(e) => setCategory(e.currentTarget.value)}
-                                    >
-                                        {categoriesList.map((element) => {
-                                            return (
-                                                <option key={element.id} value={element.id}>
-                                                    {element.name}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                </div>
-                                <div>
-                                    <p className="p-text">Data da aquisição *</p>
-                                    <TextInput
-                                        value={aquisitionDate}
-                                        setValue={setAquisitionDate}
-                                        required={true}
-                                        type="date"
-                                        placeholder={"0,00"}
-                                    ></TextInput>
-                                </div>
-                                <div>
-                                    <p className="p-text">Vencimento *</p>
-                                    <TextInput
-                                        value={expirationDate}
-                                        setValue={setExpirationDate}
-                                        required={true}
-                                        type="date"
-                                        placeholder={"0,00"}
-                                    ></TextInput>
-                                </div>
+
                                 <div>
                                     <p className="p-text">Descrição</p>
                                     <TextInput
@@ -501,9 +440,7 @@ const Products = ({ user, setAuth }) => {
                                         placeholder={"Descrição do produto"}
                                     ></TextInput>
                                 </div>
-                                <div></div>
-                                <div></div>
-                                <div className="products-form-submit-wrapper flex-row gap-10">
+                                <div className="c-products-form-submit-wrapper flex-row gap-10">
                                     <IconBtn
                                         onClick={() => {
                                             clearForm();
@@ -561,4 +498,4 @@ const Products = ({ user, setAuth }) => {
     );
 };
 
-export default Products;
+export default ComercialProducts;

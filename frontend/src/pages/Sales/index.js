@@ -3,91 +3,57 @@ import "./styles.css";
 import Requests from "../../services/requests";
 
 //components
-import toast from "react-hot-toast";
-
 import Navigator from "../../components/scenes/navigator";
 import CrudContainer from "../../components/scenes/crudcontainer";
 import TextInput from "../../components/ui/text.input";
 import IconBtn from "../../components/ui/icon.btn";
-import RoundedBtn from "../../components/ui/rounded.btn";
 import Popup from "../../components/scenes/popup";
+import RoundedBtn from "../../components/ui/rounded.btn";
 
+import toast from "react-hot-toast";
 import { DataGrid } from "@mui/x-data-grid";
 
 //assets
-import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, TrashCan } from "akar-icons";
+import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, Tag, TrashCan } from "akar-icons";
 
 //settings
 const columns = [
-    { field: "name", headerName: "Nome", width: 100 },
-    { field: "code", headerName: "Código", width: 125 },
-    { field: "quantity", headerName: "Quantidade", width: 100 },
-    { field: "supplierCode", headerName: "Fornecedor", width: 100 },
-    { field: "price", headerName: "Preço unitário", width: 75 },
-    { field: "categoryName", headerName: "Categoria", width: 100 },
-    { field: "aquisitionDate", headerName: "Data de aquisição", width: 100 },
-    { field: "expirationDate", headerName: "Data de vencimento", width: 100 },
-    { field: "description", headerName: "Descrição", width: 100 },
+    { field: "id", headerName: "id", width: 25 },
+    { field: "sellingDate", headerName: "Nome", width: 200 },
+    { field: "totalValue", headerName: "Descrição", width: 400 },
+    { field: "userId", headerName: "Descrição", width: 400 },
+    { field: "paymentMethod", headerName: "Descrição", width: 400 },
+    { field: "status", headerName: "Descrição", width: 400 },
 ];
 
-const Products = ({ user, setAuth }) => {
+const Sales = ({ user, setAuth }) => {
     const [popupOn, setPopupOn] = useState(false);
     const [popup, setPopup] = useState(<></>);
 
     const [triggerChangePage, setTriggerChangePage] = useState(true);
 
-    const [productList, setProductList] = useState([
-        {
-            id: 1,
-            Id: 1,
-            Name: "name",
-            Code: "code",
-            Quantity: 5,
-            SupplierId: "supplier",
-            SupplierCode: "supplier",
-            Price: 20,
-            CategoryName: 1,
-            CategoryId: 1,
-            AquisitionDate: new Date(),
-            ExpirationDate: new Date(),
-            Description: "description",
-        },
-    ]);
-
-    const [categoriesList, setCategoriesList] = useState([]);
-    const [suppliersList, setSuppliersList] = useState([]);
+    const [salesList, setSalesList] = useState(null);
 
     const [selected, setSelected] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-
-    //form fields
     const [name, setName] = useState("");
-    const [code, setCode] = useState("");
-    const [quantity, setQuantity] = useState(0);
-    const [supplier, setSupplier] = useState(1);
-    const [price, setPrice] = useState(0);
-    const [aquisitionDate, setAquisitionDate] = useState(new Date());
-    const [expirationDate, setExpirationDate] = useState(new Date());
-    const [description, setDescription] = useState("");
-    const [category, setCategory] = useState(1);
+    const [desc, setDesc] = useState("");
 
     useEffect(() => {
-        loadContent();
-        reqCategories();
-        reqSuppliers();
+        // loadContent();
     }, []);
 
     const loadContent = async () => {
         const req = async () => {
             await Requests.get(
-                `/products` /*, {
+                `/sales` /*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
             }*/
             )
                 .then((res) => {
-                    setProductList(res.data);
+                    setSalesList(res.data);
                     setPopupOn(false);
                     console.log(res);
                 })
@@ -99,47 +65,9 @@ const Products = ({ user, setAuth }) => {
 
         toast.promise(req(), {
             loading: "Carregando...",
-            success: "Produtos carregados!",
+            success: "Vendas carregadas!",
             error: "Erro, tente novamente mais tarde",
         });
-    };
-
-    const reqCategories = async () => {
-        await Requests.get(
-            `/categories` /*, {
-            headers: {
-                authentication: `bearer ${localStorage.getItem("token")}`,
-            },
-        }*/
-        )
-            .then((res) => {
-                setCategoriesList(res.data);
-                setCategory(res.data[0].id);
-                // console.log(res);
-            })
-            .catch((err) => {
-                // console.log(err);
-                throw Error;
-            });
-    };
-
-    const reqSuppliers = async () => {
-        await Requests.get(
-            `/suppliers` /*, {
-            headers: {
-                authentication: `bearer ${localStorage.getItem("token")}`,
-            },
-        }*/
-        )
-            .then((res) => {
-                setSuppliersList(res.data);
-                setSupplier(res.data[0].id);
-                // console.log(res);
-            })
-            .catch((err) => {
-                // console.log(err);
-                throw Error;
-            });
     };
 
     const handleSave = async () => {
@@ -149,26 +77,19 @@ const Products = ({ user, setAuth }) => {
         let errMsg = "";
 
         let obj = {
-            Name: name,
-            Code: code,
-            Quantity: quantity,
-            SupplierId: supplier,
-            Price: price,
-            CategoryId: category,
-            AquisitionDate: aquisitionDate,
-            ExpirationDate: expirationDate,
-            Description: description,
+            name: name,
+            description: desc,
         };
 
         if (!isEditing) {
             req = async () => {
                 await Requests.post(
-                    `/products`,
+                    `/sales`,
                     obj /*{
-                    body: obj,
+                    obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
-                    },
+                    }
                 }*/
                 )
                     .then((res) => {
@@ -185,12 +106,12 @@ const Products = ({ user, setAuth }) => {
         } else {
             req = async () => {
                 await Requests.put(
-                    `/products/${selected.id}`,
+                    `/sales/${selected.id}`,
                     obj /*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
-                    },
+                    }
                 }*/
                 )
                     .then((res) => {
@@ -208,7 +129,7 @@ const Products = ({ user, setAuth }) => {
 
         switch (statuscode) {
             case 404:
-                errMsg = "Produto não encontrada";
+                errMsg = "Venda não encontrada";
                 throw Error;
             case 400:
                 errMsg = "Erro no formulário";
@@ -223,10 +144,9 @@ const Products = ({ user, setAuth }) => {
 
         toast.promise(req(), {
             loading: "Salvando...",
-            success: "Produto salvo!",
+            success: "Venda salva!",
             error: `Erro: ${errMsg}`,
         });
-
         loadContent();
     };
 
@@ -234,15 +154,15 @@ const Products = ({ user, setAuth }) => {
         if (selected) {
             const req = async () => {
                 await Requests.delete(
-                    `/products/${selected.id}` /*, {
+                    `/sales/${selected.id}` /*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
                 }*/
                 )
                     .then((res) => {
-                        console.log(res);
                         setPopupOn(false);
+                        console.log(res);
                         loadContent();
                     })
                     .catch((err) => {
@@ -253,7 +173,7 @@ const Products = ({ user, setAuth }) => {
 
             toast.promise(req(), {
                 loading: "Deletando...",
-                success: "Produto excluido!",
+                success: "Venda excluida!",
                 error: "Erro, tente novamente mais tarde!",
             });
         }
@@ -270,13 +190,7 @@ const Products = ({ user, setAuth }) => {
 
     const clearForm = () => {
         setName("");
-        setCode("");
-        setQuantity(0);
-        setSupplier("");
-        setPrice(0);
-        setAquisitionDate(new Date());
-        setExpirationDate(new Date());
-        setDescription("");
+        setDesc("");
         setIsEditing(false);
         setSelected(null);
     };
@@ -292,26 +206,26 @@ const Products = ({ user, setAuth }) => {
     return (
         <Navigator user={user} setAuth={setAuth}>
             {popupOn && <Popup>{popup}</Popup>}
-            <div className="products-wrapper flex-center flex-column">
+            <div className="sales-wrapper flex-center flex-column">
                 <CrudContainer
                     changePage={triggerChangePage}
-                    icon={<ShippingBoxV1 color="var(--color-darkgrey)" />}
-                    title={"Produtos"}
+                    icon={<Tag color="var(--color-darkgrey)" />}
+                    title={"Categorias"}
                     list={
                         <>
                             <div style={{ height: "50vh", width: "60vw" }}>
                                 <DataGrid
-                                    rows={productList}
+                                    rows={salesList? salesList : []}
                                     columns={columns}
                                     onRowClick={(e) => {
                                         handleSelectItem(e);
                                     }}
                                 />
                             </div>
-                            <div className="flex-row categories-list-btn-wrapper">
+                            <div className="flex-row sales-list-btn-wrapper">
                                 <IconBtn
                                     onClick={() => {
-                                        loadContent();
+                                        // loadContent();
                                     }}
                                     className=""
                                     backgroundColor={"var(--color-darkgrey)"}
@@ -332,7 +246,7 @@ const Products = ({ user, setAuth }) => {
                                                                 size={58}
                                                                 color="var(--color-red)"
                                                             />
-                                                            <p>Deletar categoria selecionada?</p>
+                                                            <p>Deletar venda selecionada?</p>
                                                             <p className="p-subtitle">{`id: ${selected.id}`}</p>
                                                             <p className="p-subtitle">{`Nome: ${selected.name}`}</p>
                                                             <p
@@ -367,21 +281,9 @@ const Products = ({ user, setAuth }) => {
                                     </IconBtn>
                                     <IconBtn
                                         onClick={() => {
-                                            console.log(selected);
                                             if (selected) {
-                                                setName(selected.name);
-                                                setCode(selected.code);
-                                                setQuantity(selected.quantity);
-                                                setSupplier(selected.supplierCode);
-                                                setCategory(selected.categoryName);
-                                                setPrice(selected.price);
-                                                setAquisitionDate(
-                                                    selected.aquisitionDate.split("T")[0]
-                                                );
-                                                setExpirationDate(
-                                                    selected.expirationDate.split("T")[0]
-                                                );
-                                                setDescription(selected.description);
+                                                setName(selected?.name);
+                                                setDesc(selected?.description);
                                                 setTriggerChangePage(!triggerChangePage);
                                                 setIsEditing(true);
                                             }
@@ -397,113 +299,32 @@ const Products = ({ user, setAuth }) => {
                     }
                     form={
                         <>
-                            {isEditing && <p>{`Editando registro ${selected?.id}`}</p>}
-                            <form className="products-form">
+                            <form className="sales-form flex-column">
+                                {isEditing && <p>{`Editando registro ${selected?.id}`}</p>}
                                 <div>
-                                    <p className="p-text">Nome do produto *</p>
+                                    <p className="p-text">Nome da venda *</p>
                                     <TextInput
                                         value={name}
                                         setValue={setName}
                                         required={true}
-                                        placeholder={"Nome do produto"}
+                                        minLength={3}
+                                        maxLength={50}
+                                        placeholder={"Nome da categoria"}
                                     ></TextInput>
                                 </div>
                                 <div>
-                                    <p className="p-text">Código do produto *</p>
+                                    <p className="p-text">Descrição da categoria</p>
                                     <TextInput
-                                        value={code}
-                                        setValue={setCode}
-                                        required={true}
-                                        placeholder={"Código do produto"}
-                                    ></TextInput>
-                                </div>
-                                <div>
-                                    <p className="p-text">Quantidade adquirida *</p>
-                                    <TextInput
-                                        value={quantity}
-                                        setValue={setQuantity}
-                                        required={true}
-                                        type="number"
-                                        min="1"
-                                        placeholder={"0"}
-                                    ></TextInput>
-                                </div>
-                                <div>
-                                    <p className="p-text">Fornecedor *</p>
-                                    <select
-                                        value={supplier}
-                                        onChange={(e) => setSupplier(e.currentTarget.value)}
-                                    >
-                                        {suppliersList.map((element) => {
-                                            return (
-                                                <option key={element.id} value={element.id}>
-                                                    {element.code}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                </div>
-                                <div>
-                                    <p className="p-text">Preço unitário *</p>
-                                    <TextInput
-                                        value={price}
-                                        setValue={setPrice}
-                                        required={true}
-                                        type="number"
-                                        min="1"
-                                        step="any"
-                                        icoLeft={<p className="p-text p-price">R$</p>}
-                                        placeholder={"0,00"}
-                                    ></TextInput>
-                                </div>
-                                <div>
-                                    <p className="p-text">Categoria</p>
-                                    <select
-                                        value={category}
-                                        onChange={(e) => setCategory(e.currentTarget.value)}
-                                    >
-                                        {categoriesList.map((element) => {
-                                            return (
-                                                <option key={element.id} value={element.id}>
-                                                    {element.name}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                </div>
-                                <div>
-                                    <p className="p-text">Data da aquisição *</p>
-                                    <TextInput
-                                        value={aquisitionDate}
-                                        setValue={setAquisitionDate}
-                                        required={true}
-                                        type="date"
-                                        placeholder={"0,00"}
-                                    ></TextInput>
-                                </div>
-                                <div>
-                                    <p className="p-text">Vencimento *</p>
-                                    <TextInput
-                                        value={expirationDate}
-                                        setValue={setExpirationDate}
-                                        required={true}
-                                        type="date"
-                                        placeholder={"0,00"}
-                                    ></TextInput>
-                                </div>
-                                <div>
-                                    <p className="p-text">Descrição</p>
-                                    <TextInput
-                                        value={description}
-                                        setValue={setDescription}
-                                        required={true}
-                                        type="textarea"
-                                        placeholder={"Descrição do produto"}
+                                        value={desc}
+                                        setValue={setDesc}
+                                        type={"textarea"}
+                                        maxLength={255}
+                                        placeholder={"Descreva a categoria (opcional)"}
                                     ></TextInput>
                                 </div>
                                 <div></div>
                                 <div></div>
-                                <div className="products-form-submit-wrapper flex-row gap-10">
+                                <div className="sales-form-submit-wrapper flex-row gap-10">
                                     <IconBtn
                                         onClick={() => {
                                             clearForm();
@@ -561,4 +382,4 @@ const Products = ({ user, setAuth }) => {
     );
 };
 
-export default Products;
+export default Sales;

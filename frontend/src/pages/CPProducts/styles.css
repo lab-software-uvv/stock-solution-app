@@ -1,0 +1,51 @@
+.c-products-wrapper {
+    height: 100%;
+    width: 100%;
+}
+
+.c-products-form {
+    width: 50vw;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.c-products-form div p {
+    margin-bottom: 2.5px;
+}
+
+.c-products-form-submit-wrapper {
+    margin-left: 85%;
+    /* margin-top: 12.5%; */
+}
+
+.cpp-move-btn-g {
+    background-color: var(--color-green);
+    border-radius: 5px;
+    aspect-ratio: 1;
+    max-width: 25px;
+}
+.cpp-move-btn-r {
+    background-color: var(--color-red);
+    border-radius: 5px;
+    aspect-ratio: 1;
+    max-width: 25px;
+}
+
+.cpp-tables-wrapper {
+    gap: 25px;
+}
+
+.cpp-table-item {
+    border-bottom: 1px solid var(--color-grey);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    gap: 20px;
+    align-items: center;
+}
+
+.cpp-table-item > div > p {
+    font-size: 14px;
+    color: var(--color-darkgrey);
+}
