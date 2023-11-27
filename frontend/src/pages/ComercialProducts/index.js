@@ -1,100 +1,155 @@
 import React, { useState, useEffect } from "react";
 import "./styles.css";
 import Requests from "../../services/requests";
+import { useNavigate } from "react-router-dom";
 
 //components
+import toast from "react-hot-toast";
+
 import Navigator from "../../components/scenes/navigator";
 import CrudContainer from "../../components/scenes/crudcontainer";
 import TextInput from "../../components/ui/text.input";
 import IconBtn from "../../components/ui/icon.btn";
-import Popup from "../../components/scenes/popup";
 import RoundedBtn from "../../components/ui/rounded.btn";
+import Popup from "../../components/scenes/popup";
 
-import toast from "react-hot-toast";
 import { DataGrid } from "@mui/x-data-grid";
 
 //assets
-import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, ShoppingBag, TrashCan } from "akar-icons";
-import regex from "../../utils/regex";
+import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, TrashCan, Utensils } from "akar-icons";
+import ShrinkBtn from "../../components/ui/shrink.btn";
 
 //settings
 const columns = [
-    { field: "id", headerName: "id", width: 25 },
-    { field: "tradingName", headerName: "Nome fantasia", width: 200 },
-    { field: "code", headerName: "Código", width: 200 },
-    { field: "cnpj", headerName: "CNPJ", width: 100 },
+    { field: "name", headerName: "Nome", width: 100 },
+    { field: "code", headerName: "Código", width: 125 },
+    { field: "price", headerName: "Valor", width: 75 },
+    { field: "description", headerName: "Descrição", width: 250 },
 ];
 
-const Suppliers = ({ user, setAuth }) => {
+const ComercialProducts = ({ user, setAuth }) => {
+    const navigate = useNavigate();
+
     const [popupOn, setPopupOn] = useState(false);
     const [popup, setPopup] = useState(<></>);
 
     const [triggerChangePage, setTriggerChangePage] = useState(true);
 
-    const [suppliersList, setSuppliersList] = useState([
-        { id: 1, TradingName: `Categoria teste`, CNPJ: `Desc test`, Code: "teste" },
+    const [comercialProductList, setComercialProductList] = useState([
+        {
+            id: 1,
+            name: "name",
+            code: "code",
+            price: 20,
+            description: "description",
+        },
     ]);
+
+    const [categoriesList, setCategoriesList] = useState([]);
+    const [suppliersList, setSuppliersList] = useState([]);
 
     const [selected, setSelected] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
 
     //form fields
+    const [name, setName] = useState("");
     const [code, setCode] = useState("");
-    const [tradingName, setTradingName] = useState("");
-    const [CNPJ, setCNPJ] = useState("");
+    const [quantity, setQuantity] = useState(0);
+    const [supplier, setSupplier] = useState(1);
+    const [price, setPrice] = useState(0);
+    const [aquisitionDate, setAquisitionDate] = useState(new Date());
+    const [expirationDate, setExpirationDate] = useState(new Date());
+    const [description, setDescription] = useState("");
+    const [category, setCategory] = useState(1);
 
     useEffect(() => {
         loadContent();
+        reqCategories();
+        reqSuppliers();
     }, []);
 
     const loadContent = async () => {
         const req = async () => {
             await Requests.get(
-                `/suppliers` /*, {
+                `/comercial-products` /*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
             }*/
             )
                 .then((res) => {
-                    setSuppliersList(res.data);
+                    setComercialProductList(res.data);
                     setPopupOn(false);
-                    // console.log(res);
+                    console.log(res);
                 })
                 .catch((err) => {
-                    // console.log(err);
+                    console.log(err);
                     throw Error;
                 });
         };
 
         toast.promise(req(), {
             loading: "Carregando...",
-            success: "Fornecedores carregados!",
+            success: "Produtos carregados!",
             error: "Erro, tente novamente mais tarde",
         });
+    };
+
+    const reqCategories = async () => {
+        await Requests.get(
+            `/categories` /*, {
+            headers: {
+                authentication: `bearer ${localStorage.getItem("token")}`,
+            },
+        }*/
+        )
+            .then((res) => {
+                setCategoriesList(res.data);
+                setCategory(res.data[0].id);
+                // console.log(res);
+            })
+            .catch((err) => {
+                // console.log(err);
+                throw Error;
+            });
+    };
+
+    const reqSuppliers = async () => {
+        await Requests.get(
+            `/suppliers` /*, {
+            headers: {
+                authentication: `bearer ${localStorage.getItem("token")}`,
+            },
+        }*/
+        )
+            .then((res) => {
+                setSuppliersList(res.data);
+                setSupplier(res.data[0].id);
+                // console.log(res);
+            })
+            .catch((err) => {
+                // console.log(err);
+                throw Error;
+            });
     };
 
     const handleSave = async () => {
         let req = async () => {};
 
-        if (!regex.cnpj.test(CNPJ)) {
-            toast.error("Não é um CNPJ válido");
-            return;
-        }
-
         let statuscode;
         let errMsg = "";
 
         let obj = {
+            Name: name,
             Code: code,
-            TradingName: tradingName,
-            CNPJ: CNPJ,
+            Price: price,
+            Description: description,
         };
 
         if (!isEditing) {
             req = async () => {
                 await Requests.post(
-                    `/suppliers`,
+                    `/comercial-products`,
                     obj /*{
                     body: obj,
                     headers: {
@@ -106,17 +161,17 @@ const Suppliers = ({ user, setAuth }) => {
                         statuscode = res.status;
                         setPopupOn(false);
                         clearForm();
-                        // console.log(res);
+                        console.log(res);
                     })
                     .catch((err) => {
-                        // console.log(err);
+                        console.log(err);
                         throw Error;
                     });
             };
         } else {
             req = async () => {
                 await Requests.put(
-                    `/suppliers/${selected.id}`,
+                    `/comercial-products/${selected.id}`,
                     obj /*{
                     body: obj,
                     headers: {
@@ -128,10 +183,11 @@ const Suppliers = ({ user, setAuth }) => {
                         statuscode = res.status;
                         setPopupOn(false);
                         clearForm();
-                        // console.log(res);
+
+                        console.log(res);
                     })
                     .catch((err) => {
-                        // console.log(err);
+                        console.log(err);
                         throw Error;
                     });
             };
@@ -139,7 +195,7 @@ const Suppliers = ({ user, setAuth }) => {
 
         switch (statuscode) {
             case 404:
-                errMsg = "Fornecedor não encontrado";
+                errMsg = "Produto não encontrada";
                 throw Error;
             case 400:
                 errMsg = "Erro no formulário";
@@ -154,7 +210,7 @@ const Suppliers = ({ user, setAuth }) => {
 
         toast.promise(req(), {
             loading: "Salvando...",
-            success: "Fornecedor salvo!",
+            success: "Produto salvo!",
             error: `Erro: ${errMsg}`,
         });
 
@@ -165,26 +221,26 @@ const Suppliers = ({ user, setAuth }) => {
         if (selected) {
             const req = async () => {
                 await Requests.delete(
-                    `/suppliers/${selected.id}` /*, {
+                    `/comercial-products/${selected.id}` /*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
                 }*/
                 )
                     .then((res) => {
-                        // console.log(res);
-                        setPopupOn(false);
+                        console.log(res);
                         loadContent();
+                        setPopupOn(false);
                     })
                     .catch((err) => {
-                        // console.log(err);
+                        console.log(err);
                         throw Error;
                     });
             };
 
             toast.promise(req(), {
                 loading: "Deletando...",
-                success: "Fornecedor deletado!",
+                success: "Produto excluido!",
                 error: "Erro, tente novamente mais tarde!",
             });
         }
@@ -200,15 +256,20 @@ const Suppliers = ({ user, setAuth }) => {
     };
 
     const clearForm = () => {
+        setName("");
         setCode("");
-        setTradingName("");
-        setCNPJ("");
+        setQuantity(0);
+        setSupplier("");
+        setPrice(0);
+        setAquisitionDate(new Date());
+        setExpirationDate(new Date());
+        setDescription("");
         setIsEditing(false);
         setSelected(null);
     };
 
     const List = () => {
-        console.log("create");
+        console.log("create list");
     };
 
     const Form = () => {
@@ -218,23 +279,23 @@ const Suppliers = ({ user, setAuth }) => {
     return (
         <Navigator user={user} setAuth={setAuth}>
             {popupOn && <Popup>{popup}</Popup>}
-            <div className="suppliers-wrapper flex-center flex-column">
+            <div className="c-products-wrapper flex-center flex-column">
                 <CrudContainer
                     changePage={triggerChangePage}
-                    icon={<ShoppingBag color="var(--color-darkgrey)" />}
-                    title={"Fornecedores"}
+                    icon={<Utensils color="var(--color-darkgrey)" />}
+                    title={"Produtos Comerciais"}
                     list={
                         <>
                             <div style={{ height: "50vh", width: "60vw" }}>
                                 <DataGrid
-                                    rows={suppliersList}
+                                    rows={comercialProductList}
                                     columns={columns}
                                     onRowClick={(e) => {
                                         handleSelectItem(e);
                                     }}
                                 />
                             </div>
-                            <div className="flex-row suppliers-list-btn-wrapper">
+                            <div className="flex-row categories-list-btn-wrapper">
                                 <IconBtn
                                     onClick={() => {
                                         loadContent();
@@ -245,6 +306,22 @@ const Suppliers = ({ user, setAuth }) => {
                                     <ArrowCycle color="var(--color-white)" />
                                 </IconBtn>
                                 <div className="flex-row  gap-10 ">
+                                    <ShrinkBtn
+                                        action={() =>
+                                            selected
+                                                ? navigate(
+                                                      `/comercial-products/products/${selected.id}`
+                                                  )
+                                                : toast("Selecione um produto comercial!")
+                                        }
+                                        text={"Associação de produtos"}
+                                        backgroundColor={"var(--color-green)"}
+                                        mouseOnBg={"var(--color-green)"}
+                                        shrink={true}
+                                        width={250}
+                                    >
+                                        <ShippingBoxV1 color="white"></ShippingBoxV1>
+                                    </ShrinkBtn>
                                     <IconBtn
                                         onClick={() => {
                                             if (selected) {
@@ -258,14 +335,14 @@ const Suppliers = ({ user, setAuth }) => {
                                                                 size={58}
                                                                 color="var(--color-red)"
                                                             />
-                                                            <p>Deletar fornecedor selecionado?</p>
+                                                            <p>Deletar produto selecionado?</p>
                                                             <p className="p-subtitle">{`id: ${selected.id}`}</p>
-                                                            <p className="p-subtitle">{`Nome: ${selected.tradingName}`}</p>
+                                                            <p className="p-subtitle">{`Nome: ${selected.name}`}</p>
                                                             <p
                                                                 className="p-subtitle"
                                                                 style={{ marginBottom: 10 }}
                                                             >
-                                                                {`Código: ${selected.code}`}
+                                                                {`Descrição: ${selected.description}`}
                                                             </p>
                                                             <RoundedBtn
                                                                 onClick={() => {
@@ -293,10 +370,12 @@ const Suppliers = ({ user, setAuth }) => {
                                     </IconBtn>
                                     <IconBtn
                                         onClick={() => {
+                                            console.log(selected);
                                             if (selected) {
-                                                setCode(selected?.code);
-                                                setCNPJ(selected?.cnpj);
-                                                setTradingName(selected?.tradingName);
+                                                setName(selected.name);
+                                                setCode(selected.code);
+                                                setPrice(selected.price);
+                                                setDescription(selected.description);
                                                 setTriggerChangePage(!triggerChangePage);
                                                 setIsEditing(true);
                                             }
@@ -312,45 +391,56 @@ const Suppliers = ({ user, setAuth }) => {
                     }
                     form={
                         <>
-                            <form className="suppliers-form flex-column">
-                                {isEditing && <p>{`Editando registro ${selected?.id}`}</p>}
+                            {isEditing && <p>{`Editando registro ${selected?.id}`}</p>}
+                            <form className="c-products-form">
+                                <div
+                                    className="flex-row"
+                                    style={{ justifyContent: "space-between" }}
+                                >
+                                    <div>
+                                        <p className="p-text">Nome do produto *</p>
+                                        <TextInput
+                                            value={name}
+                                            setValue={setName}
+                                            required={true}
+                                            placeholder={"Nome do produto"}
+                                        ></TextInput>
+                                    </div>
+                                    <div>
+                                        <p className="p-text">Código do produto *</p>
+                                        <TextInput
+                                            value={code}
+                                            setValue={setCode}
+                                            required={true}
+                                            placeholder={"Código do produto"}
+                                        ></TextInput>
+                                    </div>
+                                    <div>
+                                        <p className="p-text">Valor *</p>
+                                        <TextInput
+                                            value={price}
+                                            setValue={setPrice}
+                                            required={true}
+                                            type="number"
+                                            min="1"
+                                            step="any"
+                                            icoLeft={<p className="p-text p-price">R$</p>}
+                                            placeholder={"0,00"}
+                                        ></TextInput>
+                                    </div>
+                                </div>
+
                                 <div>
-                                    <p className="p-text">Nome fantasia *</p>
+                                    <p className="p-text">Descrição</p>
                                     <TextInput
-                                        value={tradingName}
-                                        setValue={setTradingName}
+                                        value={description}
+                                        setValue={setDescription}
                                         required={true}
-                                        minLength={3}
-                                        maxLength={100}
-                                        placeholder={"Nome do fornecedor"}
+                                        type="textarea"
+                                        placeholder={"Descrição do produto"}
                                     ></TextInput>
                                 </div>
-                                <div>
-                                    <p className="p-text">Código do fornecedor</p>
-                                    <TextInput
-                                        value={code}
-                                        setValue={setCode}
-                                        required={true}
-                                        minLength={3}
-                                        maxLength={50}
-                                        placeholder={"Código do fornecedor"}
-                                    ></TextInput>
-                                </div>
-                                <div>
-                                    <p className="p-text">CNPJ</p>
-                                    <TextInput
-                                        value={CNPJ}
-                                        setValue={setCNPJ}
-                                        required={true}
-                                        minLength={3}
-                                        maxLength={50}
-                                        pattern={regex.cnpj}
-                                        placeholder={"CNPJ"}
-                                    ></TextInput>
-                                </div>
-                                <div></div>
-                                <div></div>
-                                <div className="suppliers-form-submit-wrapper flex-row gap-10">
+                                <div className="c-products-form-submit-wrapper flex-row gap-10">
                                     <IconBtn
                                         onClick={() => {
                                             clearForm();
@@ -408,4 +498,4 @@ const Suppliers = ({ user, setAuth }) => {
     );
 };
 
-export default Suppliers;
+export default ComercialProducts;
