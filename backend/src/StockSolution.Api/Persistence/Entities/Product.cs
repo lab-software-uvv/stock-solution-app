@@ -25,7 +25,7 @@ public class Product : BaseEntity, IProductModel
     public string Name { get; set; }
     public string? Description { get; set; }
     public decimal Quantity { get; set; }
-    public Supplier Supplier { get; set; }
+    public virtual Supplier Supplier { get; set; }
     public int SupplierId { get; set; }
     public decimal Price { get; set; }
     public Category? Category { get; set; }

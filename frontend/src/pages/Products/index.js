@@ -22,9 +22,9 @@ const columns = [
     { field: "name", headerName: "Nome", width: 100 },
     { field: "code", headerName: "Código", width: 125 },
     { field: "quantity", headerName: "Quantidade", width: 100 },
-    { field: "supplierId", headerName: "Fornecedor", width: 100 },
+    { field: "supplierCode", headerName: "Fornecedor", width: 100 },
     { field: "price", headerName: "Preço unitário", width: 75 },
-    { field: "categoryId", headerName: "Categoria", width: 100 },
+    { field: "categoryName", headerName: "Categoria", width: 100 },
     { field: "aquisitionDate", headerName: "Data de aquisição", width: 100 },
     { field: "expirationDate", headerName: "Data de vencimento", width: 100 },
     { field: "description", headerName: "Descrição", width: 100 },
@@ -44,7 +44,9 @@ const Products = ({ user, setAuth }) => {
             Code: "code",
             Quantity: 5,
             SupplierId: "supplier",
+            SupplierCode: "supplier",
             Price: 20,
+            CategoryName: 1,
             CategoryId: 1,
             AquisitionDate: new Date(),
             ExpirationDate: new Date(),
@@ -352,8 +354,8 @@ const Products = ({ user, setAuth }) => {
                                                 setName(selected.name);
                                                 setCode(selected.code);
                                                 setQuantity(selected.quantity);
-                                                setSupplier(selected.supplierId);
-                                                setCategory(selected.categoryId);
+                                                setSupplier(selected.supplierCode);
+                                                setCategory(selected.categoryName);
                                                 setPrice(selected.price);
                                                 setAquisitionDate(selected.aquisitionDate.split("T")[0]);
                                                 setExpirationDate(selected.expirationDate.split("T")[0]);
