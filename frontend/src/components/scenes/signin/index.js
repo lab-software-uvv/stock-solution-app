@@ -43,8 +43,8 @@ const SignIn = ({ setCurrentPage, handleMove, setAuth, setUser }) => {
                         let a = { auth: true, token: res.token };
                         let u = res.user || {};
                         localStorage.setItem("token", res.token);
-                        localStorage.setItem("auth", a);
-                        localStorage.setItem("user", u);
+                        localStorage.setItem("auth", JSON.stringfy(a));
+                        localStorage.setItem("user", JSON.stringify(u));
                         setAuth(a);
                         setUser(u);
                         console.log(res);
@@ -71,12 +71,11 @@ const SignIn = ({ setCurrentPage, handleMove, setAuth, setUser }) => {
         }
 
         localStorage.setItem("token", "514564sa87q6we121x");
-        localStorage.setItem("auth", { auth: true, token: "514564sa87q6we121x" });
-        localStorage.setItem("user", {name: `Fabiano Rabelo`, role: `Gestor`});
-        setUser({name: `Fabiano Rabelo`, role: `Gestor`})
+        localStorage.setItem("auth", JSON.stringify({ auth: true, token: "514564sa87q6we121x" }));
+        localStorage.setItem("user", JSON.stringify({ name: `Fabiano Rabelo`, role: `Gestor` }));
+        setUser({ name: `Fabiano Rabelo`, role: `Gestor` });
         setAuth({ auth: true, token: "" });
-        
-
+        console.log("logou");
     };
 
     const validateFields = () => {

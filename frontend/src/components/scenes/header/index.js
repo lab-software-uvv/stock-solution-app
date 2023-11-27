@@ -37,14 +37,23 @@ const Header = ({ user = { name: "", role: "" }, width, setShrinkState, shrinkSt
             case "/dashboard":
                 setPageTitle("Painel inicial");
                 break;
-                case "/products":
-                    setPageTitle("Produtos");
-                    break;
-                    case "/categories":
-                        setPageTitle("Categorias de produtos");
-                        break;
-                        
-                        default:
+            case "/sales":
+                setPageTitle("Vendas");
+                break;
+            case "/products":
+                setPageTitle("Produtos");
+                break;
+            case "/categories":
+                setPageTitle("Categorias de produtos");
+                break;
+            case "/suppliers":
+                setPageTitle("Fornecedores");
+                break;
+            case "/comercial-products":
+                setPageTitle("Produto comercial");
+                break;
+
+            default:
                 setPageTitle("Painel inicial");
                 break;
         }
