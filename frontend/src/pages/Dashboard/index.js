@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles.css";
 import getInitials from "../../utils/functions/getInitials";
 import formatDate from "../../utils/functions/formatDate";
@@ -10,6 +10,11 @@ import Navigator from "../../components/scenes/navigator";
 import { TriangleAlert, Gear } from "akar-icons";
 import IconBtn from "../../components/ui/icon.btn";
 
+
+import { startConnection, stopConnection, onSendProductsNearExpiration } from "../../services/HubRequests";
+import { hubConnection } from "../../services/HubRequests";
+import { HubConnectionBuilder, HubConnectionState } from "@microsoft/signalr";
+
 const Dashboard = ({ user, setAuth }) => {
     const [currentTool, setCurrentTool] = useState("Próximos vencimentos");
     const tools = [
@@ -20,6 +25,40 @@ const Dashboard = ({ user, setAuth }) => {
         {},
         {},
     ];
+
+    useEffect(() => {
+        startConnection();
+    }, []);
+    
+    
+    useEffect(() => {
+        onSendProductsNearExpiration((message) => {
+          console.log("Received Message:", message);
+          // Handle the received message as needed
+        });
+    }, []);
+
+    useEffect(() => {
+        handleSendMessage("7")
+    }, []);
+
+    const sendMessage = (message) => {
+        if (hubConnection.state === HubConnectionState.Connected) {
+          hubConnection.invoke("SendProductsNearExpiration", message)
+            .catch((err) => console.error("Error sending message:", err))
+            .then((response) => console.log(response));
+        } else {
+          console.error("Connection is not in the 'Connected' state.");
+        }
+    };
+    
+    const handleSendMessage = (daysAfterToday) => {
+        if (hubConnection.state === HubConnectionState.Connected) {
+            sendMessage(daysAfterToday);
+        } else {
+            console.error("Connection is not in the 'Connected' state.");
+        }
+    };    
 
     return (
         <Navigator user={user} setAuth={setAuth}>
