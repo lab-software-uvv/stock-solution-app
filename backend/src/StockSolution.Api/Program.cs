@@ -3,17 +3,39 @@ using FastEndpoints.Swagger;
 using Hellang.Middleware.ProblemDetails;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
+using StockSolution.Api.Common.Exceptions;
+using StockSolution.Api.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSignalR();
 
-builder.Services.AddMvcCore();
+builder.Configuration.AddEnvironmentVariables();
+
 builder.Services.AddStockSolution(builder.Configuration);
 builder.Services.SwaggerDocument();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder
+            .WithOrigins("http://localhost:3000", "https://stock-solution-app.vercel.app") // Update with your React app's URL
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithExposedHeaders("Content-Disposition")
+            .AllowCredentials());
+});
+
+
 
 var app = builder.Build();
 await app.InitAsync(app.Lifetime.ApplicationStarted).ConfigureAwait(false);
 
-app.UseProblemDetails();
+app.UseCors("CorsPolicy");
+app.MapHub<NotificationsHub>("/notification-hub").RequireCors("CorsPolicy");
+
+// app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
@@ -24,12 +46,13 @@ app.UseFastEndpoints(c =>
     c.Endpoints.RoutePrefix = "api";
     c.Serializer.Options.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 });
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwaggerGen();
-    app.UseSwaggerUi3();
-}
+app.UseFastEndpoints(c => {
+    c.Endpoints.RoutePrefix = "api";
+});
+
+app.UseSwaggerGen();
 
 app.Run();
 

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { Axios } from "axios";
 import api from "../environment/backend";
 
 const Requests = axios.create ({

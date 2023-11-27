@@ -1,9 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles.css";
 import IconBtn from "../../ui/icon.btn";
 
-const CrudContainer = ({ title = "", form = <></>, list = <></>, icon }) => {
-    const [currentPage, setCurrentPage] = useState("Cadastrar");
+const CrudContainer = ({ title = "", form = <></>, list = <></>, icon, changePage }) => {
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const handleGetName = () => {
+        switch (currentPage) {
+            case 0:
+                return "Listar";
+            case 1:
+                return "Cadastrar";
+
+            default:
+                return "Cadastrar";
+        }
+    };
+
+    useEffect(() => {
+        if (currentPage === 0) {
+            setCurrentPage(1);
+        } else {
+            setCurrentPage(0);
+        }
+    }, [changePage]);
 
     return (
         <div>
@@ -13,27 +33,22 @@ const CrudContainer = ({ title = "", form = <></>, list = <></>, icon }) => {
                     style={{ gap: 10, alignItems: "center", paddingBottom: 5 }}
                 >
                     <IconBtn backgroundColor={"transparent"}>{icon}</IconBtn>
-                    <p>{currentPage + " " + (title.toLowerCase() || "")}</p>
+                    <p>{handleGetName(currentPage) + " " + (title.toLowerCase() || "")}</p>
                 </div>
                 <div className="crudcontainer-content-container">
-                    {currentPage === "Listar" && list}
-                    {currentPage === "Cadastrar" && form}
+                    {currentPage === 0? list : form}
                 </div>
             </div>
             <div className="crudcontainer-btn-wrapper flex-row">
                 <div
-                    className={
-                        "button crudcontainer-btn-" + (currentPage === "Lista" ? "on" : "off")
-                    }
-                    onClick={() => setCurrentPage("Listar")}
+                    className={"button crudcontainer-btn-" + (currentPage === 0 ? "on" : "off")}
+                    onClick={() => setCurrentPage(0)}
                 >
                     <p className="p-text">Listar {title.toLowerCase()}</p>
                 </div>
                 <div
-                    className={
-                        "button crudcontainer-btn-" + (currentPage === "Cadastrar" ? "on" : "off")
-                    }
-                    onClick={() => setCurrentPage("Cadastrar")}
+                    className={"button crudcontainer-btn-" + (currentPage === 1 ? "on" : "off")}
+                    onClick={() => setCurrentPage(1)}
                 >
                     <p className="p-text">Cadastrar {title.toLowerCase()}</p>
                 </div>

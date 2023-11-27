@@ -37,11 +37,15 @@ const Header = ({ user = { name: "", role: "" }, width, setShrinkState, shrinkSt
             case "/dashboard":
                 setPageTitle("Painel inicial");
                 break;
-            case "/products":
-                setPageTitle("Produtos");
-                break;
-
-            default:
+                case "/products":
+                    setPageTitle("Produtos");
+                    break;
+                    case "/categories":
+                        setPageTitle("Categorias de produtos");
+                        break;
+                        
+                        default:
+                setPageTitle("Painel inicial");
                 break;
         }
     }, [location]);

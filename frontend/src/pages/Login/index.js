@@ -13,7 +13,7 @@ import SignUp from "../../components/scenes/signup";
 import BgLogin from "../../assets/background/bg-login.png";
 import SSLogo from "../../assets/logo/LOGO.png";
 
-const Login = ({ setAuth }) => {
+const Login = ({ setAuth, setUser }) => {
     const [currentPage, setCurrentPage] = useState(0);
 
     const pages = [
@@ -22,6 +22,7 @@ const Login = ({ setAuth }) => {
             component: (
                 <SignIn
                     setAuth={setAuth}
+                    setUser={setUser}
                     setCurrentPage={setCurrentPage}
                     handleMove={() => handleMove()}
                 ></SignIn>
