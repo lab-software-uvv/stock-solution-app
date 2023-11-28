@@ -39,18 +39,34 @@ public sealed class AddSoldComercialProductCommandHandler : IRequestHandler<AddS
     public async Task<AddSoldComercialProductResponse> Handle(AddSoldComercialProductRequest request, CancellationToken cancellationToken)
     {
         var sale = await _context.Sales.FirstOrDefaultAsync(u => u.Id == request.saleId) ?? throw new Exception($"Venda {request.saleId} Não Encontrada!", new KeyNotFoundException());
-       
+
         if (sale.Status != SaleStatusEnum.InElaboration)
             throw new Exception("Não é possível adicionar um produto a uma venda que não está em elaboração.");
+
+        var comercialProduct = await _context.ComercialProducts
+                                   .Include(cp => cp.ProductComercialProduct)
+                                   .ThenInclude(productComercialProduct =>
+                                       productComercialProduct.Product) 
+                                   .FirstOrDefaultAsync(f => f.Id == request.comercialProductId, cancellationToken)
+                               ?? throw new Exception($"Produto Comercial {request.comercialProductId} Não Encontrado!", new KeyNotFoundException());
         
-        var comercialProduct = await _context.ComercialProducts.FirstOrDefaultAsync(f => f.Id == request.comercialProductId, cancellationToken) ?? throw new Exception($"Produto Comercial {request.comercialProductId} Não Encontrado!", new KeyNotFoundException());
+        foreach (var productComercialProduct in comercialProduct.ProductComercialProduct)
+        {
+            var product = productComercialProduct.Product;
+            
+            if (product.Quantity < productComercialProduct.Quantity * request.quantity)
+                throw new Exception($"Quantidade do produto {product.Id} é menor do que a quantidade associada ao Produto Comercial {comercialProduct.Id}.");
+
+            product.Quantity -= productComercialProduct.Quantity * request.quantity;
+        }
 
         SaleComercialProduct soldComercialProduct = new(sale.Id, comercialProduct.Id, request.quantity, request.value);
         _context.Add(soldComercialProduct);
         await _context.SaveChangesAsync(cancellationToken);
 
         return new AddSoldComercialProductResponse(soldComercialProduct.Id, soldComercialProduct.SaleId, soldComercialProduct.ComercialProductId, soldComercialProduct.Quantity, soldComercialProduct.Value);
-    }
+    } 
 }
+
 
 public record AddSoldComercialProductResponse(int id, int saleId, int comercialProductId, decimal quantity, decimal value);

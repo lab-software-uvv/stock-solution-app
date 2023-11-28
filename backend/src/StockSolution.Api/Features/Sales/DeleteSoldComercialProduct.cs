@@ -43,7 +43,10 @@ public sealed class DeleteSoldComercialProductCommandHandler : IRequestHandler<D
         var sale = await _context.Sales
                        .Where(s => s.Id == request.saleId)
                        .Include(s => s.ComercialProducts)
-                       .FirstOrDefaultAsync(ct) 
+                       .ThenInclude(cp => cp.ComercialProduct)
+                       .ThenInclude(cp => cp.ProductComercialProduct)
+                       .ThenInclude(pcp => pcp.Product)
+                       .FirstOrDefaultAsync(ct)
                    ?? throw new Exception($"Venda {request.saleId} Não Encontrada!", new KeyNotFoundException());
         
         if (sale.Status != SaleStatusEnum.InElaboration)
@@ -53,6 +56,12 @@ public sealed class DeleteSoldComercialProductCommandHandler : IRequestHandler<D
 
         if (comercialProductToRemove == null)
             throw new Exception($"Produto comercial {request.comercialProductId} não encontrado na venda {request.saleId}.");
+        
+        foreach (var productComercialProduct in comercialProductToRemove.ComercialProduct.ProductComercialProduct)
+        {
+            var product = productComercialProduct.Product;
+            product.Quantity += productComercialProduct.Quantity * comercialProductToRemove.Quantity;
+        }
 
         sale.ComercialProducts.Remove(comercialProductToRemove);
         await _context.SaveChangesAsync(ct);

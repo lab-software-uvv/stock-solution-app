@@ -45,8 +45,14 @@ public sealed class AddSoldProductCommandHandler : IRequestHandler<AddSoldProduc
         
         var product = await _context.Products.FirstOrDefaultAsync(f => f.Id == request.productId, cancellationToken) ?? throw new Exception($"Produto {request.productId} Não Encontrado!", new KeyNotFoundException());
 
+        if (product.Quantity < request.quantity)
+            throw new Exception("Produto com quantidade insuficiente em estoque");
+
+        product.Quantity -= request.quantity;
+        
         SaleProduct soldProduct = new(sale.Id, product.Id, request.quantity, request.value);
         _context.Add(soldProduct);
+        _context.Products.Update(product);
         await _context.SaveChangesAsync(cancellationToken);
 
         return new AddSoldProductResponse(soldProduct.Id, soldProduct.SaleId, soldProduct.ProductId, soldProduct.Quantity, soldProduct.Value);

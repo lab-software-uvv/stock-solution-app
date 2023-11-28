@@ -54,7 +54,12 @@ public sealed class DeleteSoldProductCommandHandler : IRequestHandler<DeleteSold
         if (productToRemove == null)
             throw new Exception($"Produto {request.productId} não encontrado na venda {request.saleId}.");
 
+        var product = await _context.Products.FirstAsync(p => p.Id == productToRemove.ProductId, ct);
+
+        product.Quantity += productToRemove.Quantity;
+
         sale.Products.Remove(productToRemove);
+        _context.Products.Update(product);
         await _context.SaveChangesAsync(ct);
         
         return;
