@@ -79,7 +79,7 @@ public class AppDbContext : DbContext
         #region Produto Comercial Produto
 
         builder.Entity<ProductComercialProduct>()
-            .HasKey(sc => new { sc.ProductId, sc.ComercialProductId });
+            .HasKey(sc => sc.Id);
 
         builder.Entity<ProductComercialProduct>()
             .HasOne(sc => sc.Product)
