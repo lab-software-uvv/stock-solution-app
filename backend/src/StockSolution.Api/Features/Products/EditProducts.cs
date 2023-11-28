@@ -52,9 +52,9 @@ public sealed class EditProductCommandHandler  : IRequestHandler<EditProductComm
 
         await _context.SaveChangesAsync(ct);
 
-        return new EditProductsResponse(entity.Id, entity.Name, entity.Code, entity.Quantity, entity.Supplier.Id, entity.Price, entity.Category?.Id, entity.AquisitionDate, entity.ExpirationDate, entity.Description);
+        return new EditProductsResponse(entity.Id, entity.Name, entity.Code, entity.Quantity, entity.Supplier.Code, entity.Price, entity.Category?.Name, entity.AquisitionDate, entity.ExpirationDate, entity.Description);
 
     }
 }
 
-public record EditProductsResponse(int Id, string Name, string Code, decimal Quantity, int SupplierId, decimal Price, int? CategoryId, DateTime AquisitionDate, DateTime ExpirationDate, string? Description);
+public record EditProductsResponse(int Id, string Name, string Code, decimal Quantity, string SupplierCode, decimal Price, string? CategoryName, DateTime AquisitionDate, DateTime ExpirationDate, string? Description);

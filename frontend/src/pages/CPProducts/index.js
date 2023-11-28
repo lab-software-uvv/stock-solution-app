@@ -62,13 +62,14 @@ const CPProducts = ({ user, setAuth }) => {
     const [description, setDescription] = useState("");
 
     useEffect(() => {
-        // loadContent();
-        // reqProductsList();
+        loadContent();
+        reqProductsList();
     }, []);
 
     const loadContent = async () => {
         try {
             const req = async () => {
+                console.log(params);
                 await Requests.get(
                     `/comercial-products/${params.id}` /*, {
                 headers: {
@@ -77,7 +78,7 @@ const CPProducts = ({ user, setAuth }) => {
             }*/
                 )
                     .then(async (res) => {
-                        let obj = res.data;
+                        let obj = res?.data
                         setComercialProduct(obj);
                         setPopupOn(false);
 
@@ -109,14 +110,14 @@ const CPProducts = ({ user, setAuth }) => {
 
     const reqProductsList = async (filterList) => {
         await Requests.get(
-            `/products` /*, {
+            `comercial-products/${params.id}/products` /*, {
             headers: {
                 authentication: `bearer ${localStorage.getItem("token")}`,
             },
         }*/
         )
             .then((res) => {
-                setProductsList(res.data.filter((elemento) => !filterList.includes(elemento)));
+                setProductsList(res.data ? res.data.filter((elemento) => !filterList.includes(elemento)) : []);
                 // console.log(res);
             })
             .catch((err) => {
@@ -252,18 +253,19 @@ const CPProducts = ({ user, setAuth }) => {
                     list={
                         <>
                             <div style={{ height: "50vh", width: "60vw" }}>
-                                <DataGrid
-                                    rows={comercialProduct ? comercialProduct.products : []}
-                                    columns={columns}
-                                    onRowClick={(e) => {
-                                        handleSelectItem(e);
-                                    }}
-                                />
+                            <DataGrid
+                                rows={comercialProduct && comercialProduct.products ? comercialProduct.products : []}
+                                columns={columns}
+                                onRowClick={(e) => {
+                                    handleSelectItem(e);
+                                }}
+                            />
                             </div>
                             <div className="flex-row categories-list-btn-wrapper">
                                 <IconBtn
                                     onClick={() => {
                                         loadContent();
+                                        reqProductsList();
                                     }}
                                     className=""
                                     backgroundColor={"var(--color-darkgrey)"}
