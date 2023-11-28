@@ -19,12 +19,13 @@ import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, TrashCan } from "akar-i
 
 //settings
 const columns = [
+    { field: "id", headerName: "id", width: 50 },
     { field: "name", headerName: "Nome", width: 100 },
     { field: "code", headerName: "Código", width: 125 },
     { field: "quantity", headerName: "Quantidade", width: 100 },
-    { field: "supplierId", headerName: "Fornecedor", width: 100 },
+    { field: "supplierCode", headerName: "Fornecedor", width: 100 },
     { field: "price", headerName: "Preço unitário", width: 75 },
-    { field: "categoryId", headerName: "Categoria", width: 100 },
+    { field: "categoryName", headerName: "Categoria", width: 100 },
     { field: "aquisitionDate", headerName: "Data de aquisição", width: 100 },
     { field: "expirationDate", headerName: "Data de vencimento", width: 100 },
     { field: "description", headerName: "Descrição", width: 100 },
@@ -44,7 +45,9 @@ const Products = ({ user, setAuth }) => {
             Code: "code",
             Quantity: 5,
             SupplierId: "supplier",
+            SupplierCode: "supplier",
             Price: 20,
+            CategoryName: 1,
             CategoryId: 1,
             AquisitionDate: new Date(),
             ExpirationDate: new Date(),
@@ -77,11 +80,13 @@ const Products = ({ user, setAuth }) => {
 
     const loadContent = async () => {
         const req = async () => {
-            await Requests.get(`/products`/*, {
+            await Requests.get(
+                `/products` /*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
-            }*/)
+            }*/
+            )
                 .then((res) => {
                     setProductList(res.data);
                     setPopupOn(false);
@@ -98,18 +103,19 @@ const Products = ({ user, setAuth }) => {
             success: "Produtos carregados!",
             error: "Erro, tente novamente mais tarde",
         });
-
     };
 
     const reqCategories = async () => {
-        await Requests.get(`/categories`/*, {
+        await Requests.get(
+            `/categories` /*, {
             headers: {
                 authentication: `bearer ${localStorage.getItem("token")}`,
             },
-        }*/)
+        }*/
+        )
             .then((res) => {
                 setCategoriesList(res.data);
-                setCategory(res.data[0].id)
+                setCategory(res.data[0].id);
                 // console.log(res);
             })
             .catch((err) => {
@@ -119,14 +125,16 @@ const Products = ({ user, setAuth }) => {
     };
 
     const reqSuppliers = async () => {
-        await Requests.get(`/suppliers`/*, {
+        await Requests.get(
+            `/suppliers` /*, {
             headers: {
                 authentication: `bearer ${localStorage.getItem("token")}`,
             },
-        }*/)
+        }*/
+        )
             .then((res) => {
                 setSuppliersList(res.data);
-                setSupplier(res.data[0].id)
+                setSupplier(res.data[0].id);
                 // console.log(res);
             })
             .catch((err) => {
@@ -155,15 +163,19 @@ const Products = ({ user, setAuth }) => {
 
         if (!isEditing) {
             req = async () => {
-                await Requests.post(`/products`, obj /*{
+                await Requests.post(
+                    `/products`,
+                    obj /*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                }*/)
+                }*/
+                )
                     .then((res) => {
                         statuscode = res.status;
                         setPopupOn(false);
+                        clearForm();
                         console.log(res);
                     })
                     .catch((err) => {
@@ -173,15 +185,19 @@ const Products = ({ user, setAuth }) => {
             };
         } else {
             req = async () => {
-                await Requests.put(`/products/${selected.id}`, obj /*{
+                await Requests.put(
+                    `/products/${selected.id}`,
+                    obj /*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                }*/)
+                }*/
+                )
                     .then((res) => {
                         statuscode = res.status;
                         setPopupOn(false);
+                        clearForm();
                         console.log(res);
                     })
                     .catch((err) => {
@@ -211,19 +227,24 @@ const Products = ({ user, setAuth }) => {
             success: "Produto salvo!",
             error: `Erro: ${errMsg}`,
         });
+
+        loadContent();
     };
 
     const handleDelete = async (selected) => {
         if (selected) {
             const req = async () => {
-                await Requests.delete(`/products/${selected.id}`/*, {
+                await Requests.delete(
+                    `/products/${selected.id}` /*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                }*/)
+                }*/
+                )
                     .then((res) => {
                         console.log(res);
                         setPopupOn(false);
+                        loadContent();
                     })
                     .catch((err) => {
                         console.log(err);
@@ -352,11 +373,15 @@ const Products = ({ user, setAuth }) => {
                                                 setName(selected.name);
                                                 setCode(selected.code);
                                                 setQuantity(selected.quantity);
-                                                setSupplier(selected.supplierId);
-                                                setCategory(selected.categoryId);
+                                                setSupplier(selected.supplierCode);
+                                                setCategory(selected.categoryName);
                                                 setPrice(selected.price);
-                                                setAquisitionDate(selected.aquisitionDate.split("T")[0]);
-                                                setExpirationDate(selected.expirationDate.split("T")[0]);
+                                                setAquisitionDate(
+                                                    selected.aquisitionDate.split("T")[0]
+                                                );
+                                                setExpirationDate(
+                                                    selected.expirationDate.split("T")[0]
+                                                );
                                                 setDescription(selected.description);
                                                 setTriggerChangePage(!triggerChangePage);
                                                 setIsEditing(true);
@@ -454,7 +479,6 @@ const Products = ({ user, setAuth }) => {
                                         setValue={setAquisitionDate}
                                         required={true}
                                         type="date"
-                                        placeholder={"0,00"}
                                     ></TextInput>
                                 </div>
                                 <div>
@@ -464,7 +488,6 @@ const Products = ({ user, setAuth }) => {
                                         setValue={setExpirationDate}
                                         required={true}
                                         type="date"
-                                        placeholder={"0,00"}
                                     ></TextInput>
                                 </div>
                                 <div>

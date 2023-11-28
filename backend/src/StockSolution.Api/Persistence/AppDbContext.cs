@@ -24,6 +24,7 @@ public class AppDbContext : DbContext
     public required DbSet<Supplier> Suppliers { get; set; }
     public required DbSet<ComercialProduct> ComercialProducts { get; set; }
     public required DbSet<ProductComercialProduct> ProductComercialProducts { get; set; }
+    public required DbSet<Sale> Sales { get; set; }
     
     // protected override void OnModelCreating(ModelBuilder builder)
     // {

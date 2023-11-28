@@ -49,11 +49,13 @@ const Suppliers = ({ user, setAuth }) => {
 
     const loadContent = async () => {
         const req = async () => {
-            await Requests.get(`/suppliers`/*, {
+            await Requests.get(
+                `/suppliers` /*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
-            }*/)
+            }*/
+            )
                 .then((res) => {
                     setSuppliersList(res.data);
                     setPopupOn(false);
@@ -91,15 +93,19 @@ const Suppliers = ({ user, setAuth }) => {
 
         if (!isEditing) {
             req = async () => {
-                await Requests.post(`/suppliers`, obj/*{
+                await Requests.post(
+                    `/suppliers`,
+                    obj /*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                }*/)
+                }*/
+                )
                     .then((res) => {
                         statuscode = res.status;
                         setPopupOn(false);
+                        clearForm();
                         // console.log(res);
                     })
                     .catch((err) => {
@@ -109,15 +115,19 @@ const Suppliers = ({ user, setAuth }) => {
             };
         } else {
             req = async () => {
-                await Requests.put(`/suppliers/${selected.id}`, obj /*{
+                await Requests.put(
+                    `/suppliers/${selected.id}`,
+                    obj /*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                }*/)
+                }*/
+                )
                     .then((res) => {
                         statuscode = res.status;
                         setPopupOn(false);
+                        clearForm();
                         // console.log(res);
                     })
                     .catch((err) => {
@@ -147,19 +157,24 @@ const Suppliers = ({ user, setAuth }) => {
             success: "Fornecedor salvo!",
             error: `Erro: ${errMsg}`,
         });
+
+        loadContent();
     };
 
     const handleDelete = async (selected) => {
         if (selected) {
             const req = async () => {
-                await Requests.delete(`/suppliers/${selected.id}`/*, {
+                await Requests.delete(
+                    `/suppliers/${selected.id}` /*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                }*/)
+                }*/
+                )
                     .then((res) => {
                         // console.log(res);
                         setPopupOn(false);
+                        loadContent();
                     })
                     .catch((err) => {
                         // console.log(err);

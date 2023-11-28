@@ -1,0 +1,24 @@
+.c-products-wrapper {
+    height: 100%;
+    width: 100%;
+}
+
+.c-products-form {
+    width: 50vw;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.c-products-form div p {
+    margin-bottom: 2.5px;
+}
+
+.c-products-form-submit-wrapper{
+    margin-left: 85%;
+    /* margin-top: 12.5%; */
+}
+
+
+

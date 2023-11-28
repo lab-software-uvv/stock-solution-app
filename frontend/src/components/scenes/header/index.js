@@ -33,21 +33,31 @@ const Header = ({ user = { name: "", role: "" }, width, setShrinkState, shrinkSt
     };
 
     useEffect(() => {
-        switch (location.pathname) {
-            case "/dashboard":
-                setPageTitle("Painel inicial");
-                break;
-                case "/products":
-                    setPageTitle("Produtos");
-                    break;
-                    case "/categories":
-                        setPageTitle("Categorias de produtos");
-                        break;
-                        
-                        default:
-                setPageTitle("Painel inicial");
-                break;
+        if (location.pathname.includes("dashboard")) {
+            setPageTitle("Painel inicial");
+            return;
         }
+        if (location.pathname.includes("sales")) {
+            setPageTitle("Vendas");
+            return;
+        }
+        if (location.pathname.includes("comercial-products")) {
+            setPageTitle("Produto comercial");
+            return;
+        }
+        if (location.pathname.includes("products")) {
+            setPageTitle("Produtos");
+            return;
+        }
+        if (location.pathname.includes("categories")) {
+            setPageTitle("Categorias de produtos");
+            return;
+        }
+        if (location.pathname.includes("suppliers")) {
+            setPageTitle("Fornecedores");
+            return;
+        }
+        setPageTitle("Painel inicial");
     }, [location]);
 
     return (

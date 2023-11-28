@@ -55,7 +55,7 @@
 }
 
 .p-bold {
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .p-grey {
@@ -96,4 +96,10 @@
 
 .gap-10 {
     gap: 10px;
+}
+.gap-20 {
+    gap: 20px;
+}
+.gap-30 {
+    gap: 30px;
 }

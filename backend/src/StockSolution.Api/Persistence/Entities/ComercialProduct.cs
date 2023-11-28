@@ -1,11 +1,26 @@
-﻿namespace StockSolution.Api.Persistence.Entities;
+namespace StockSolution.Api.Persistence.Entities;
 
 public class ComercialProduct : BaseEntity
 {
-    public required string Code { get; set; }
-    public required string Name { get; set; }
-    public string? Description { get; set; }
-    public required decimal Price { get; set; }
-    
-    public List<Product>? Products { get; set; }
+    public class ComercialProduct : BaseEntity, IComercialProductModel
+    {
+        public ComercialProduct() { }
+        public ComercialProduct(string code, string name, string description, decimal price)
+        {
+            Code = code;
+            Name = name;
+            Description = description;
+            Price = price;
+        }
+
+        public string Code { get; set; }
+        public string Name { get; set; }
+        
+        public string? Description { get; set; }
+        public decimal Price { get; set; }
+        public ICollection<ProductComercialProduct> ProductComercialProduct { get; set; }
+        
+        public ICollection<SaleComercialProduct> SaleComercialProducts { get; set; }
+
+    }
 }

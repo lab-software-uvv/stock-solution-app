@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using NodaTime;
 
 namespace StockSolution.Api.Features.Products;
@@ -34,10 +34,12 @@ public sealed class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQ
 
     public async Task<GetProductByIdResponse> Handle(GetProductByIdQuery req, CancellationToken ct)
     {
-        var entity = await _context.Products.AsNoTracking().FirstOrDefaultAsync(f => f.Id == req.Id, ct);
+        var entity = await _context.Products.AsNoTracking().Include(p => p.Supplier).FirstOrDefaultAsync(f => f.Id == req.Id, ct);
 
         return entity is null
             ? throw new Exception($"Produto {req.Id} Não Encontrado!", new KeyNotFoundException())
-            : new GetProductByIdResponse(entity!.Id, entity.Name, entity.Code, entity.Quantity, entity.SupplierId, entity.Price, entity.CategoryId, entity.AcquisitionDate, entity.ExpirationDate, entity.Description);
+            : new GetProductByIdResponse(entity!.Id, entity.Name, entity.Code, entity.Quantity, entity.Supplier.Code, entity.Price, entity.Category?.Name, entity.AquisitionDate, entity.ExpirationDate, entity.Description);
     }
 }
+
+public record GetProductByIdResponse(int Id, string Name, string Code, decimal Quantity, string SupplierCode, decimal Price, string? CategoryName, DateTime AquisitionDate, DateTime ExpirationDate, string? Description);
