@@ -35,10 +35,11 @@ public sealed class GetSalesQueryHandler : IRequestHandler<GetSalesQuery, List<G
     public async Task<List<GetSalesResponse>> Handle(GetSalesQuery req, CancellationToken ct)
     {
         return await _context.Sales.AsNoTracking()
-            .Select(x => new GetSalesResponse(x.Id, x.SellingDate, x.TotalValue, x.PaymentMethod, x.Status))
+            .Include(s => s.User)
+            .Select(x => new GetSalesResponse(x.Id,x.UserId, x.User.Name, x.SellingDate, x.TotalValue, x.PaymentMethod.ToStringFast(), x.Status.ToStringFast()))
             .ToListAsync(ct);
     }
 }
 
 
-public record GetSalesResponse(int id, DateTime sellingDate, decimal totalValue, PaymentMethodEnum paymentMethod, SaleStatusEnum status);
+public record GetSalesResponse(int id, int userId, string userName, DateTime sellingDate, decimal totalValue, string paymentMethod, string status);
