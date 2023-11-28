@@ -198,11 +198,15 @@ const Dashboard = ({ user, setAuth }) => {
                         </div>
                         <div style={{ height: "375px", width: "650px" }}>
                             <DataGrid
-                                rows={productList.filter(
-                                    (e) =>
-                                        parseInt(e.expirationDate.split("-")[1]) ===
-                                        new Date().getMonth() + 1
-                                )}
+                                rows={
+                                    productList
+                                        ? productList.filter(
+                                              (e) =>
+                                                  parseInt(e.expirationDate.split("-")[1]) ===
+                                                  new Date().getMonth() + 1
+                                          )
+                                        : []
+                                }
                                 columns={columns}
                                 onRowDoubleClick={(e) => navigate("/products")}
                             />

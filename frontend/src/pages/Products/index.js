@@ -302,7 +302,7 @@ const Products = ({ user, setAuth }) => {
                         <>
                             <div style={{ height: "50vh", width: "60vw" }}>
                                 <DataGrid
-                                    rows={productList}
+                                    rows={productList? productList : []}
                                     columns={columns}
                                     onRowClick={(e) => {
                                         handleSelectItem(e);

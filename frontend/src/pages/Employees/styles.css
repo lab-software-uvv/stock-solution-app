@@ -1,0 +1,24 @@
+.employees-wrapper {
+    height: 100%;
+    width: 100%;
+}
+
+.employees-form {
+    width: 20vw;
+    height: fit-content;
+    gap: 20px;
+}
+
+.employees-form div p {
+    margin-bottom: 2.5px;
+}
+
+.employees-form-submit-wrapper{
+    margin-left: 75%;
+    margin-top: -20px;
+}
+
+.employees-list-btn-wrapper {
+    justify-content: space-between;
+    margin-top: 10px;
+}

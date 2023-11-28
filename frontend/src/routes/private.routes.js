@@ -10,6 +10,7 @@ import CPProducts from "../pages/CPProducts";
 import Sales from "../pages/Sales";
 import ReportScreen from "../pages/SalesReport";
 import SalesProducts from "../pages/SalesProducts";
+import Employees from "../pages/Employees";
 
 const PrivateRoutes = ({ setAuth, user, setUser }) => {
     const navigate = useNavigate();
@@ -33,6 +34,7 @@ const PrivateRoutes = ({ setAuth, user, setUser }) => {
             <Route path="/comercial-products" element={<ComercialProducts user={user} setAuth={setAuth}/>} />
             <Route path="/comercial-products/:id/products" element={<CPProducts user={user} setAuth={setAuth}/>} />
             <Route path="/salesreport" element={<ReportScreen user={user} setAuth={setAuth}/>} />
+            <Route path="/employees" element={<Employees user={user} setAuth={setAuth}/>} />
         </Routes>
     );
 };

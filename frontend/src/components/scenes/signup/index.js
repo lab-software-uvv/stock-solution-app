@@ -11,16 +11,16 @@ import TextBtn from "../../ui/text.btn";
 import RoundedBtn from "../../ui/rounded.btn";
 
 //assets
-import { Envelope, LockOn, EyeOpen, Person, CreditCardAlt1, EyeClosed } from "akar-icons";
+import { Envelope, LockOn, EyeOpen, Person, CreditCardAlt1, EyeClosed, Key } from "akar-icons";
 
 const SignUp = ({ setCurrentPage, handleMove }) => {
-    const path = "?key=";
-    const key =
-        window.location.href.split(path).length > 0 ? window.location.href.split(path)[1] : null;
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
 
     const [isPassVisible, setIsPassVisible] = useState(false);
     const [isPassVisibleC, setIsPassVisibleC] = useState(false);
 
+    const [invite, setInvite] = useState(params.get("invite") || "");
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [CPF, setCPF] = useState("");
@@ -38,19 +38,19 @@ const SignUp = ({ setCurrentPage, handleMove }) => {
     });
 
     useEffect(() => {
-        if (window.location.href.split(path).length > 0) verifyKey();
+        if (invite) verifyKey();
     }, []);
 
     const verifyKey = async () => {
-        return 0;
+        // return 0;
 
         const req = async () => {
-            await Requests.post(`/invite/validate${path}${key}`)
-                .then((res) => {
-                    // setEmail(res.email)
-                    console.log(res);
+            await Requests.post(`/invites/validate/${invite}`)
+                .then(() => {
+                    setEmail(params.get("email"));
                 })
                 .catch((err) => {
+                    setInvite("");
                     console.log(err);
                     throw Error;
                 });
@@ -61,11 +61,12 @@ const SignUp = ({ setCurrentPage, handleMove }) => {
             {
                 loading: "Verificando convite...",
                 success: "Convite validado, continue com o cadastro!",
-                error: (err) => `Erro: ${err.toString()}`,
+                error: (err) =>
+                    `Erro: convite invalido, tente novamente mais tarde, ou solicite outro convite`,
             },
             {
                 success: {
-                    duration: 3500,
+                    duration: 5000,
                 },
             }
         );
@@ -84,12 +85,12 @@ const SignUp = ({ setCurrentPage, handleMove }) => {
         e.preventDefault();
         if (validateFields()) {
             const objUser = {
-                key: key,
-                fullName: fullName,
-                email: email,
+                name: fullName,
                 cpf: CPF,
-                birthday: birthday,
+                birthDate: birthday,
+                email: email,
                 password: password,
+                invite: invite,
             };
 
             const req = async () => {
@@ -199,6 +200,17 @@ const SignUp = ({ setCurrentPage, handleMove }) => {
                 <p className="p-subtitle p-white p-center">Insira seus dados para se cadastrar</p>
             </div>
             <>
+                {invite && (
+                    <TextInput
+                        required={true}
+                        type={"text"}
+                        value={invite}
+                        setValue={setInvite}
+                        placeholder={"Insira sua chave de convite"}
+                        style={{ borderColor: "var(--color-grey)" }}
+                        icoLeft={<Key size={18} color={"var(--color-darkgrey)"} />}
+                    />
+                )}
                 <TextInput
                     required={true}
                     type={"text"}
