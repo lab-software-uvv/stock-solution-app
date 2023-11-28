@@ -39,7 +39,7 @@ const columns = [
     { field: "description", headerName: "Descrição", width: 250 },
 ];
 
-const CPProducts = ({ user, setAuth }) => {
+const SalesProducts = ({ user, setAuth }) => {
     const navigate = useNavigate();
     const params = useParams();
 
@@ -48,29 +48,35 @@ const CPProducts = ({ user, setAuth }) => {
 
     const [triggerChangePage, setTriggerChangePage] = useState(true);
 
-    const [comercialProduct, setComercialProduct] = useState(null);
+    const [sale, setSale] = useState(null);
+    const [saleProducts, setSaleProducts] = useState(null);
 
-    const [productsSelected, setProductsSelected] = useState([]);
-    const [productsList, setProductsList] = useState([]);
+    const [comercialList, setComercialList] = useState(null);
+    const [productsList, setProductsList] = useState(null);
 
     const [selected, setSelected] = useState(null);
 
     //form fields
-    const [name, setName] = useState("");
-    const [code, setCode] = useState("");
-    const [price, setPrice] = useState(0);
-    const [description, setDescription] = useState("");
+    const [productId, setProductId] = useState(0);
+    const [comercialProductId, setComercialProductId] = useState(0);
+    const [saleId, setSaleId] = useState(params.id);
+    const [quantity, setQuantity] = useState(0);
+    const [value, setValue] = useState(0);
+
+    const [pEnable, setpEnable] = useState(true);
+    const [cEnable, setcEnable] = useState(false);
 
     useEffect(() => {
         // loadContent();
-        // reqProductsList();
+        reqComercialList();
+        reqProductsList();
     }, []);
 
     const loadContent = async () => {
         try {
             const req = async () => {
                 await Requests.get(
-                    `/comercial-products/${params.id}` /*, {
+                    `/sales/${params.id}` /*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
@@ -78,17 +84,17 @@ const CPProducts = ({ user, setAuth }) => {
                 )
                     .then(async (res) => {
                         let obj = res.data;
-                        setComercialProduct(obj);
+                        setSale(obj);
                         setPopupOn(false);
 
-                        await Requests.get(`/comercial-products/${params.id}/products`)
-                            .then((res) => {
-                                if (res.status === 404) {
-                                    return;
-                                }
-                                reqProductsList(res.data);
-                            })
-                            .catch((err) => {});
+                        // await Requests.get(`/comercial-products/${params.id}/products`)
+                        //     .then((res) => {
+                        //         if (res.status === 404) {
+                        //             return;
+                        //         }
+                        //         reqProductsList(res.data);
+                        //     })
+                        //     .catch((err) => {});
                     })
                     .catch((err) => {
                         console.log(err);
@@ -107,7 +113,25 @@ const CPProducts = ({ user, setAuth }) => {
         }
     };
 
-    const reqProductsList = async (filterList) => {
+    const reqComercialList = async () => {
+        await Requests.get(
+            `/comercial-products` /*, {
+            headers: {
+                authentication: `bearer ${localStorage.getItem("token")}`,
+            },
+        }*/
+        )
+            .then((res) => {
+                setComercialList(res.data);
+                setComercialProductId(res.data[0].id);
+                // console.log(res);
+            })
+            .catch((err) => {
+                // console.log(err);
+                throw Error;
+            });
+    };
+    const reqProductsList = async () => {
         await Requests.get(
             `/products` /*, {
             headers: {
@@ -116,7 +140,8 @@ const CPProducts = ({ user, setAuth }) => {
         }*/
         )
             .then((res) => {
-                setProductsList(res.data.filter((elemento) => !filterList.includes(elemento)));
+                setProductsList(res.data);
+                setProductId(res.data[0].id);
                 // console.log(res);
             })
             .catch((err) => {
@@ -132,15 +157,15 @@ const CPProducts = ({ user, setAuth }) => {
         let errMsg = "";
 
         let obj = {
-            Name: name,
-            Code: code,
-            Price: price,
-            Description: description,
+            // Name: name,
+            // Code: code,
+            // Price: price,
+            // Description: description,
         };
 
         req = async () => {
             await Requests.post(
-                `/comercial-products/${params.id}/products`,
+                `/sales/${params.id}/products`,
                 obj /*{
                     body: obj,
                     headers: {
@@ -185,7 +210,7 @@ const CPProducts = ({ user, setAuth }) => {
         if (selected) {
             const req = async () => {
                 await Requests.delete(
-                    `/comercial-products/${selected.id}` /*, {
+                    `/sales/${selected.id}` /*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
@@ -219,10 +244,10 @@ const CPProducts = ({ user, setAuth }) => {
     };
 
     const clearForm = () => {
-        setName("");
-        setCode("");
-        setPrice(0);
-        setDescription("");
+        setProductId(0);
+        setComercialProductId(0);
+        setQuantity(0);
+        setValue(0);
         setSelected(null);
     };
 
@@ -243,17 +268,15 @@ const CPProducts = ({ user, setAuth }) => {
                     icon={
                         <ArrowBackThickFill
                             color="var(--color-darkgrey)"
-                            onClick={() => navigate("/comercial-products")}
+                            onClick={() => navigate("/sales")}
                         />
                     }
-                    title={`Produtos em ${
-                        comercialProduct ? comercialProduct.name : "Produto Comercial"
-                    }`}
+                    title={`Produtos em venda`}
                     list={
                         <>
                             <div style={{ height: "50vh", width: "60vw" }}>
                                 <DataGrid
-                                    rows={comercialProduct ? comercialProduct.products : []}
+                                    rows={saleProducts ? saleProducts : []}
                                     columns={columns}
                                     onRowClick={(e) => {
                                         handleSelectItem(e);
@@ -323,85 +346,101 @@ const CPProducts = ({ user, setAuth }) => {
                         <>
                             <form className="c-products-form">
                                 <div
-                                    className="flex-row cpp-tables-wrapper"
+                                    className="sp-tables-wrapper"
                                     style={{ justifyContent: "space-between" }}
                                 >
-                                    <div style={{ flex: 1 }}>
-                                        <div className="flex-row">
-                                            <div style={{ flex: 2 }}>Produto</div>
-                                            <div style={{ flex: 1 }}>Qtd</div>
-                                        </div>
-                                        <div style={{ overflowY: "auto", height: "50vh" }}>
-                                            {productsSelected?.map((e, i) => {
-                                                return (
-                                                    <div className="flex-row cpp-table-item">
-                                                        <div style={{ flex: 3 }}>
-                                                            <p>{e.name}</p>
-                                                        </div>
-                                                        <div style={{ flex: 1 }}>
-                                                            <input
-                                                                style={{
-                                                                    width: 50,
-                                                                    textAlign: "center",
-                                                                }}
-                                                                placeholder="0"
-                                                                type="number"
-                                                                min={1}
-                                                                value={e.qtd}
-                                                            ></input>
-                                                        </div>
-                                                        <div
-                                                            style={{ flex: 1 }}
-                                                            className="cpp-move-btn-r flex-center button"
-                                                            onClick={() => {
-                                                                setProductsList([
-                                                                    ...productsList,
-                                                                    e,
-                                                                ]);
-                                                                setProductsSelected(
-                                                                    productsSelected.filter(
-                                                                        (p) => p !== e
-                                                                    )
-                                                                );
-                                                            }}
+                                    <div className="flex-row gap-10" style={{ width: "100%" }}>
+                                        <div style={{ flex: 1 }}>
+                                            <div className="flex-row select-title">
+                                                <div
+                                                    className="button select-btn flex-center"
+                                                    onClick={() => {
+                                                        setpEnable(true);
+                                                        setcEnable(false);
+                                                    }}
+                                                >
+                                                    {pEnable && "•"}
+                                                </div>
+                                                <p className="p-text">Produto</p>
+                                            </div>
+                                            <select
+                                                value={productId}
+                                                onChange={(e) =>
+                                                    setProductId(e.currentTarget.value)
+                                                }
+                                                disabled={!pEnable}
+                                            >
+                                                {productsList?.map((element) => {
+                                                    return (
+                                                        <option
+                                                            key={element.id}
+                                                            value={element.id}
+                                                            label={element.name}
                                                         >
-                                                            <ChevronRight color="white"></ChevronRight>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
+                                                            {element.name}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </div>
+                                        <div style={{ flex: 1 }}>
+                                            <div className="flex-row select-title">
+                                                <div
+                                                    className="button select-btn flex-center"
+                                                    onClick={() => {
+                                                        setcEnable(true);
+                                                        setpEnable(false);
+                                                    }}
+                                                >
+                                                    {cEnable && "•"}
+                                                </div>
+                                                <p className="p-text">Produto comercial</p>
+                                            </div>
+                                            <select
+                                                value={productId}
+                                                onChange={(e) =>
+                                                    setProductId(e.currentTarget.value)
+                                                }
+                                                disabled={!cEnable}
+                                            >
+                                                {comercialList?.map((element) => {
+                                                    return (
+                                                        <option
+                                                            key={element.id}
+                                                            value={element.id}
+                                                            label={element.name}
+                                                        >
+                                                            {element.name}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
                                         </div>
                                     </div>
-                                    <div style={{ flex: 1 }}>
-                                        <div className="flex-row">
-                                            <div>Produto</div>
+                                    <div className="flex-row gap-10">
+                                        <div style={{ flex: 3 }}>
+                                            <p className="p-text">Quantidade vendida *</p>
+                                            <TextInput
+                                                value={quantity}
+                                                setValue={setQuantity}
+                                                required={true}
+                                                type="number"
+                                                min="1"
+                                                placeholder={"0"}
+                                            ></TextInput>
                                         </div>
-                                        <div style={{ overflowY: "auto", height: "50vh" }}>
-                                            {productsList?.map((e, i) => {
-                                                return (
-                                                    <div className="flex-row cpp-table-item">
-                                                        <div
-                                                            className="cpp-move-btn-g flex-center button"
-                                                            onClick={() => {
-                                                                setProductsSelected([
-                                                                    ...productsSelected,
-                                                                    e,
-                                                                ]);
-                                                                setProductsList(
-                                                                    productsList.filter(
-                                                                        (p) => p !== e
-                                                                    )
-                                                                );
-                                                            }}
-                                                        >
-                                                            <ChevronLeft color="white"></ChevronLeft>
-                                                        </div>
-                                                        <div style={{ flex: 3 }}>
-                                                            <p>{e.name}</p>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
+                                        <div style={{ flex: 2 }}>
+                                            <p className="p-text">Valor total</p>
+                                            <TextInput
+                                                value={value}
+                                                setValue={setValue}
+                                                required={true}
+                                                type="number"
+                                                min="0"
+                                                step="any"
+                                                icoLeft={<p className="p-text p-price">R$</p>}
+                                                placeholder={"0,00"}
+                                            ></TextInput>
                                         </div>
                                     </div>
                                 </div>
@@ -462,4 +501,4 @@ const CPProducts = ({ user, setAuth }) => {
     );
 };
 
-export default CPProducts;
+export default SalesProducts;

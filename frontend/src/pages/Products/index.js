@@ -476,7 +476,6 @@ const Products = ({ user, setAuth }) => {
                                         setValue={setAquisitionDate}
                                         required={true}
                                         type="date"
-                                        placeholder={"0,00"}
                                     ></TextInput>
                                 </div>
                                 <div>
@@ -486,7 +485,6 @@ const Products = ({ user, setAuth }) => {
                                         setValue={setExpirationDate}
                                         required={true}
                                         type="date"
-                                        placeholder={"0,00"}
                                     ></TextInput>
                                 </div>
                                 <div>
