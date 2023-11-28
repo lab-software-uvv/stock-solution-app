@@ -39,7 +39,13 @@ public sealed class CreateProductComercialProductCommandHandler : IRequestHandle
     public async Task<CreateProductComercialProductResponse> Handle(CreateProductComercialProductRequest req, CancellationToken ct)
     {
 
-        ProductComercialProduct product = new(req.ProductId, req.ComercialProductId, req.Quantity);
+        var product = new ProductComercialProduct()
+        {
+            ComercialProductId = req.ComercialProductId,
+            ProductId = req.ProductId,
+            Quantity = req.Quantity
+        };
+        
         _context.ProductComercialProducts.Add(product);
         await _context.SaveChangesAsync(ct);
 

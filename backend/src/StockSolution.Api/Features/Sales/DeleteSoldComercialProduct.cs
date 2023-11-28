@@ -46,7 +46,7 @@ public sealed class DeleteSoldComercialProductCommandHandler : IRequestHandler<D
                        .FirstOrDefaultAsync(ct) 
                    ?? throw new Exception($"Venda {request.saleId} Não Encontrada!", new KeyNotFoundException());
         
-        if (sale.Status != SaleStatusEnum.InElaboration)
+        if (sale.Status != SaleStatus.InElaboration)
             throw new Exception("Não é possível remover um produto comercial de uma venda que não está em elaboração.");
 
         var comercialProductToRemove = sale.ComercialProducts.FirstOrDefault(p => p.ComercialProductId == request.comercialProductId);

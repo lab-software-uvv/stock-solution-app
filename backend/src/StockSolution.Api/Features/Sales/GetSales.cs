@@ -41,4 +41,4 @@ public sealed class GetSalesQueryHandler : IRequestHandler<GetSalesQuery, List<G
 }
 
 
-public record GetSalesResponse(int id, DateTime sellingDate, decimal totalValue, PaymentMethodEnum paymentMethod, SaleStatusEnum status);
+public record GetSalesResponse(int id, DateTime sellingDate, decimal totalValue, PaymentMethod paymentMethod, SaleStatus status);

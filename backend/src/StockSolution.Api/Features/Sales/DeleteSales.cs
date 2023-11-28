@@ -42,7 +42,7 @@ public sealed class DeleteSaleCommandHandler : IRequestHandler<DeleteSale>
     {
         var sale = await _context.Sales.FirstOrDefaultAsync(c => c.Id == req.Id, ct) ?? throw new Exception($"Venda {req.Id} Não Encontrada!", new KeyNotFoundException());
 
-        if (sale.Status != SaleStatusEnum.InElaboration)
+        if (sale.Status != SaleStatus.InElaboration)
             throw new Exception("Não é possível deletar uma venda que não esteja em elaboração");
 
         await _context.Sales.Where(s => s.Id == req.Id).ExecuteDeleteAsync(ct);

@@ -40,7 +40,7 @@ public sealed class AddSoldProductCommandHandler : IRequestHandler<AddSoldProduc
     {
         var sale = await _context.Sales.FirstOrDefaultAsync(u => u.Id == request.saleId) ?? throw new Exception($"Venda {request.saleId} Não Encontrada!", new KeyNotFoundException());
 
-        if (sale.Status != SaleStatusEnum.InElaboration)
+        if (sale.Status != SaleStatus.InElaboration)
             throw new Exception("Não é possível adicionar um produto a uma venda que não está em elaboração.");
         
         var product = await _context.Products.FirstOrDefaultAsync(f => f.Id == request.productId, cancellationToken) ?? throw new Exception($"Produto {request.productId} Não Encontrado!", new KeyNotFoundException());

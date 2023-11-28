@@ -4,8 +4,7 @@ using NodaTime;
 namespace StockSolution.Api.Features.Products;
 
 public record EditProductCommand(int Id, string Name, string Code, decimal Quantity, int SupplierId, decimal Price, int? CategoryId, Instant AquisitionDate, Instant ExpirationDate, string? Description) : IRequest<EditProductResponse>;
-public record EditProductResponse(int Id, string Name, string Code, decimal Quantity, int SupplierId, decimal Price, int? CategoryId, Instant AquisitionDate, Instant ExpirationDate, string? Description);
-
+public record EditProductResponse(int Id, string Name, string Code, decimal Quantity, string SupplierCode, decimal Price, string? CategoryName, Instant AcquisitionDate, Instant ExpirationDate, string? Description);
 public sealed class EditProductEndpoint  : Endpoint<EditProductCommand, EditProductResponse>
 {
     private readonly ISender _mediator;
@@ -54,7 +53,7 @@ public sealed class EditProductCommandHandler  : IRequestHandler<EditProductComm
 
         await _context.SaveChangesAsync(ct);
 
-        return new EditProductResponse(entity.Id, entity.Name, entity.Code, entity.Quantity, entity.Supplier.Id, entity.Price, entity.Category?.Id, entity.AcquisitionDate, entity.ExpirationDate, entity.Description);
+        return new EditProductResponse(entity.Id, entity.Name, entity.Code, entity.Quantity, entity.Supplier.Code, entity.Price, entity.Category!.Name, entity.AcquisitionDate, entity.ExpirationDate, entity.Description);
 
     }
 }

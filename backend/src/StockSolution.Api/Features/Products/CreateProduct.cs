@@ -12,7 +12,7 @@ public record CreateProductCommand(
     int SupplierId,
     decimal Price,
     int? CategoryId,
-    Instant AquisitionDate,
+    Instant AcquisitionDate,
     Instant ExpirationDate,
     string? Description) : IRequest<CreateProductResponse>;
 
@@ -24,7 +24,7 @@ public record CreateProductResponse(
     int SupplierId,
     decimal Price,
     int? CategoryId,
-    Instant AquisitionDate,
+    Instant AcquisitionDate,
     Instant ExpirationDate,
     string? Description);
 
@@ -86,7 +86,7 @@ public sealed class CreateProductCommandHandler : IRequestHandler<CreateProductC
             SupplierId = supplierId,
             Price = req.Price,
             CategoryId = categoryId,
-            AcquisitionDate = req.AquisitionDate,
+            AcquisitionDate = req.AcquisitionDate,
             ExpirationDate = req.ExpirationDate,
             Description = req.Description
         };

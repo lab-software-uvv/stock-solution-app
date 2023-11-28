@@ -114,6 +114,6 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, To
 
         var userRole = await _context.Roles.FirstAsync(x => x.Id == user.RoleId, ct);
         var jwtToken = _jwtGenerator.GenerateToken(user, userRole);
-        return new TokenResponse(jwtToken);
+        return new TokenResponse(jwtToken, user.Name, user.Email);
     }
 }

@@ -3,7 +3,7 @@ using StockSolution.Api.Persistence.Entities;
 
 namespace StockSolution.Api.Features.Sales;
 
-public record CreateSaleRequest(int userId, DateTime sellingDate, decimal totalValue, PaymentMethodEnum paymentMethod) : IRequest<CreateSaleResponse>;
+public record CreateSaleRequest(int userId, DateTime sellingDate, decimal totalValue, PaymentMethod paymentMethod) : IRequest<CreateSaleResponse>;
 
 public sealed class CreateSaleEndpoint : Endpoint<CreateSaleRequest, CreateSaleResponse>
 {
@@ -48,4 +48,4 @@ public sealed class CreateSaleCommandHandler : IRequestHandler<CreateSaleRequest
     }
 }
 
-public record CreateSaleResponse(int id, DateTime sellingDate, decimal totalValue, PaymentMethodEnum paymentMethod, SaleStatusEnum status);
+public record CreateSaleResponse(int id, DateTime sellingDate, decimal totalValue, PaymentMethod paymentMethod, SaleStatus status);

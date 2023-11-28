@@ -63,6 +63,6 @@ public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, TokenRes
             throw new UnauthorizedAccessException();
 
         var jwtToken = _jwtGenerator.GenerateToken(user, user.Role!);
-        return new TokenResponse(jwtToken);
+        return new TokenResponse(jwtToken, user.Name, user.Email);
     }
 }

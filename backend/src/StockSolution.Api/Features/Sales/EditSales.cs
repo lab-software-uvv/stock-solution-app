@@ -4,7 +4,7 @@ using StockSolution.Api.Persistence.Entities;
 
 namespace StockSolution.Api.Features.Sales;
 
-public record EditSaleRequest(int Id, DateTime sellingDate, decimal totalValue, PaymentMethodEnum paymentMethod) : IRequest<EditSaleResponse>;
+public record EditSaleRequest(int Id, DateTime sellingDate, decimal totalValue, PaymentMethod paymentMethod) : IRequest<EditSaleResponse>;
 
 public sealed class EditSaleEndpoint  : Endpoint<EditSaleRequest, EditSaleResponse>
 {
@@ -40,7 +40,7 @@ public sealed class EditSaleCommandHandler  : IRequestHandler<EditSaleRequest, E
     {
         var entity = await _context.Sales.FirstOrDefaultAsync(f => f.Id == req.Id, ct) ?? throw new Exception($"Venda {req.Id} Não Encontrada!", new KeyNotFoundException());
 
-        if (entity.Status != SaleStatusEnum.InElaboration)
+        if (entity.Status != SaleStatus.InElaboration)
             throw new Exception("Não é possível alterar uma venda que não está em elaboração.");
         
         entity.SellingDate = req.sellingDate;
@@ -54,4 +54,4 @@ public sealed class EditSaleCommandHandler  : IRequestHandler<EditSaleRequest, E
     }
 }
 
-public record EditSaleResponse(int id, DateTime sellingDate, decimal totalValue, PaymentMethodEnum paymentMethod, SaleStatusEnum status);
+public record EditSaleResponse(int id, DateTime sellingDate, decimal totalValue, PaymentMethod paymentMethod, SaleStatus status);

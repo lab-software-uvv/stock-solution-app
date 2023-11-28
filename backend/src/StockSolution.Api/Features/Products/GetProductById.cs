@@ -4,8 +4,7 @@ using NodaTime;
 namespace StockSolution.Api.Features.Products;
 
 public record GetProductByIdQuery(int Id) : IRequest<GetProductByIdResponse>;
-public record GetProductByIdResponse(int Id, string Name, string Code, decimal Quantity, int SupplierId, decimal Price, int? CategoryId, Instant AquisitionDate, Instant ExpirationDate, string? Description);
-
+public record GetProductByIdResponse(int Id, string Name, string Code, decimal Quantity, string SupplierCode, decimal Price, string? CategoryName, Instant AquisitionDate, Instant ExpirationDate, string? Description);
 public sealed class GetProductByIdEndpoint : Endpoint<GetProductByIdQuery, GetProductByIdResponse>
 {
     private readonly ISender _mediator;
@@ -34,12 +33,14 @@ public sealed class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQ
 
     public async Task<GetProductByIdResponse> Handle(GetProductByIdQuery req, CancellationToken ct)
     {
-        var entity = await _context.Products.AsNoTracking().Include(p => p.Supplier).FirstOrDefaultAsync(f => f.Id == req.Id, ct);
+        var entity = await _context.Products
+            .AsNoTracking()
+            .Include(p => p.Supplier)
+            .Include(product => product.Category)
+            .FirstOrDefaultAsync(f => f.Id == req.Id, ct);
 
         return entity is null
             ? throw new Exception($"Produto {req.Id} Não Encontrado!", new KeyNotFoundException())
-            : new GetProductByIdResponse(entity!.Id, entity.Name, entity.Code, entity.Quantity, entity.Supplier.Code, entity.Price, entity.Category?.Name, entity.AquisitionDate, entity.ExpirationDate, entity.Description);
+            : new GetProductByIdResponse(entity!.Id, entity.Name, entity.Code, entity.Quantity, entity.Supplier!.Code, entity.Price, entity.Category?.Name, entity.AcquisitionDate, entity.ExpirationDate, entity.Description);
     }
 }
-
-public record GetProductByIdResponse(int Id, string Name, string Code, decimal Quantity, string SupplierCode, decimal Price, string? CategoryName, DateTime AquisitionDate, DateTime ExpirationDate, string? Description);

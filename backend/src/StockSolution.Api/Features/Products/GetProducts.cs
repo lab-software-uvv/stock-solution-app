@@ -1,11 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using NodaTime;
 
 namespace StockSolution.Api.Features.Products;
 
 public record GetProductsQuery : IRequest<List<GetProductsResponse>>;
-public record GetProductsResponse(int Id, string Name, string Code, decimal Quantity, int SupplierId, decimal Price, int? CategoryId, Instant AquisitionDate, Instant ExpirationDate, string? Description);
+public record GetProductsResponse(int Id, string Name, string Code, decimal Quantity, string SupplierCode, decimal Price, string? CategoryName, Instant AquisitionDate, Instant ExpirationDate, string? Description);
 
 public sealed class GetProductsEndpoint : Endpoint<GetProductsQuery, List<GetProductsResponse>>
 {
@@ -35,12 +34,8 @@ public sealed class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, 
 
     public async Task<List<GetProductsResponse>> Handle(GetProductsQuery req, CancellationToken ct)
     {
-        return await _context.Products.AsNoTracking()
-                    .Include(p => p.Supplier)
-                    .Include(p => p.Category)
-                    .Select(x => new GetProductsResponse(x.Id, x.Name, x.Code, x.Quantity, x.Supplier.Code, x.Price, x.Category!.Name, x.AquisitionDate, x.ExpirationDate, x.Description))
+        return await _context.Products
+                    .Select(x => new GetProductsResponse(x.Id, x.Name, x.Code, x.Quantity, x.Supplier!.Code, x.Price, x.Category!.Name, x.AcquisitionDate, x.ExpirationDate, x.Description))
                     .ToListAsync(ct);
     }
 }
-
-public record GetProductsResponse(int Id, string Name, string Code, decimal Quantity, string SupplierCode, decimal Price, string? CategoryName, DateTime AquisitionDate, DateTime ExpirationDate, string? Description);
