@@ -33,10 +33,13 @@ import ShrinkBtn from "../../components/ui/shrink.btn";
 
 //settings
 const columns = [
-    { field: "name", headerName: "Nome", width: 100 },
-    { field: "code", headerName: "Código", width: 125 },
-    { field: "price", headerName: "Valor", width: 75 },
-    { field: "description", headerName: "Descrição", width: 250 },
+    { field: "comercialProductId", headerName: "id-Comercial", width: 100 },
+    { field: "productId", headerName: "id-Produto", width: 100 },
+    { field: "name", headerName: "Nome", width: 200 },
+    { field: "quantity", headerName: "Valor", width: 50 },
+    { field: "value", headerName: "Valor", width: 150 },
+    { field: "comercialProductName", headerName: "Nome-Comercial", width: 100 },
+    { field: "productName", headerName: "Nome-Produto", width: 100 },
 ];
 
 const SalesProducts = ({ user, setAuth }) => {
@@ -48,7 +51,6 @@ const SalesProducts = ({ user, setAuth }) => {
 
     const [triggerChangePage, setTriggerChangePage] = useState(true);
 
-    const [sale, setSale] = useState(null);
     const [saleProducts, setSaleProducts] = useState(null);
 
     const [comercialList, setComercialList] = useState(null);
@@ -67,34 +69,33 @@ const SalesProducts = ({ user, setAuth }) => {
     const [cEnable, setcEnable] = useState(false);
 
     useEffect(() => {
-        // loadContent();
+        loadContent();
         reqComercialList();
         reqProductsList();
     }, []);
 
     const loadContent = async () => {
+        let content = [];
         try {
             const req = async () => {
                 await Requests.get(
-                    `/sales/${params.id}` /*, {
+                    `/sales/${params.id}/products` /*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
             }*/
                 )
                     .then(async (res) => {
-                        let obj = res.data;
-                        setSale(obj);
+                        res.data.forEach((element) => {
+                            content.push({ ...element, name: element.productName });
+                        });
+                        await Requests.get(`/sales/${params.id}/comercial-products`).then((res) => {
+                            res.data.forEach((element) => {
+                                content.push({ ...element, name: element.comercialProductName });
+                            });
+                            setSaleProducts(content);
+                        });
                         setPopupOn(false);
-
-                        // await Requests.get(`/comercial-products/${params.id}/products`)
-                        //     .then((res) => {
-                        //         if (res.status === 404) {
-                        //             return;
-                        //         }
-                        //         reqProductsList(res.data);
-                        //     })
-                        //     .catch((err) => {});
                     })
                     .catch((err) => {
                         console.log(err);
@@ -165,7 +166,11 @@ const SalesProducts = ({ user, setAuth }) => {
 
         req = async () => {
             await Requests.post(
-                `/sales/${params.id}/products`,
+                `${
+                    pEnable
+                        ? `/sales/${params.id}/product/${productId}`
+                        : `/sales/${params.id}/comercial-product/${comercialProductId}`
+                }`,
                 obj /*{
                     body: obj,
                     headers: {
@@ -210,7 +215,9 @@ const SalesProducts = ({ user, setAuth }) => {
         if (selected) {
             const req = async () => {
                 await Requests.delete(
-                    `/sales/${selected.id}` /*, {
+                    pEnable
+                        ? `/sales/${params.id}/{saleId}/product/${selected.id}`
+                        : `/sales/${params.id}/{saleId}/comercial-product/${selected.id}` /*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
@@ -244,8 +251,6 @@ const SalesProducts = ({ user, setAuth }) => {
     };
 
     const clearForm = () => {
-        setProductId(0);
-        setComercialProductId(0);
         setQuantity(0);
         setValue(0);
         setSelected(null);
@@ -397,9 +402,9 @@ const SalesProducts = ({ user, setAuth }) => {
                                                 <p className="p-text">Produto comercial</p>
                                             </div>
                                             <select
-                                                value={productId}
+                                                value={comercialProductId}
                                                 onChange={(e) =>
-                                                    setProductId(e.currentTarget.value)
+                                                    setComercialProductId(e.currentTarget.value)
                                                 }
                                                 disabled={!cEnable}
                                             >

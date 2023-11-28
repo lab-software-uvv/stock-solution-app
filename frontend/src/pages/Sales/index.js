@@ -15,7 +15,17 @@ import toast from "react-hot-toast";
 import { DataGrid } from "@mui/x-data-grid";
 
 //assets
-import { ArrowCycle, Cross, Money, Pencil, Save, ShippingBoxV1, Tag, TrashCan } from "akar-icons";
+import {
+    ArrowCycle,
+    Check,
+    Cross,
+    Money,
+    Pencil,
+    Save,
+    ShippingBoxV1,
+    Tag,
+    TrashCan,
+} from "akar-icons";
 import ShrinkBtn from "../../components/ui/shrink.btn";
 
 //settings
@@ -52,7 +62,7 @@ const Sales = ({ user, setAuth }) => {
 
     useEffect(() => {
         loadContent();
-        // reqUsers();
+        reqUsers();
     }, []);
 
     const loadContent = async () => {
@@ -64,10 +74,19 @@ const Sales = ({ user, setAuth }) => {
                 },
             }*/
             )
-                .then((res) => {
-                    setSalesList(res.data);
-                    setPopupOn(false);
-                    console.log(res);
+                .then(async (res) => {
+                    await reqUsers().then(() => {
+                        let aux = [];
+                        res.data.forEach((element) => {
+                            aux.push({
+                                ...element,
+                                seller: users?.find((e) => e.id === element.userId).name,
+                            });
+                        });
+                        setSalesList(res.data);
+                        setPopupOn(false);
+                        console.log(res);
+                    });
                 })
                 .catch((err) => {
                     console.log(err);
@@ -84,16 +103,19 @@ const Sales = ({ user, setAuth }) => {
 
     const reqUsers = async () => {
         await Requests.get(
-            `/` /*, {
+            `/users` /*, {
             headers: {
                 authentication: `bearer ${localStorage.getItem("token")}`,
             },
         }*/
         )
             .then((res) => {
+                if (res.status === 404) {
+                    return;
+                }
                 setUsers(res.data);
                 setUserId(res.data[0].id);
-                // console.log(res);
+                console.log(res);
             })
             .catch((err) => {
                 // console.log(err);
@@ -112,8 +134,8 @@ const Sales = ({ user, setAuth }) => {
             totalValue: totalValue,
             paymentMethod: paymentMethod,
             status: status,
-            // userId: userId,
-            userId: 1,
+            userId: userId,
+            // userId: 1,
         };
 
         if (!isEditing) {
@@ -216,6 +238,64 @@ const Sales = ({ user, setAuth }) => {
         }
     };
 
+    const handleCancel = () => {
+        if (selected) {
+            const req = async () => {
+                await Requests.put(
+                    `/sales/${selected.id}/cancel` /*, {
+                    headers: {
+                        authentication: `bearer ${localStorage.getItem("token")}`,
+                    },
+                }*/
+                )
+                    .then((res) => {
+                        setPopupOn(false);
+                        console.log(res);
+                        loadContent();
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        throw Error;
+                    });
+            };
+
+            toast.promise(req(), {
+                loading: "Cancelando venda...",
+                success: "Venda cancelada!",
+                error: "Erro, tente novamente mais tarde!",
+            });
+        }
+    };
+
+    const handleComplete = () => {
+        if (selected) {
+            const req = async () => {
+                await Requests.put(
+                    `/sales/${selected.id}/finish` /*, {
+                    headers: {
+                        authentication: `bearer ${localStorage.getItem("token")}`,
+                    },
+                }*/
+                )
+                    .then((res) => {
+                        setPopupOn(false);
+                        console.log(res);
+                        loadContent();
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        throw Error;
+                    });
+            };
+
+            toast.promise(req(), {
+                loading: "Finalizando venda...",
+                success: "Venda finalizada!",
+                error: "Erro, tente novamente mais tarde!",
+            });
+        }
+    };
+
     const handleSelectItem = (selected) => {
         let item = selected.row;
         if (item) {
@@ -274,17 +354,43 @@ const Sales = ({ user, setAuth }) => {
                                 </IconBtn>
                                 <div className="flex-row  gap-10 ">
                                     <ShrinkBtn
-                                        // action={() =>
-                                        //     selected
-                                        //         ? navigate(
-                                        //               `/sales/${selected.id}/products`
-                                        //           )
-                                        //         : toast("Selecione um produto comercial!")
-                                        // }
-                                        action={() => navigate(`/sales/0/products`)}
-                                        text={"Associação de produtos"}
+                                        action={() =>
+                                            selected ? handleCancel() : toast("Selecione um item!")
+                                        }
+                                        // action={() => navigate(`/sales/0/products`)}
+                                        text={"Cancelar venda"}
+                                        backgroundColor={"var(--color-red)"}
+                                        mouseOnBg={"var(--color-red)"}
+                                        shrink={true}
+                                        width={250}
+                                    >
+                                        <Cross color="white"></Cross>
+                                    </ShrinkBtn>
+                                    <ShrinkBtn
+                                        action={() =>
+                                            selected
+                                                ? handleComplete()
+                                                : toast("Selecione um item!")
+                                        }
+                                        // action={() => navigate(`/sales/0/products`)}
+                                        text={"Concluir venda"}
                                         backgroundColor={"var(--color-green)"}
                                         mouseOnBg={"var(--color-green)"}
+                                        shrink={true}
+                                        width={250}
+                                    >
+                                        <Check color="white"></Check>
+                                    </ShrinkBtn>
+                                    <ShrinkBtn
+                                        action={() =>
+                                            selected
+                                                ? navigate(`/sales/${selected.id}/products`)
+                                                : toast("Selecione um item!")
+                                        }
+                                        // action={() => navigate(`/sales/0/products`)}
+                                        text={"Associação de produtos"}
+                                        backgroundColor={"var(--color-primary)"}
+                                        mouseOnBg={"var(--color-primary)"}
                                         shrink={true}
                                         width={250}
                                     >

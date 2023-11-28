@@ -66,6 +66,7 @@ const NavBar = ({ width = 10, shrinkState }) => {
             name: "Funcionários",
             path: "/employees",
             icon: <PeopleMultiple strokeWidth={2} size={20} color="white" />,
+            action: () => navigate("/employees"),
         },
     ];
 

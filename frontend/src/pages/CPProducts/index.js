@@ -77,30 +77,29 @@ const CPProducts = ({ user, setAuth }) => {
                         setComercialProduct(res.data);
                         setPopupOn(false);
 
-                        await reqProductsList();
-
-                        await Requests.get(`/comercial-products/${params.id}/products`)
-                            .then((res) => {
-                                if (res.status === 404) {
-                                    return;
-                                }
-                                let aux = [];
-                                res.data.forEach((element) => {
-                                    aux.push({
-                                        id: element.id,
-                                        comercialProductId: element.comercialProductId,
-                                        productId: element.productId,
-                                        productName: productsList.find(
-                                            (e) => e.id === element.productId
-                                        ).name,
-                                        quantity: element.quantity,
+                        await reqProductsList().then(() => {
+                            Requests.get(`/comercial-products/${params.id}/products`)
+                                .then((res) => {
+                                    if (res.status === 404) {
+                                        return;
+                                    }
+                                    let aux = [];
+                                    res.data.forEach((element) => {
+                                        aux.push({
+                                            ...element,
+                                            productName: productsList.find(
+                                                (e) => e.id === element.productId
+                                            ).name,
+                                        });
                                     });
-                                });
-                                setComercialList(
-                                    aux.filter((e) => e.comercialProductId === parseInt(params.id))
-                                );
-                            })
-                            .catch((err) => {});
+                                    setComercialList(
+                                        aux.filter(
+                                            (e) => e.comercialProductId === parseInt(params.id)
+                                        )
+                                    );
+                                })
+                                .catch((err) => {});
+                        });
                     })
                     .catch((err) => {
                         console.log(err);
@@ -162,8 +161,8 @@ const CPProducts = ({ user, setAuth }) => {
                 .then((res) => {
                     statuscode = res.status;
                     setPopupOn(false);
-                    clearForm()
-                    loadContent()
+                    clearForm();
+                    loadContent();
                     console.log(res);
                 })
                 .catch((err) => {
