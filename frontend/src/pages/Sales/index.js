@@ -27,6 +27,7 @@ import {
     TrashCan,
 } from "akar-icons";
 import ShrinkBtn from "../../components/ui/shrink.btn";
+import getMensagemErroApi from "../../utils/functions/getMensagemErroApi";
 
 //settings
 const columns = [
@@ -89,15 +90,15 @@ const Sales = ({ user, setAuth }) => {
                     });
                 })
                 .catch((err) => {
-                    console.log(err);
-                    throw Error;
+                    const msgErro = getMensagemErroApi(err);
+                    toast.error(msgErro);
+                    throw err;
                 });
         };
 
         toast.promise(req(), {
             loading: "Carregando...",
             success: "Vendas carregadas!",
-            error: "Erro, tente novamente mais tarde",
         });
     };
 
@@ -159,8 +160,9 @@ const Sales = ({ user, setAuth }) => {
                         loadContent();
                     })
                     .catch((err) => {
-                        console.log(err);
-                        throw Error;
+                        const msgErro = getMensagemErroApi(err);
+                        toast.error(msgErro);
+                        throw err;
                     });
             };
         } else {
@@ -182,8 +184,9 @@ const Sales = ({ user, setAuth }) => {
                         loadContent();
                     })
                     .catch((err) => {
-                        console.log(err);
-                        throw Error;
+                        const msgErro = getMensagemErroApi(err);
+                        toast.error(msgErro);
+                        throw err;
                     });
             };
         }
@@ -207,7 +210,6 @@ const Sales = ({ user, setAuth }) => {
         toast.promise(req(), {
             loading: "Salvando...",
             success: "Venda salva!",
-            error: `Erro: ${errMsg}`,
         });
     };
 
@@ -227,15 +229,15 @@ const Sales = ({ user, setAuth }) => {
                         loadContent();
                     })
                     .catch((err) => {
-                        console.log(err);
-                        throw Error;
+                        const msgErro = getMensagemErroApi(err);
+                        toast.error(msgErro);
+                        throw err;
                     });
             };
 
             toast.promise(req(), {
                 loading: "Deletando...",
                 success: "Venda excluida!",
-                error: "Erro, tente novamente mais tarde!",
             });
         }
     };
@@ -256,15 +258,15 @@ const Sales = ({ user, setAuth }) => {
                         loadContent();
                     })
                     .catch((err) => {
-                        console.log(err);
-                        throw Error;
+                        const msgErro = getMensagemErroApi(err);
+                        toast.error(msgErro);
+                        throw err;
                     });
             };
 
             toast.promise(req(), {
                 loading: "Cancelando venda...",
                 success: "Venda cancelada!",
-                error: "Erro, tente novamente mais tarde!",
             });
         }
     };
@@ -285,15 +287,15 @@ const Sales = ({ user, setAuth }) => {
                         loadContent();
                     })
                     .catch((err) => {
-                        console.log(err);
-                        throw Error;
+                        const msgErro = getMensagemErroApi(err);
+                        toast.error(msgErro);
+                        throw err;
                     });
             };
 
             toast.promise(req(), {
                 loading: "Finalizando venda...",
-                success: "Venda finalizada!",
-                error: "Erro, tente novamente mais tarde!",
+                success: "Venda finalizada!"
             });
         }
     };

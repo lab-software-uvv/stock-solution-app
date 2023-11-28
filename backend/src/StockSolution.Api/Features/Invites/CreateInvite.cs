@@ -67,7 +67,7 @@ public sealed class CreateInviteCommandHandler : IRequestHandler<CreateInviteCom
         var invite = new Invite
         {
             Email = email,
-            RoleId = 1 // TODO: Refatorar, Admin
+            RoleId = 3 // TODO: Refatorar, Admin
         };
         
         _context.Invites.Add(invite);

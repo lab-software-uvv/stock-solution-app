@@ -131,6 +131,7 @@ const Suppliers = ({ user, setAuth }) => {
                     .catch((err) => {
                         const msgErro = getMensagemErroApi(err);
                         toast.error(msgErro);
+                        throw err;
                     });
             };
         }

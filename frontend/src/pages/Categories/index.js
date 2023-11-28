@@ -15,6 +15,7 @@ import { DataGrid } from "@mui/x-data-grid";
 
 //assets
 import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, Tag, TrashCan } from "akar-icons";
+import getMensagemErroApi from "../../utils/functions/getMensagemErroApi";
 
 //settings
 const columns = [
@@ -57,15 +58,15 @@ const Categories = ({ user, setAuth }) => {
                     console.log(res);
                 })
                 .catch((err) => {
-                    console.log(err);
-                    throw Error;
+                    const msgErro = getMensagemErroApi(err);
+                    toast.error(msgErro);
+                    throw err;
                 });
         };
 
         toast.promise(req(), {
             loading: "Carregando...",
-            success: "Categorias carregadas!",
-            error: "Erro, tente novamente mais tarde",
+            success: "Categorias carregadas!"
         });
     };
 
@@ -98,8 +99,9 @@ const Categories = ({ user, setAuth }) => {
                         console.log(res);
                     })
                     .catch((err) => {
-                        console.log(err);
-                        throw Error;
+                        const msgErro = getMensagemErroApi(err);
+                        toast.error(msgErro);
+                        throw err;
                     });
             };
         } else {
@@ -120,8 +122,9 @@ const Categories = ({ user, setAuth }) => {
                         console.log(res);
                     })
                     .catch((err) => {
-                        console.log(err);
-                        throw Error;
+                        const msgErro = getMensagemErroApi(err);
+                        toast.error(msgErro);
+                        throw err;
                     });
             };
         }
@@ -144,7 +147,6 @@ const Categories = ({ user, setAuth }) => {
         toast.promise(req(), {
             loading: "Salvando...",
             success: "Categoria salva!",
-            error: `Erro: ${errMsg}`,
         });
         loadContent();
     };
@@ -165,15 +167,15 @@ const Categories = ({ user, setAuth }) => {
                         loadContent();
                     })
                     .catch((err) => {
-                        console.log(err);
-                        throw Error;
+                        const msgErro = getMensagemErroApi(err);
+                        toast.error(msgErro);
+                        throw err;
                     });
             };
 
             toast.promise(req(), {
                 loading: "Deletando...",
                 success: "Categoria excluida!",
-                error: "Erro, tente novamente mais tarde!",
             });
         }
     };

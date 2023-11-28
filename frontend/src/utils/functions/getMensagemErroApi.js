@@ -1,5 +1,4 @@
 const getMensagemErroApi = (err) => {
-    debugger;
     if (!err.response) {
         return "Ocorreu um erro... Tente novamente!";
     }
