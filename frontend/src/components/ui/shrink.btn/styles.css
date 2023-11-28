@@ -10,6 +10,7 @@
 }
 
 .shrinkedbtn-wrapper {
+    text-align: left;
     width: 12vw;
     display: flex;
     align-items: center;

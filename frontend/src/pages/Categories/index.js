@@ -44,11 +44,13 @@ const Categories = ({ user, setAuth }) => {
 
     const loadContent = async () => {
         const req = async () => {
-            await Requests.get(`/categories`/*, {
+            await Requests.get(
+                `/categories` /*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
-            }*/)
+            }*/
+            )
                 .then((res) => {
                     setCategoriesList(res.data);
                     setPopupOn(false);
@@ -68,7 +70,6 @@ const Categories = ({ user, setAuth }) => {
     };
 
     const handleSave = async () => {
-        
         let req = async () => {};
 
         let statuscode;
@@ -81,15 +82,19 @@ const Categories = ({ user, setAuth }) => {
 
         if (!isEditing) {
             req = async () => {
-                await Requests.post(`/categories`, obj/*{
+                await Requests.post(
+                    `/categories`,
+                    obj /*{
                     obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     }
-                }*/)
+                }*/
+                )
                     .then((res) => {
                         statuscode = res.status;
                         setPopupOn(false);
+                        clearForm();
                         console.log(res);
                     })
                     .catch((err) => {
@@ -99,15 +104,19 @@ const Categories = ({ user, setAuth }) => {
             };
         } else {
             req = async () => {
-                await Requests.put(`/categories/${selected.id}`, obj/*{
+                await Requests.put(
+                    `/categories/${selected.id}`,
+                    obj /*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     }
-                }*/)
+                }*/
+                )
                     .then((res) => {
                         statuscode = res.status;
                         setPopupOn(false);
+                        clearForm();
                         console.log(res);
                     })
                     .catch((err) => {
@@ -137,19 +146,23 @@ const Categories = ({ user, setAuth }) => {
             success: "Categoria salva!",
             error: `Erro: ${errMsg}`,
         });
+        loadContent();
     };
 
     const handleDelete = async (selected) => {
         if (selected) {
             const req = async () => {
-                await Requests.delete(`/categories/${selected.id}`/*, {
+                await Requests.delete(
+                    `/categories/${selected.id}` /*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
-                }*/)
+                }*/
+                )
                     .then((res) => {
                         setPopupOn(false);
                         console.log(res);
+                        loadContent();
                     })
                     .catch((err) => {
                         console.log(err);

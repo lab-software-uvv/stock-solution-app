@@ -14,62 +14,58 @@ import toast from "react-hot-toast";
 import { DataGrid } from "@mui/x-data-grid";
 
 //assets
-import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, ShoppingBag, TrashCan } from "akar-icons";
-import regex from "../../utils/regex";
+import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, Tag, TrashCan } from "akar-icons";
 
 //settings
 const columns = [
     { field: "id", headerName: "id", width: 25 },
-    { field: "tradingName", headerName: "Nome fantasia", width: 200 },
-    { field: "code", headerName: "Código", width: 200 },
-    { field: "cnpj", headerName: "CNPJ", width: 100 },
+    { field: "sellingDate", headerName: "Nome", width: 200 },
+    { field: "totalValue", headerName: "Descrição", width: 400 },
+    { field: "userId", headerName: "Descrição", width: 400 },
+    { field: "paymentMethod", headerName: "Descrição", width: 400 },
+    { field: "status", headerName: "Descrição", width: 400 },
 ];
 
-const Suppliers = ({ user, setAuth }) => {
+const Sales = ({ user, setAuth }) => {
     const [popupOn, setPopupOn] = useState(false);
     const [popup, setPopup] = useState(<></>);
 
     const [triggerChangePage, setTriggerChangePage] = useState(true);
 
-    const [suppliersList, setSuppliersList] = useState([
-        { id: 1, TradingName: `Categoria teste`, CNPJ: `Desc test`, Code: "teste" },
-    ]);
+    const [salesList, setSalesList] = useState(null);
 
     const [selected, setSelected] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-
-    //form fields
-    const [code, setCode] = useState("");
-    const [tradingName, setTradingName] = useState("");
-    const [CNPJ, setCNPJ] = useState("");
+    const [name, setName] = useState("");
+    const [desc, setDesc] = useState("");
 
     useEffect(() => {
-        loadContent();
+        // loadContent();
     }, []);
 
     const loadContent = async () => {
         const req = async () => {
             await Requests.get(
-                `/suppliers` /*, {
+                `/sales` /*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
             }*/
             )
                 .then((res) => {
-                    setSuppliersList(res.data);
+                    setSalesList(res.data);
                     setPopupOn(false);
-                    // console.log(res);
+                    console.log(res);
                 })
                 .catch((err) => {
-                    // console.log(err);
+                    console.log(err);
                     throw Error;
                 });
         };
 
         toast.promise(req(), {
             loading: "Carregando...",
-            success: "Fornecedores carregados!",
+            success: "Vendas carregadas!",
             error: "Erro, tente novamente mais tarde",
         });
     };
@@ -77,61 +73,55 @@ const Suppliers = ({ user, setAuth }) => {
     const handleSave = async () => {
         let req = async () => {};
 
-        if (!regex.cnpj.test(CNPJ)) {
-            toast.error("Não é um CNPJ válido");
-            return;
-        }
-
         let statuscode;
         let errMsg = "";
 
         let obj = {
-            Code: code,
-            TradingName: tradingName,
-            CNPJ: CNPJ,
+            name: name,
+            description: desc,
         };
 
         if (!isEditing) {
             req = async () => {
                 await Requests.post(
-                    `/suppliers`,
+                    `/sales`,
                     obj /*{
-                    body: obj,
+                    obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
-                    },
+                    }
                 }*/
                 )
                     .then((res) => {
                         statuscode = res.status;
                         setPopupOn(false);
                         clearForm();
-                        // console.log(res);
+                        console.log(res);
                     })
                     .catch((err) => {
-                        // console.log(err);
+                        console.log(err);
                         throw Error;
                     });
             };
         } else {
             req = async () => {
                 await Requests.put(
-                    `/suppliers/${selected.id}`,
+                    `/sales/${selected.id}`,
                     obj /*{
                     body: obj,
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
-                    },
+                    }
                 }*/
                 )
                     .then((res) => {
                         statuscode = res.status;
                         setPopupOn(false);
                         clearForm();
-                        // console.log(res);
+                        console.log(res);
                     })
                     .catch((err) => {
-                        // console.log(err);
+                        console.log(err);
                         throw Error;
                     });
             };
@@ -139,7 +129,7 @@ const Suppliers = ({ user, setAuth }) => {
 
         switch (statuscode) {
             case 404:
-                errMsg = "Fornecedor não encontrado";
+                errMsg = "Venda não encontrada";
                 throw Error;
             case 400:
                 errMsg = "Erro no formulário";
@@ -154,10 +144,9 @@ const Suppliers = ({ user, setAuth }) => {
 
         toast.promise(req(), {
             loading: "Salvando...",
-            success: "Fornecedor salvo!",
+            success: "Venda salva!",
             error: `Erro: ${errMsg}`,
         });
-
         loadContent();
     };
 
@@ -165,26 +154,26 @@ const Suppliers = ({ user, setAuth }) => {
         if (selected) {
             const req = async () => {
                 await Requests.delete(
-                    `/suppliers/${selected.id}` /*, {
+                    `/sales/${selected.id}` /*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
                 }*/
                 )
                     .then((res) => {
-                        // console.log(res);
                         setPopupOn(false);
+                        console.log(res);
                         loadContent();
                     })
                     .catch((err) => {
-                        // console.log(err);
+                        console.log(err);
                         throw Error;
                     });
             };
 
             toast.promise(req(), {
                 loading: "Deletando...",
-                success: "Fornecedor deletado!",
+                success: "Venda excluida!",
                 error: "Erro, tente novamente mais tarde!",
             });
         }
@@ -200,15 +189,14 @@ const Suppliers = ({ user, setAuth }) => {
     };
 
     const clearForm = () => {
-        setCode("");
-        setTradingName("");
-        setCNPJ("");
+        setName("");
+        setDesc("");
         setIsEditing(false);
         setSelected(null);
     };
 
     const List = () => {
-        console.log("create");
+        console.log("create list");
     };
 
     const Form = () => {
@@ -218,26 +206,26 @@ const Suppliers = ({ user, setAuth }) => {
     return (
         <Navigator user={user} setAuth={setAuth}>
             {popupOn && <Popup>{popup}</Popup>}
-            <div className="suppliers-wrapper flex-center flex-column">
+            <div className="sales-wrapper flex-center flex-column">
                 <CrudContainer
                     changePage={triggerChangePage}
-                    icon={<ShoppingBag color="var(--color-darkgrey)" />}
-                    title={"Fornecedores"}
+                    icon={<Tag color="var(--color-darkgrey)" />}
+                    title={"Categorias"}
                     list={
                         <>
                             <div style={{ height: "50vh", width: "60vw" }}>
                                 <DataGrid
-                                    rows={suppliersList}
+                                    rows={salesList? salesList : []}
                                     columns={columns}
                                     onRowClick={(e) => {
                                         handleSelectItem(e);
                                     }}
                                 />
                             </div>
-                            <div className="flex-row suppliers-list-btn-wrapper">
+                            <div className="flex-row sales-list-btn-wrapper">
                                 <IconBtn
                                     onClick={() => {
-                                        loadContent();
+                                        // loadContent();
                                     }}
                                     className=""
                                     backgroundColor={"var(--color-darkgrey)"}
@@ -258,14 +246,14 @@ const Suppliers = ({ user, setAuth }) => {
                                                                 size={58}
                                                                 color="var(--color-red)"
                                                             />
-                                                            <p>Deletar fornecedor selecionado?</p>
+                                                            <p>Deletar venda selecionada?</p>
                                                             <p className="p-subtitle">{`id: ${selected.id}`}</p>
-                                                            <p className="p-subtitle">{`Nome: ${selected.tradingName}`}</p>
+                                                            <p className="p-subtitle">{`Nome: ${selected.name}`}</p>
                                                             <p
                                                                 className="p-subtitle"
                                                                 style={{ marginBottom: 10 }}
                                                             >
-                                                                {`Código: ${selected.code}`}
+                                                                {`Descrição: ${selected.description}`}
                                                             </p>
                                                             <RoundedBtn
                                                                 onClick={() => {
@@ -294,9 +282,8 @@ const Suppliers = ({ user, setAuth }) => {
                                     <IconBtn
                                         onClick={() => {
                                             if (selected) {
-                                                setCode(selected?.code);
-                                                setCNPJ(selected?.cnpj);
-                                                setTradingName(selected?.tradingName);
+                                                setName(selected?.name);
+                                                setDesc(selected?.description);
                                                 setTriggerChangePage(!triggerChangePage);
                                                 setIsEditing(true);
                                             }
@@ -312,45 +299,32 @@ const Suppliers = ({ user, setAuth }) => {
                     }
                     form={
                         <>
-                            <form className="suppliers-form flex-column">
+                            <form className="sales-form flex-column">
                                 {isEditing && <p>{`Editando registro ${selected?.id}`}</p>}
                                 <div>
-                                    <p className="p-text">Nome fantasia *</p>
+                                    <p className="p-text">Nome da venda *</p>
                                     <TextInput
-                                        value={tradingName}
-                                        setValue={setTradingName}
-                                        required={true}
-                                        minLength={3}
-                                        maxLength={100}
-                                        placeholder={"Nome do fornecedor"}
-                                    ></TextInput>
-                                </div>
-                                <div>
-                                    <p className="p-text">Código do fornecedor</p>
-                                    <TextInput
-                                        value={code}
-                                        setValue={setCode}
+                                        value={name}
+                                        setValue={setName}
                                         required={true}
                                         minLength={3}
                                         maxLength={50}
-                                        placeholder={"Código do fornecedor"}
+                                        placeholder={"Nome da categoria"}
                                     ></TextInput>
                                 </div>
                                 <div>
-                                    <p className="p-text">CNPJ</p>
+                                    <p className="p-text">Descrição da categoria</p>
                                     <TextInput
-                                        value={CNPJ}
-                                        setValue={setCNPJ}
-                                        required={true}
-                                        minLength={3}
-                                        maxLength={50}
-                                        pattern={regex.cnpj}
-                                        placeholder={"CNPJ"}
+                                        value={desc}
+                                        setValue={setDesc}
+                                        type={"textarea"}
+                                        maxLength={255}
+                                        placeholder={"Descreva a categoria (opcional)"}
                                     ></TextInput>
                                 </div>
                                 <div></div>
                                 <div></div>
-                                <div className="suppliers-form-submit-wrapper flex-row gap-10">
+                                <div className="sales-form-submit-wrapper flex-row gap-10">
                                     <IconBtn
                                         onClick={() => {
                                             clearForm();
@@ -408,4 +382,4 @@ const Suppliers = ({ user, setAuth }) => {
     );
 };
 
-export default Suppliers;
+export default Sales;

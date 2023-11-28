@@ -15,10 +15,11 @@ const ShrinkBtn = (props) => {
                     onMouseLeave={() => setMouseOn(false)}
                     style={{
                         backgroundColor: mouseOn
-                            ? "rgba(255, 255, 255, 0.35)"
+                            ? props.mouseOnBg? props.mouseOnBg : "rgba(255, 255, 255, 0.35)"
                             : props.backgroundColor,
                         borderColor: mouseOn ? "rgba(255, 255, 255, 0.35)" : props.backgroundColor,
                         borderWidth: props.backgroundColor && 0,
+                        width: props.width && props.width
                     }}
                 >
                     {props.children}
@@ -32,10 +33,11 @@ const ShrinkBtn = (props) => {
                     onMouseLeave={() => setMouseOn(false)}
                     style={{
                         backgroundColor: mouseOn
-                            ? "rgba(255, 255, 255, 0.35)"
+                            ? props.mouseOnBg? props.mouseOnBg : "rgba(255, 255, 255, 0.35)"
                             : props.backgroundColor,
                         borderColor: mouseOn ? "rgba(255, 255, 255, 0.35)" : props.backgroundColor,
                         borderWidth: props.backgroundColor && 0,
+                        width: props.width && props.width
                     }}
                 >
                     <div className={"shrinkbtn-wrapper flex-center flex-row " + props.className} style={{backgroundColor: "transparent"}}>
