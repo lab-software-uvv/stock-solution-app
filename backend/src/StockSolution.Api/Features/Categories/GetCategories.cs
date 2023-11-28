@@ -13,7 +13,7 @@ public sealed class GetCategoriesEndpoint : Endpoint<GetCategoriesQuery, List<Ge
     public override void Configure()
     {
         Get("/categories");
-        AllowAnonymous();
+        // 
     }
 
     public override async Task HandleAsync(GetCategoriesQuery req, CancellationToken ct)

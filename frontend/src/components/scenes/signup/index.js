@@ -11,9 +11,9 @@ import TextBtn from "../../ui/text.btn";
 import RoundedBtn from "../../ui/rounded.btn";
 
 //assets
-import { Envelope, LockOn, EyeOpen, Person, CreditCardAlt1, EyeClosed, Key } from "akar-icons";
+import { Envelope, LockOn, EyeOpen, Person, CreditCardAlt1, EyeClosed, Key, Star } from "akar-icons";
 
-const SignUp = ({ setCurrentPage, handleMove }) => {
+const SignUp = ({ setCurrentPage, handleMove, setAuth, setUser }) => {
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
 
@@ -75,6 +75,7 @@ const SignUp = ({ setCurrentPage, handleMove }) => {
     const clearForm = () => {
         setFullName("");
         setEmail("");
+        setInvite("");
         setCPF("");
         setBirthday("");
         setPassword("");
@@ -94,11 +95,8 @@ const SignUp = ({ setCurrentPage, handleMove }) => {
             };
 
             const req = async () => {
-                await Requests.post("/auth/register", {
-                    body: objUser,
-                })
+                await Requests.post("/auth/register", objUser)
                     .then((res) => {
-                        clearForm();
                         handleMove();
                         setCurrentPage(0);
                         console.log(res);
@@ -148,14 +146,14 @@ const SignUp = ({ setCurrentPage, handleMove }) => {
         if (!regex.password.test(password)) {
             toast.error(
                 "A senha inserida deve conter: \n" +
-                    "• ao menos 6 caracteres." +
-                    "\n" +
-                    "• ao menos um dígito." +
-                    "\n" +
-                    "• ao menos uma letra minúscula." +
-                    "\n" +
-                    "• ao menos uma letra maiúscula." +
-                    "\n",
+                "• ao menos 6 caracteres." +
+                "\n" +
+                "• ao menos um dígito." +
+                "\n" +
+                "• ao menos uma letra minúscula." +
+                "\n" +
+                "• ao menos uma letra maiúscula." +
+                "\n",
                 {
                     duration: 10000,
                 }
@@ -200,17 +198,6 @@ const SignUp = ({ setCurrentPage, handleMove }) => {
                 <p className="p-subtitle p-white p-center">Insira seus dados para se cadastrar</p>
             </div>
             <>
-                {invite && (
-                    <TextInput
-                        required={true}
-                        type={"text"}
-                        value={invite}
-                        setValue={setInvite}
-                        placeholder={"Insira sua chave de convite"}
-                        style={{ borderColor: "var(--color-grey)" }}
-                        icoLeft={<Key size={18} color={"var(--color-darkgrey)"} />}
-                    />
-                )}
                 <TextInput
                     required={true}
                     type={"text"}
@@ -222,12 +209,21 @@ const SignUp = ({ setCurrentPage, handleMove }) => {
                 />
                 <TextInput
                     required={true}
-                    disabled={true}
+                    // disabled={true}
                     type={"email"}
                     value={email}
                     setValue={setEmail}
                     placeholder={"Email"}
                     icoLeft={<Envelope size={18} color="var(--color-black)" />}
+                />
+                <TextInput
+                    required={true}
+                    type={"text"}
+                    value={invite}
+                    setValue={setInvite}
+                    placeholder={"Insira seu convite"}
+                    style={{ borderColor: "var(--color-grey)" }}
+                    icoLeft={<Key size={18} color={"var(--color-darkgrey)"} />}
                 />
                 <TextInput
                     maxLength={11}

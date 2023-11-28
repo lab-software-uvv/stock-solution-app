@@ -15,7 +15,7 @@ public sealed class CreateComercialProductsEndpoint : Endpoint<CreateComercialPr
     public override void Configure()
     {
         Post("/comercial-products");
-        AllowAnonymous();
+        
         Description(c => c
                     .Accepts<CreateComercialProductsRequest>("application/json")
                     .Produces<CreateComercialProductsResponse>(201, "application/json")

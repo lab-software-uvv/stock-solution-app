@@ -3,6 +3,7 @@ using StockSolution.Api.Persistence.Entities;
 using StockSolution.Api.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
+using EntityFramework.Exceptions.PostgreSQL;
 
 namespace StockSolution.Api.Persistence;
 
@@ -17,7 +18,8 @@ public class AppDbContext : DbContext
     }
 
     public required DbSet<User> Users { get; set; }
-    public required DbSet<EmployeeRole> EmployeesRoles { get; set; }
+    public required DbSet<Role> Roles { get; set; }
+    public required DbSet<Invite> Invites { get; set; }
     public required DbSet<Category> Categories { get; set; }
     public required DbSet<Product> Products { get; set; }
     public required DbSet<Supplier> Suppliers { get; set; }
@@ -142,6 +144,8 @@ public class AppDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        optionsBuilder.UseExceptionProcessor();
+        optionsBuilder.EnableDetailedErrors();
         optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
     }
 }

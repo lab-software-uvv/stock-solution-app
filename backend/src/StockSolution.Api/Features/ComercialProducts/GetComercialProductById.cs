@@ -14,7 +14,7 @@ public sealed class GetComercialProductByIdEndpoint : Endpoint<GetComercialProdu
     public override void Configure()
     {
         Get("/comercial-products/{id}");
-        AllowAnonymous();
+        
     }
 
     public override async Task HandleAsync(GetComercialProductByIdQuery req, CancellationToken ct)

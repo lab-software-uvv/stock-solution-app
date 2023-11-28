@@ -15,7 +15,7 @@ public sealed class CreateSupplierEndpoint : Endpoint<CreateSupplierRequest, Cre
     public override void Configure()
     {
         Post("/suppliers");
-        AllowAnonymous();
+        
         Description(c => c
                     .Accepts<CreateSupplierRequest>("application/json")
                     .Produces<CreateSupplierResponse>(201, "application/json")

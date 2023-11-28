@@ -1,8 +1,12 @@
 ﻿using System.Reflection;
 using CommunityToolkit.Diagnostics;
 using FastEndpoints.Security;
+using Hellang.Middleware.ProblemDetails;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
+using StockSolution.Api.Common;
+using StockSolution.Api.Common.Exceptions;
 
 namespace StockSolution.Api;
 
@@ -26,12 +30,19 @@ public static class StockSolutionDependencyInjectionExtensions
 
         services.AddHttpContextAccessor();
         services.AddSingleton<IClock>(SystemClock.Instance);
-
-        var jwtSecret = configuration["JwtSecret"];
-        Guard.IsNotNullOrEmpty(jwtSecret);
         
-        services.AddJWTBearerAuth(jwtSecret);
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Section));
+        services.PostConfigure<JwtOptions>(o =>
+        {
+            Guard.IsNotNullOrWhiteSpace(o.SigningKey, "Jwt:SigningKey");
+        });
+
+        var jwtSigningKey = configuration["Jwt:SigningKey"];
+        Guard.IsNotNullOrWhiteSpace(jwtSigningKey);
+        
+        services.AddJWTBearerAuth(jwtSigningKey);
         services.AddAuthorization();
+        services.ConfigureProblemDetails();
         services.AddFastEndpoints(o =>
         {
             o.SourceGeneratorDiscoveredTypes.AddRange(Assembly.GetExecutingAssembly().DefinedTypes);
@@ -47,5 +58,18 @@ public static class StockSolutionDependencyInjectionExtensions
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString, b => b.UseNodaTime()));
+    }
+    
+    private static void ConfigureProblemDetails(this IServiceCollection services)
+    {
+        services.AddProblemDetails(opt =>
+        {
+            opt.MapToStatusCode<DbUpdateException>(StatusCodes.Status409Conflict);
+            opt.MapToStatusCode<ConflictException>(StatusCodes.Status409Conflict);
+            opt.MapToStatusCode<NotFoundException>(StatusCodes.Status404NotFound);
+            opt.MapToStatusCode<BadRequestException>(StatusCodes.Status400BadRequest);
+            opt.MapToStatusCode<UnauthorizedAccessException>(StatusCodes.Status401Unauthorized);
+            opt.MapToStatusCode<ConflictException>(StatusCodes.Status409Conflict);
+        });
     }
 }

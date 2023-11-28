@@ -15,7 +15,7 @@ public sealed class CreateSaleEndpoint : Endpoint<CreateSaleRequest, CreateSaleR
     public override void Configure()
     {
         Post("/sales");
-        AllowAnonymous();
+        
         Description(c => c
             .Accepts<CreateSaleRequest>("application/json")
             .Produces<CreateSaleResponse>(201, "application/json")

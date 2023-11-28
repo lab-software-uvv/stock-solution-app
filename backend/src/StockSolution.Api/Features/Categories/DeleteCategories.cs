@@ -13,7 +13,7 @@ public sealed class DeleteCategoriesEndpoint : Endpoint<DeleteCategories>
     public override void Configure()
     {
         Delete("/categories/{id}");
-        AllowAnonymous();
+        
         Description(c => c
                     .Produces(200)
                     .ProducesProblem(404)

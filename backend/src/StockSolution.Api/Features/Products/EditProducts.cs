@@ -14,7 +14,7 @@ public sealed class EditProductEndpoint  : Endpoint<EditProductCommand, EditProd
     public override void Configure()
     {
         Put("/products/{id}");
-        AllowAnonymous();
+        
         Description(c => c
                    .Accepts<EditProductCommand>("application/json")
                    .Produces<EditProductsResponse>(200, "application/json")

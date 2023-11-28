@@ -16,7 +16,7 @@ public sealed class EditSaleEndpoint  : Endpoint<EditSaleRequest, EditSaleRespon
     public override void Configure()
     {
         Put("/sales/{id}");
-        AllowAnonymous();
+        
         Description(c => c
                    .Accepts<EditSaleRequest>("application/json")
                    .Produces<EditSaleResponse>(200, "application/json")

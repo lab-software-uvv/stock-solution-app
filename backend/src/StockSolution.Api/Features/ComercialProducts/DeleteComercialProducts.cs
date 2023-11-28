@@ -13,7 +13,7 @@ public sealed class DeleteComercialProductsEndpoint : Endpoint<DeleteComercialPr
     public override void Configure()
     {
         Delete("/comercial-products/{id}");
-        AllowAnonymous();
+        
         Description(c => c
                     .Produces(200)
                     .ProducesProblem(404)

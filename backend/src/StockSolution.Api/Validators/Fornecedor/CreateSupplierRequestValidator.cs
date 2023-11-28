@@ -36,6 +36,8 @@ namespace StockSolution.Api.Validators.Fornecedor
 
         private static bool ValidarCNPJ(string cnpj)
         {
+            cnpj = cnpj.Where(char.IsDigit).Aggregate("", (current, c) => current + c);
+            
             // Calcular os dígitos verificadores
             int[] multiplicadores1 = { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiplicadores2 = { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };

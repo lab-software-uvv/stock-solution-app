@@ -14,7 +14,7 @@ public sealed class CreateCategoryEndpoint : Endpoint<CreateCategoryRequest, Cre
     public override void Configure()
     {
         Post("/categories");
-        AllowAnonymous();
+        
         Description(c => c
                     .Accepts<CreateCategoryRequest>("application/json")
                     .Produces<CreateCategoryResponse>(201, "application/json")

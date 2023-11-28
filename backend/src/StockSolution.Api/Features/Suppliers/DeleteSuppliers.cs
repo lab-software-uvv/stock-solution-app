@@ -13,7 +13,7 @@ public sealed class DeleteSuppliersEndpoint : Endpoint<DeleteSuppliers>
     public override void Configure()
     {
         Delete("/suppliers/{id}");
-        AllowAnonymous();
+        
         Description(c => c
                     .Produces(200)
                     .ProducesProblem(404)

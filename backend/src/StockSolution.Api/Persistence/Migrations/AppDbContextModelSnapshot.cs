@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using StockSolution.Api.Persistence;
 
@@ -75,21 +76,29 @@ namespace StockSolution.Api.Persistence.Migrations
                     b.ToTable("ComercialProducts");
                 });
 
-            modelBuilder.Entity("StockSolution.Api.Persistence.Entities.EmployeeRole", b =>
+            modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Invite", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.ToTable("EmployeesRoles");
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Invites");
                 });
 
             modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Product", b =>
@@ -165,6 +174,23 @@ namespace StockSolution.Api.Persistence.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductComercialProducts");
+                });
+
+            modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Sale", b =>
@@ -284,12 +310,16 @@ namespace StockSolution.Api.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Email")
+                    b.Property<LocalDate>("BirthDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Cpf")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("EmployeeRoleId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -299,15 +329,31 @@ namespace StockSolution.Api.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeRoleId");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Invite", b =>
+                {
+                    b.HasOne("StockSolution.Api.Persistence.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StockSolution.Api.Persistence.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Product", b =>
@@ -397,13 +443,13 @@ namespace StockSolution.Api.Persistence.Migrations
 
             modelBuilder.Entity("StockSolution.Api.Persistence.Entities.User", b =>
                 {
-                    b.HasOne("StockSolution.Api.Persistence.Entities.EmployeeRole", "EmployeeRole")
+                    b.HasOne("StockSolution.Api.Persistence.Entities.Role", "Role")
                         .WithMany("Users")
-                        .HasForeignKey("EmployeeRoleId")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("EmployeeRole");
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("StockSolution.Api.Persistence.Entities.ComercialProduct", b =>
@@ -413,16 +459,16 @@ namespace StockSolution.Api.Persistence.Migrations
                     b.Navigation("SaleComercialProducts");
                 });
 
-            modelBuilder.Entity("StockSolution.Api.Persistence.Entities.EmployeeRole", b =>
-                {
-                    b.Navigation("Users");
-                });
-
             modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Product", b =>
                 {
                     b.Navigation("ProductComercialProduct");
 
                     b.Navigation("SaleProducts");
+                });
+
+            modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Sale", b =>

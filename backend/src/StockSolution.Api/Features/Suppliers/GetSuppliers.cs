@@ -14,7 +14,7 @@ public sealed class GetSuppliersEndpoint : Endpoint<GetSuppliersQuery, List<GetS
     public override void Configure()
     {
         Get("/suppliers");
-        AllowAnonymous();
+        
     }
 
     public override async Task HandleAsync(GetSuppliersQuery req, CancellationToken ct)

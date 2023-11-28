@@ -115,7 +115,9 @@ const Products = ({ user, setAuth }) => {
         )
             .then((res) => {
                 setCategoriesList(res.data);
-                setCategory(res.data[0].id);
+                if (res.data.length > 0) {
+                    setCategory(res.data[0].id);
+                }
                 // console.log(res);
             })
             .catch((err) => {
@@ -134,7 +136,9 @@ const Products = ({ user, setAuth }) => {
         )
             .then((res) => {
                 setSuppliersList(res.data);
-                setSupplier(res.data[0].id);
+                if (res.data.length > 0) {
+                    setSupplier(res.data[0].id);
+                }
                 // console.log(res);
             })
             .catch((err) => {
@@ -144,7 +148,7 @@ const Products = ({ user, setAuth }) => {
     };
 
     const handleSave = async () => {
-        let req = async () => {};
+        let req = async () => { };
 
         let statuscode;
         let errMsg = "";
@@ -302,7 +306,7 @@ const Products = ({ user, setAuth }) => {
                         <>
                             <div style={{ height: "50vh", width: "60vw" }}>
                                 <DataGrid
-                                    rows={productList? productList : []}
+                                    rows={productList ? productList : []}
                                     columns={columns}
                                     onRowClick={(e) => {
                                         handleSelectItem(e);

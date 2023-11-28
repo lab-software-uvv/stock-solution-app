@@ -41,7 +41,7 @@ const Login = ({ setAuth, setUser }) => {
         {
             name: "signup",
             component: (
-                <SignUp setCurrentPage={setCurrentPage} handleMove={() => handleMove()}></SignUp>
+                <SignUp setAuth={setAuth} setUser={setUser} setCurrentPage={setCurrentPage} handleMove={() => handleMove()}></SignUp>
             ),
         },
     ];

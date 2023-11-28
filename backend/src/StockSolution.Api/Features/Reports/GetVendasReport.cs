@@ -22,7 +22,7 @@ public sealed class GetVendasReportEndpoint : Endpoint<GetVendasReportQuery, byt
     public override void Configure()
     {
         Get("/reports/vendas-report");
-        AllowAnonymous();
+        
     }
 
     public override async Task HandleAsync(GetVendasReportQuery req, CancellationToken ct)

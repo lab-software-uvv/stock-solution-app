@@ -15,7 +15,7 @@ public sealed class AddSoldProductEndpoint : Endpoint<AddSoldProductRequest, Add
     public override void Configure()
     {
         Post("/sales/{saleId}/product/{productId}");
-        AllowAnonymous();
+        
         Description(c => c
             .Accepts<AddSoldProductRequest>("application/json")
             .Produces<AddSoldProductResponse>(200, "application/json")

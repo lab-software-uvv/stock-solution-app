@@ -5,8 +5,9 @@ namespace StockSolution.Api.Persistence.Entities;
 /// <summary>
 /// This entity represents a employee associated to the organization.
 /// </summary>
-public class EmployeeRole : BaseEntity
+public class Role : BaseEntity
 {
-    public required string Description { get; set; }
+    public required string Name { get; set; }
+    
     public List<User> Users { get; set; } = null!;
 }

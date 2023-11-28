@@ -14,7 +14,7 @@ public sealed class EditCategoryEndpoint  : Endpoint<EditCategoryCommand, EditCa
     public override void Configure()
     {
         Put("/categories/{id}");
-        AllowAnonymous();
+        
         Description(c => c
                    .Accepts<EditCategoryCommand>("application/json")
                    .Produces<EditCategoriesResponse>(200, "application/json")

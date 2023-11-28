@@ -3,6 +3,7 @@ using StockSolution.Api.Persistence.Entities;
 using Extensions.Hosting.AsyncInitialization;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
+using StockSolution.Api.Services;
 
 namespace StockSolution.Api.Persistence;
 
@@ -18,19 +19,24 @@ public class DbInitializer : IAsyncInitializer
 
     public async Task InitializeAsync(CancellationToken cancellationToken)
     {
-        // We do that as a safe-net since integration tests are going to use the InMemoryDatabase
         if (_context.Database.IsNpgsql())
         {
             await _context.Database.MigrateAsync(cancellationToken);
             await _context.Database.EnsureCreatedAsync(cancellationToken);
         }
 
-        var hasEmployeeRoles = await _context.EmployeesRoles.AnyAsync(cancellationToken);
-
-        if (!hasEmployeeRoles)
+        var hasRoles = await _context.Roles.AnyAsync(cancellationToken);
+        if (!hasRoles)
         {
-            var employeeRoles = DataFactory.SeedEmployeeRoles();
-            _context.EmployeesRoles.AddRange(employeeRoles);
+            var roles = DataFactory.CreateRoles();
+            _context.Roles.AddRange(roles);
+        }
+        
+        var hasUsers = await _context.Users.AnyAsync(cancellationToken);
+        if (!hasUsers)
+        {
+            var user = DataFactory.CreateUser();
+            _context.Users.Add(user);
         }
         
         await _context.SaveChangesAsync(cancellationToken);
@@ -39,21 +45,43 @@ public class DbInitializer : IAsyncInitializer
 
 public static class DataFactory
 {
-    public static IEnumerable<EmployeeRole> SeedEmployeeRoles()
+    public const string AdminLogin = "admin@gmail.com";
+    public const string AdminPassword = "123456";
+    
+    public static User CreateUser()
     {
-        var employeeRoles = new List<EmployeeRole>
+        var hasher = new PasswordHasher();
+        
+        return new User
         {
-            new EmployeeRole
+            Name = "John Doe",
+            Cpf = "01234567890",
+            BirthDate = new LocalDate(1990, 05, 17),
+            Email = AdminLogin,
+            RoleId = 1,
+            PasswordHash = hasher.Hash(AdminPassword)
+        };
+    }
+
+
+    public static IEnumerable<Role> CreateRoles()
+    {
+        var employeeRoles = new List<Role>
+        {
+            new()
             {
-                Description = "Funcionário",
+                Id = 1,
+                Name = "Admin",
             },
-            new EmployeeRole
+            new()
             {
-                Description = "Adminstrador",
+                Id = 2,
+                Name = "Manager",
             },
-            new EmployeeRole
+            new()
             {
-                Description = "Gerente",
+                Id = 3,
+                Name = "Employee",
             }
         };
 

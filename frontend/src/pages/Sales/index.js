@@ -114,7 +114,9 @@ const Sales = ({ user, setAuth }) => {
                     return;
                 }
                 setUsers(res.data);
-                setUserId(res.data[0].id);
+                if (res.data.length > 0) {
+                    setUserId(res.data[0].id);
+                }
                 console.log(res);
             })
             .catch((err) => {
@@ -124,7 +126,7 @@ const Sales = ({ user, setAuth }) => {
     };
 
     const handleSave = async () => {
-        let req = async () => {};
+        let req = async () => { };
 
         let statuscode;
         let errMsg = "";

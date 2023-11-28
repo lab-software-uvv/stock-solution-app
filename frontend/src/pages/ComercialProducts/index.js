@@ -106,7 +106,10 @@ const ComercialProducts = ({ user, setAuth }) => {
         )
             .then((res) => {
                 setCategoriesList(res.data);
-                setCategory(res.data[0].id);
+
+                if (res.data.length > 0) {
+                    setCategory(res.data[0].id);
+                }
                 // console.log(res);
             })
             .catch((err) => {
@@ -123,9 +126,12 @@ const ComercialProducts = ({ user, setAuth }) => {
             },
         }*/
         )
-            .then((res) => {
+            .then((res) => {                
                 setSuppliersList(res.data);
-                setSupplier(res.data[0].id);
+                
+                if (res.data.length > 0) {
+                    setSupplier(res.data[0].id);
+                }
                 // console.log(res);
             })
             .catch((err) => {

@@ -14,7 +14,7 @@ public sealed class EditComercialProductEndpoint  : Endpoint<EditComercialProduc
     public override void Configure()
     {
         Put("/comercial-products/{id}");
-        AllowAnonymous();
+        
         Description(c => c
                    .Accepts<EditComercialProductCommand>("application/json")
                    .Produces<EditComercialProductResponse>(200, "application/json")

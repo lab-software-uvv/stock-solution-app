@@ -15,7 +15,7 @@ public sealed class GetProductsEndpoint : Endpoint<GetProductsQuery, List<GetPro
     public override void Configure()
     {
         Get("/products");
-        AllowAnonymous();
+        
     }
 
     public override async Task HandleAsync(GetProductsQuery req, CancellationToken ct)

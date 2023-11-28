@@ -15,7 +15,7 @@ public sealed class DeleteSoldProductEndpoint : Endpoint<DeleteSoldProductReques
     public override void Configure()
     {
         Delete("/sales/{saleId}/product/{productId}");
-        AllowAnonymous();
+        
         Description(c => c
             .Produces(200)
             .ProducesProblem(404)

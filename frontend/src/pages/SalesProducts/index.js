@@ -124,7 +124,9 @@ const SalesProducts = ({ user, setAuth }) => {
         )
             .then((res) => {
                 setComercialList(res.data);
-                setComercialProductId(res.data[0].id);
+                if (res.data.length > 0) {
+                    setComercialProductId(res.data[0].id);
+                }
                 // console.log(res);
             })
             .catch((err) => {
@@ -152,7 +154,7 @@ const SalesProducts = ({ user, setAuth }) => {
     };
 
     const handleSave = async () => {
-        let req = async () => {};
+        let req = async () => { };
 
         let statuscode;
         let errMsg = "";
@@ -166,10 +168,9 @@ const SalesProducts = ({ user, setAuth }) => {
 
         req = async () => {
             await Requests.post(
-                `${
-                    pEnable
-                        ? `/sales/${params.id}/product/${productId}`
-                        : `/sales/${params.id}/comercial-product/${comercialProductId}`
+                `${pEnable
+                    ? `/sales/${params.id}/product/${productId}`
+                    : `/sales/${params.id}/comercial-product/${comercialProductId}`
                 }`,
                 obj /*{
                     body: obj,

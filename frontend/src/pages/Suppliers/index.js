@@ -16,6 +16,7 @@ import { DataGrid } from "@mui/x-data-grid";
 //assets
 import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, ShoppingBag, TrashCan } from "akar-icons";
 import regex from "../../utils/regex";
+import getMensagemErroApi from "../../utils/functions/getMensagemErroApi";
 
 //settings
 const columns = [
@@ -59,11 +60,8 @@ const Suppliers = ({ user, setAuth }) => {
                 .then((res) => {
                     setSuppliersList(res.data);
                     setPopupOn(false);
-                    // console.log(res);
                 })
                 .catch((err) => {
-                    // console.log(err);
-                    throw Error;
                 });
         };
 
@@ -109,8 +107,8 @@ const Suppliers = ({ user, setAuth }) => {
                         // console.log(res);
                     })
                     .catch((err) => {
-                        // console.log(err);
-                        throw Error;
+                        const msgErro = getMensagemErroApi(err);
+                        toast.error(msgErro);
                     });
             };
         } else {
@@ -131,8 +129,8 @@ const Suppliers = ({ user, setAuth }) => {
                         // console.log(res);
                     })
                     .catch((err) => {
-                        // console.log(err);
-                        throw Error;
+                        const msgErro = getMensagemErroApi(err);
+                        toast.error(msgErro);
                     });
             };
         }
@@ -155,7 +153,6 @@ const Suppliers = ({ user, setAuth }) => {
         toast.promise(req(), {
             loading: "Salvando...",
             success: "Fornecedor salvo!",
-            error: `Erro: ${errMsg}`,
         });
 
         loadContent();
@@ -177,15 +174,14 @@ const Suppliers = ({ user, setAuth }) => {
                         loadContent();
                     })
                     .catch((err) => {
-                        // console.log(err);
-                        throw Error;
+                        const msgErro = getMensagemErroApi(err);
+                        toast.error(msgErro);
                     });
             };
 
             toast.promise(req(), {
                 loading: "Deletando...",
                 success: "Fornecedor deletado!",
-                error: "Erro, tente novamente mais tarde!",
             });
         }
     };

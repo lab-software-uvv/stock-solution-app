@@ -15,7 +15,7 @@ public sealed class CreateProductEndpoint : Endpoint<CreateProductRequest, Creat
     public override void Configure()
     {
         Post("/products");
-        AllowAnonymous();
+        
         Description(c => c
                     .Accepts<CreateProductRequest>("application/json")
                     .Produces<CreateProductResponse>(201, "application/json")

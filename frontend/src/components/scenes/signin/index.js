@@ -36,15 +36,14 @@ const SignIn = ({ setCurrentPage, handleMove, setAuth, setUser }) => {
 
             const req = async () => {
                 await Requests.post("/auth/login", objUser)
-                    .then((res) => {
-                        let a = { auth: true, token: res.token };
-                        let u = { name: res.name, email: res.email, role: "Gestor"};
-                        localStorage.setItem("token", res.token);
-                        localStorage.setItem("auth", JSON.stringfy(a));
+                    .then(({data}) => {
+                        let a = { auth: true, token: data.token };
+                        let u = { name: data.name, email: data.email, role: "Gestor"};
+                        localStorage.setItem("token", data.token);
+                        localStorage.setItem("auth", JSON.stringify(a));
                         localStorage.setItem("user", JSON.stringify(u));
                         setAuth(a);
                         setUser(u);
-                        console.log(res);
                         logged = true;
                     })
                     .catch((err) => {
@@ -58,7 +57,7 @@ const SignIn = ({ setCurrentPage, handleMove, setAuth, setUser }) => {
                 {
                     loading: "Autenticando...",
                     success: "Login efetuado com sucesso!",
-                    error: "Erro, tente novamente mais tarde",
+                    error: "Erro ao efetuar login! Verifique os dados e tente novamente.",
                 },
                 {
                     success: {
@@ -68,20 +67,20 @@ const SignIn = ({ setCurrentPage, handleMove, setAuth, setUser }) => {
             );
         }
 
-        if (logged === false) {
-            localStorage.setItem("token", "514564sa87q6we121x");
-            localStorage.setItem(
-                "auth",
-                JSON.stringify({ auth: true, token: "514564sa87q6we121x" })
-            );
-            localStorage.setItem(
-                "user",
-                JSON.stringify({ name: `Fabiano Rabelo`, role: `Gestor` })
-            );
-            setUser({ name: `Fabiano Rabelo`, role: `Gestor` });
-            setAuth({ auth: true, token: "" });
-            console.log("logou");
-        }
+        // if (logged === false) {
+        //     localStorage.setItem("token", "514564sa87q6we121x");
+        //     localStorage.setItem(
+        //         "auth",
+        //         JSON.stringify({ auth: true, token: "514564sa87q6we121x" })
+        //     );
+        //     localStorage.setItem(
+        //         "user",
+        //         JSON.stringify({ name: `Fabiano Rabelo`, role: `Gestor` })
+        //     );
+        //     setUser({ name: `Fabiano Rabelo`, role: `Gestor` });
+        //     setAuth({ auth: true, token: "" });
+        //     console.log("logou");
+        // }
     };
 
     const validateFields = () => {

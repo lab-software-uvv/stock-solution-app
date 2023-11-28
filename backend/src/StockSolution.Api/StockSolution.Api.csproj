@@ -15,6 +15,7 @@
         <PackageReference Include="Bogus" Version="34.0.2" />
         <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.1" />
         <PackageReference Include="CsvHelper" Version="30.0.1" />
+        <PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="6.0.3" />
         <PackageReference Include="Extensions.Hosting.AsyncInitialization" Version="3.0.0" />
         <PackageReference Include="FastEndpoints" Version="5.18.0" />
         <PackageReference Include="FastEndpoints.Generator" Version="5.18.0">
@@ -23,6 +24,7 @@
         </PackageReference>
         <PackageReference Include="FastEndpoints.Security" Version="5.18.0" />
         <PackageReference Include="FastEndpoints.Swagger" Version="5.18.0" />
+        <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
         <PackageReference Include="MediatR" Version="12.1.1" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.12">
@@ -35,6 +37,7 @@
         </PackageReference>
         <PackageReference Include="NetEscapades.EnumGenerators" Version="1.0.0-beta08" />
         <PackageReference Include="NodaTime.Bogus" Version="3.0.2" />
+        <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.1.2" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="7.0.11" />
         <PackageReference Include="SignalRSwaggerGen" Version="4.4.0" />

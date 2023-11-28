@@ -14,7 +14,7 @@ public sealed class EditSupplierEndpoint  : Endpoint<EditSupplierCommand, EditSu
     public override void Configure()
     {
         Put("/suppliers/{id}");
-        AllowAnonymous();
+        
         Description(c => c
                    .Accepts<EditSupplierCommand>("application/json")
                    .Produces<EditSuppliersResponse>(200, "application/json")
