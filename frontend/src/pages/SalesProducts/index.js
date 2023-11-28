@@ -33,13 +33,13 @@ import ShrinkBtn from "../../components/ui/shrink.btn";
 
 //settings
 const columns = [
-    { field: "id", headerName: "id", width: 50 },
-    { field: "productId", headerName: "Código", width: 100 },
-    { field: "productName", headerName: "Nome", width: 250 },
-    { field: "quantity", headerName: "Quantidade", width: 100 },
+    { field: "name", headerName: "Nome", width: 100 },
+    { field: "code", headerName: "Código", width: 125 },
+    { field: "price", headerName: "Valor", width: 75 },
+    { field: "description", headerName: "Descrição", width: 250 },
 ];
 
-const CPProducts = ({ user, setAuth }) => {
+const SalesProducts = ({ user, setAuth }) => {
     const navigate = useNavigate();
     const params = useParams();
 
@@ -48,18 +48,27 @@ const CPProducts = ({ user, setAuth }) => {
 
     const [triggerChangePage, setTriggerChangePage] = useState(true);
 
-    const [comercialProduct, setComercialProduct] = useState(null);
+    const [sale, setSale] = useState(null);
+    const [saleProducts, setSaleProducts] = useState(null);
+
     const [comercialList, setComercialList] = useState(null);
-    const [productsList, setProductsList] = useState([]);
+    const [productsList, setProductsList] = useState(null);
 
     const [selected, setSelected] = useState(null);
 
     //form fields
     const [productId, setProductId] = useState(0);
-    const [quantity, setQuantity] = useState(1);
+    const [comercialProductId, setComercialProductId] = useState(0);
+    const [saleId, setSaleId] = useState(params.id);
+    const [quantity, setQuantity] = useState(0);
+    const [value, setValue] = useState(0);
+
+    const [pEnable, setpEnable] = useState(true);
+    const [cEnable, setcEnable] = useState(false);
 
     useEffect(() => {
-        loadContent();
+        // loadContent();
+        reqComercialList();
         reqProductsList();
     }, []);
 
@@ -67,40 +76,25 @@ const CPProducts = ({ user, setAuth }) => {
         try {
             const req = async () => {
                 await Requests.get(
-                    `/comercial-products/${params.id}` /*, {
+                    `/sales/${params.id}` /*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
             }*/
                 )
                     .then(async (res) => {
-                        setComercialProduct(res.data);
+                        let obj = res.data;
+                        setSale(obj);
                         setPopupOn(false);
 
-                        await reqProductsList();
-
-                        await Requests.get(`/comercial-products/${params.id}/products`)
-                            .then((res) => {
-                                if (res.status === 404) {
-                                    return;
-                                }
-                                let aux = [];
-                                res.data.forEach((element) => {
-                                    aux.push({
-                                        id: element.id,
-                                        comercialProductId: element.comercialProductId,
-                                        productId: element.productId,
-                                        productName: productsList.find(
-                                            (e) => e.id === element.productId
-                                        ).name,
-                                        quantity: element.quantity,
-                                    });
-                                });
-                                setComercialList(
-                                    aux.filter((e) => e.comercialProductId === parseInt(params.id))
-                                );
-                            })
-                            .catch((err) => {});
+                        // await Requests.get(`/comercial-products/${params.id}/products`)
+                        //     .then((res) => {
+                        //         if (res.status === 404) {
+                        //             return;
+                        //         }
+                        //         reqProductsList(res.data);
+                        //     })
+                        //     .catch((err) => {});
                     })
                     .catch((err) => {
                         console.log(err);
@@ -119,6 +113,24 @@ const CPProducts = ({ user, setAuth }) => {
         }
     };
 
+    const reqComercialList = async () => {
+        await Requests.get(
+            `/comercial-products` /*, {
+            headers: {
+                authentication: `bearer ${localStorage.getItem("token")}`,
+            },
+        }*/
+        )
+            .then((res) => {
+                setComercialList(res.data);
+                setComercialProductId(res.data[0].id);
+                // console.log(res);
+            })
+            .catch((err) => {
+                // console.log(err);
+                throw Error;
+            });
+    };
     const reqProductsList = async () => {
         await Requests.get(
             `/products` /*, {
@@ -145,13 +157,15 @@ const CPProducts = ({ user, setAuth }) => {
         let errMsg = "";
 
         let obj = {
-            productId: productId,
-            quantity: quantity,
+            // Name: name,
+            // Code: code,
+            // Price: price,
+            // Description: description,
         };
 
         req = async () => {
             await Requests.post(
-                `/comercial-products/${params.id}/products`,
+                `/sales/${params.id}/products`,
                 obj /*{
                     body: obj,
                     headers: {
@@ -162,8 +176,6 @@ const CPProducts = ({ user, setAuth }) => {
                 .then((res) => {
                     statuscode = res.status;
                     setPopupOn(false);
-                    clearForm()
-                    loadContent()
                     console.log(res);
                 })
                 .catch((err) => {
@@ -184,7 +196,6 @@ const CPProducts = ({ user, setAuth }) => {
                 throw Error;
 
             default:
-                errMsg = "Tente novamente mais tarde";
                 break;
         }
 
@@ -199,7 +210,7 @@ const CPProducts = ({ user, setAuth }) => {
         if (selected) {
             const req = async () => {
                 await Requests.delete(
-                    `/comercial-products/${params.id}/products/${selected.id}` /*, {
+                    `/sales/${selected.id}` /*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
@@ -221,7 +232,6 @@ const CPProducts = ({ user, setAuth }) => {
                 error: "Erro, tente novamente mais tarde!",
             });
         }
-        loadContent();
     };
 
     const handleSelectItem = (selected) => {
@@ -231,12 +241,13 @@ const CPProducts = ({ user, setAuth }) => {
         } else {
             setSelected(null);
         }
-        console.log(item);
     };
 
     const clearForm = () => {
         setProductId(0);
-        setQuantity(1);
+        setComercialProductId(0);
+        setQuantity(0);
+        setValue(0);
         setSelected(null);
     };
 
@@ -257,19 +268,15 @@ const CPProducts = ({ user, setAuth }) => {
                     icon={
                         <ArrowBackThickFill
                             color="var(--color-darkgrey)"
-                            onClick={() => navigate("/comercial-products")}
+                            onClick={() => navigate("/sales")}
                         />
                     }
-                    title={`Produtos em ${
-                        comercialProduct && comercialProduct.name
-                            ? comercialProduct.name
-                            : "Produto Comercial"
-                    }`}
+                    title={`Produtos em venda`}
                     list={
                         <>
                             <div style={{ height: "50vh", width: "60vw" }}>
                                 <DataGrid
-                                    rows={comercialList ? comercialList : []}
+                                    rows={saleProducts ? saleProducts : []}
                                     columns={columns}
                                     onRowClick={(e) => {
                                         handleSelectItem(e);
@@ -301,12 +308,12 @@ const CPProducts = ({ user, setAuth }) => {
                                                         />
                                                         <p>Deletar produto da venda selecionada?</p>
                                                         <p className="p-subtitle">{`id: ${selected.id}`}</p>
-                                                        <p className="p-subtitle">{`Nome: ${selected.productName}`}</p>
+                                                        <p className="p-subtitle">{`Nome: ${selected.name}`}</p>
                                                         <p
                                                             className="p-subtitle"
                                                             style={{ marginBottom: 10 }}
                                                         >
-                                                            {`Quantidade: ${selected.quantity}`}
+                                                            {`Descrição: ${selected.description}`}
                                                         </p>
                                                         <RoundedBtn
                                                             onClick={() => {
@@ -339,19 +346,64 @@ const CPProducts = ({ user, setAuth }) => {
                         <>
                             <form className="c-products-form">
                                 <div
-                                    className="flex-row cpp-tables-wrapper"
+                                    className="sp-tables-wrapper"
                                     style={{ justifyContent: "space-between" }}
                                 >
                                     <div className="flex-row gap-10" style={{ width: "100%" }}>
                                         <div style={{ flex: 1 }}>
-                                            <p className="p-text">Produto</p>
+                                            <div className="flex-row select-title">
+                                                <div
+                                                    className="button select-btn flex-center"
+                                                    onClick={() => {
+                                                        setpEnable(true);
+                                                        setcEnable(false);
+                                                    }}
+                                                >
+                                                    {pEnable && "•"}
+                                                </div>
+                                                <p className="p-text">Produto</p>
+                                            </div>
                                             <select
                                                 value={productId}
                                                 onChange={(e) =>
                                                     setProductId(e.currentTarget.value)
                                                 }
+                                                disabled={!pEnable}
                                             >
                                                 {productsList?.map((element) => {
+                                                    return (
+                                                        <option
+                                                            key={element.id}
+                                                            value={element.id}
+                                                            label={element.name}
+                                                        >
+                                                            {element.name}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </div>
+                                        <div style={{ flex: 1 }}>
+                                            <div className="flex-row select-title">
+                                                <div
+                                                    className="button select-btn flex-center"
+                                                    onClick={() => {
+                                                        setcEnable(true);
+                                                        setpEnable(false);
+                                                    }}
+                                                >
+                                                    {cEnable && "•"}
+                                                </div>
+                                                <p className="p-text">Produto comercial</p>
+                                            </div>
+                                            <select
+                                                value={productId}
+                                                onChange={(e) =>
+                                                    setProductId(e.currentTarget.value)
+                                                }
+                                                disabled={!cEnable}
+                                            >
+                                                {comercialList?.map((element) => {
                                                     return (
                                                         <option
                                                             key={element.id}
@@ -367,7 +419,7 @@ const CPProducts = ({ user, setAuth }) => {
                                     </div>
                                     <div className="flex-row gap-10">
                                         <div style={{ flex: 3 }}>
-                                            <p className="p-text">Quantidade *</p>
+                                            <p className="p-text">Quantidade vendida *</p>
                                             <TextInput
                                                 value={quantity}
                                                 setValue={setQuantity}
@@ -375,6 +427,19 @@ const CPProducts = ({ user, setAuth }) => {
                                                 type="number"
                                                 min="1"
                                                 placeholder={"0"}
+                                            ></TextInput>
+                                        </div>
+                                        <div style={{ flex: 2 }}>
+                                            <p className="p-text">Valor total</p>
+                                            <TextInput
+                                                value={value}
+                                                setValue={setValue}
+                                                required={true}
+                                                type="number"
+                                                min="0"
+                                                step="any"
+                                                icoLeft={<p className="p-text p-price">R$</p>}
+                                                placeholder={"0,00"}
                                             ></TextInput>
                                         </div>
                                     </div>
@@ -436,4 +501,4 @@ const CPProducts = ({ user, setAuth }) => {
     );
 };
 
-export default CPProducts;
+export default SalesProducts;
