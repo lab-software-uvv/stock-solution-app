@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import "./styles.css";
 
 //components
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 import Header from "../header";
 import NavBar from "../navbar";
 
 const Navigator = (props) => {
+    const location = useLocation();
+
     const [asideWidth, setAsideWidth] = useState(6);
     const [shrinkState, setShrinkState] = useState(false);
 
@@ -18,6 +21,10 @@ const Navigator = (props) => {
             setAsideWidth(6);
         }
     }, [shrinkState]);
+
+    useEffect(() => {
+        toast.dismiss();
+    }, [location]);
 
     return (
         <div className="global-wrapper container flex-row">

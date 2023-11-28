@@ -51,7 +51,7 @@ const Sales = ({ user, setAuth }) => {
     const [userId, setUserId] = useState(1);
 
     useEffect(() => {
-        // loadContent();
+        loadContent();
         // reqUsers();
     }, []);
 
@@ -112,7 +112,8 @@ const Sales = ({ user, setAuth }) => {
             totalValue: totalValue,
             paymentMethod: paymentMethod,
             status: status,
-            userId: userId,
+            // userId: userId,
+            userId: 1,
         };
 
         if (!isEditing) {
@@ -131,6 +132,7 @@ const Sales = ({ user, setAuth }) => {
                         setPopupOn(false);
                         clearForm();
                         console.log(res);
+                        loadContent();
                     })
                     .catch((err) => {
                         console.log(err);
@@ -153,6 +155,7 @@ const Sales = ({ user, setAuth }) => {
                         setPopupOn(false);
                         clearForm();
                         console.log(res);
+                        loadContent();
                     })
                     .catch((err) => {
                         console.log(err);
@@ -173,6 +176,7 @@ const Sales = ({ user, setAuth }) => {
                 throw Error;
 
             default:
+                errMsg = "Preencha todos os campos e tente novamente";
                 break;
         }
 
@@ -181,7 +185,6 @@ const Sales = ({ user, setAuth }) => {
             success: "Venda salva!",
             error: `Erro: ${errMsg}`,
         });
-        loadContent();
     };
 
     const handleDelete = async (selected) => {
@@ -262,7 +265,7 @@ const Sales = ({ user, setAuth }) => {
                             <div className="flex-row sales-list-btn-wrapper">
                                 <IconBtn
                                     onClick={() => {
-                                        // loadContent();
+                                        loadContent();
                                     }}
                                     className=""
                                     backgroundColor={"var(--color-darkgrey)"}
