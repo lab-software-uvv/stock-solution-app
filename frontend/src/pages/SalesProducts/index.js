@@ -160,10 +160,10 @@ const SalesProducts = ({ user, setAuth }) => {
         let errMsg = "";
 
         let obj = {
-            // Name: name,
-            // Code: code,
-            // Price: price,
-            // Description: description,
+            productId: productId,
+            comercialProductId:  comercialProductId,
+            quantity: quantity,
+            value: value,
         };
 
         req = async () => {

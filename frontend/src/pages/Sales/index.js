@@ -32,7 +32,7 @@ import getMensagemErroApi from "../../utils/functions/getMensagemErroApi";
 //settings
 const columns = [
     { field: "id", headerName: "id", width: 25 },
-    { field: "seller", headerName: "Vendedor", width: 200 },
+    { field: "userName", headerName: "Vendedor", width: 200 },
     { field: "sellingDate", headerName: "Data", width: 150 },
     { field: "totalValue", headerName: "Valor", width: 150 },
     { field: "paymentMethod", headerName: "Método", width: 125 },
@@ -57,7 +57,7 @@ const Sales = ({ user, setAuth }) => {
     //form fields
     const [sellingDate, setSellingDate] = useState(new Date());
     const [totalValue, setTotalValue] = useState(0);
-    const [paymentMethod, setPaymentMethod] = useState("");
+    const [paymentMethod, setPaymentMethod] = useState(0);
     const [status, setStatus] = useState("");
     const [userId, setUserId] = useState(1);
 
@@ -81,7 +81,7 @@ const Sales = ({ user, setAuth }) => {
                         res.data.forEach((element) => {
                             aux.push({
                                 ...element,
-                                seller: users?.find((e) => e.id === element.userId).name,
+                                userName: users?.find((e) => e.id === element.userId).name,
                             });
                         });
                         setSalesList(res.data);
@@ -136,7 +136,6 @@ const Sales = ({ user, setAuth }) => {
             sellingDate: sellingDate,
             totalValue: totalValue,
             paymentMethod: paymentMethod,
-            status: status,
             userId: userId,
             // userId: 1,
         };
@@ -449,6 +448,8 @@ const Sales = ({ user, setAuth }) => {
                                     <IconBtn
                                         onClick={() => {
                                             if (selected) {
+                                                console.log(selected);
+
                                                 setSellingDate(selected?.sellingDate.split("T")[0]);
                                                 setTotalValue(selected?.totalValue);
                                                 setPaymentMethod(selected?.paymentMethod);
@@ -515,13 +516,13 @@ const Sales = ({ user, setAuth }) => {
                                 <div>
                                     <p className="p-text">Método de pagamento</p>
                                     <select
-                                        value={userId}
-                                        onChange={(e) => setUserId(e.currentTarget.value)}
+                                        value={paymentMethod}
+                                        onChange={(e) => setPaymentMethod(parseInt(e.currentTarget.value, 10))}
                                     >
-                                        <option value={"Débito"}>{"Débito"}</option>
-                                        <option value={"Crédito"}>{"Crédito"}</option>
-                                        <option value={"Dinheiro"}>{"Dinheiro"}</option>
-                                        <option value={"Boleto"}>{"Boleto"}</option>
+                                        <option value={0}>{"Débito"}</option>
+                                        <option value={1}>{"Crédito"}</option>
+                                        <option value={2}>{"Dinheiro"}</option>
+                                        <option value={3}>{"Boleto"}</option>
                                     </select>
                                 </div>
 
