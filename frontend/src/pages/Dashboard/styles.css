@@ -1,6 +1,7 @@
 .dashboard-wrapper {
     height: 100%;
     width: 100%;
+    flex-direction: column;
 }
 
 .dashboard-user-card {
@@ -27,4 +28,18 @@
     border-radius: 15px;
     flex-direction: column;
 
+}
+
+.dashboard-shortcuts-button {
+    border: 2px solid var(--color-primary);
+    border-radius: 15px;
+    background-color: white;
+    padding: 15px;
+    width: 150px;
+    height: 150px;
+    flex-direction: column;
+}
+
+.dashboard-shortcuts-button:hover {
+    transform: scale(1.05);
 }
