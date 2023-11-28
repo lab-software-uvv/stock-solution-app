@@ -93,6 +93,14 @@ public class AppDbContext : DbContext
 
         #endregion
 
+        #region Venda
+
+        builder.Entity<Sale>()
+            .Property(e => e.SellingDate)
+            .HasColumnType("date");
+
+        #endregion
+
         #region Venda Produto Comercial
 
         builder.Entity<SaleComercialProduct>()

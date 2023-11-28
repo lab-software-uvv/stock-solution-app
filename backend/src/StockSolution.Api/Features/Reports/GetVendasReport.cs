@@ -1,15 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CsvHelper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StockSolution.Api.Common;
 using StockSolution.Api.Persistence.Entities;
+using System.Globalization;
 using System.IO;
+using System.Text;
 
 namespace StockSolution.Api.Features.VendasReport;
 
-public record GetVendasReportQuery(DateTime InitialSaleDate, DateTime? FinalSaleDate) : IRequest<FileContentResult>;
+public record GetVendasReportQuery(DateTime InitialSaleDate, DateTime? FinalSaleDate) : IRequest<byte[]>;
 
-public sealed class GetVendasReportEndpoint : Endpoint<GetVendasReportQuery, FileContentResult>
+public sealed class GetVendasReportEndpoint : Endpoint<GetVendasReportQuery, byte[]>
 {
     private readonly ISender _mediator;
 
@@ -23,10 +26,13 @@ public sealed class GetVendasReportEndpoint : Endpoint<GetVendasReportQuery, Fil
     }
 
     public override async Task HandleAsync(GetVendasReportQuery req, CancellationToken ct)
-        => await SendAsync(await _mediator.Send(req));
+    {
+        var r = await _mediator.Send(req);
+        await SendBytesAsync(r, "Sales.csv", "text/csv");
+    }
 }
 
-public sealed class GetVendasReportQueryHandler : IRequestHandler<GetVendasReportQuery, FileContentResult>
+public sealed class GetVendasReportQueryHandler : IRequestHandler<GetVendasReportQuery, byte[]>
 {
     private readonly AppDbContext _context;
 
@@ -35,26 +41,19 @@ public sealed class GetVendasReportQueryHandler : IRequestHandler<GetVendasRepor
         _context = context;
     }
 
-    public async Task<FileContentResult> Handle(GetVendasReportQuery req, CancellationToken ct)
+    public async Task<byte[]> Handle(GetVendasReportQuery req, CancellationToken ct)
     {
-        //TODO: Alterar para dados de Venda
-        var query = _context.Products.AsNoTracking();
-
-        query = query.Where(p => p.AquisitionDate >= req.InitialSaleDate);
+        var query = _context.Sales.AsNoTracking()
+            .Where(p => p.SellingDate >= req.InitialSaleDate);
 
         if (req.FinalSaleDate.HasValue)
         {
-            query = query.Where(p => p.AquisitionDate <= req.FinalSaleDate);
+            query = query.Where(p => p.SellingDate <= req.FinalSaleDate);
         }
 
         var vendas = await query.ToListAsync(ct);
+        
 
-        var csvWriter = new CsvWriter<Product>();
-        var memoryStream = csvWriter.WriteRecords(vendas);
-
-        return new FileContentResult(memoryStream.ToArray(), "text/csv")
-        {
-            FileDownloadName = "Vendas.csv"
-        };
+        return CsvHelper<Sale>.GerarCsv(vendas);
     }
 }
