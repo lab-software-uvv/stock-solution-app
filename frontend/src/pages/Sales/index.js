@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./styles.css";
 import Requests from "../../services/requests";
+import { useNavigate } from "react-router-dom";
 
 //components
 import Navigator from "../../components/scenes/navigator";
@@ -14,33 +15,44 @@ import toast from "react-hot-toast";
 import { DataGrid } from "@mui/x-data-grid";
 
 //assets
-import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, Tag, TrashCan } from "akar-icons";
+import { ArrowCycle, Cross, Money, Pencil, Save, ShippingBoxV1, Tag, TrashCan } from "akar-icons";
+import ShrinkBtn from "../../components/ui/shrink.btn";
 
 //settings
 const columns = [
     { field: "id", headerName: "id", width: 25 },
-    { field: "sellingDate", headerName: "Nome", width: 200 },
-    { field: "totalValue", headerName: "Descrição", width: 400 },
-    { field: "userId", headerName: "Descrição", width: 400 },
-    { field: "paymentMethod", headerName: "Descrição", width: 400 },
-    { field: "status", headerName: "Descrição", width: 400 },
+    { field: "seller", headerName: "Vendedor", width: 200 },
+    { field: "sellingDate", headerName: "Data", width: 150 },
+    { field: "totalValue", headerName: "Valor", width: 150 },
+    { field: "paymentMethod", headerName: "Método", width: 125 },
+    { field: "status", headerName: "Status", width: 125 },
+    { field: "userId", headerName: "Cod", width: 50 },
 ];
 
 const Sales = ({ user, setAuth }) => {
+    const navigate = useNavigate();
+
     const [popupOn, setPopupOn] = useState(false);
     const [popup, setPopup] = useState(<></>);
 
     const [triggerChangePage, setTriggerChangePage] = useState(true);
 
     const [salesList, setSalesList] = useState(null);
+    const [users, setUsers] = useState(null);
 
     const [selected, setSelected] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [name, setName] = useState("");
-    const [desc, setDesc] = useState("");
+
+    //form fields
+    const [sellingDate, setSellingDate] = useState(new Date());
+    const [totalValue, setTotalValue] = useState(0);
+    const [paymentMethod, setPaymentMethod] = useState("");
+    const [status, setStatus] = useState("");
+    const [userId, setUserId] = useState(1);
 
     useEffect(() => {
         // loadContent();
+        // reqUsers();
     }, []);
 
     const loadContent = async () => {
@@ -70,6 +82,25 @@ const Sales = ({ user, setAuth }) => {
         });
     };
 
+    const reqUsers = async () => {
+        await Requests.get(
+            `/` /*, {
+            headers: {
+                authentication: `bearer ${localStorage.getItem("token")}`,
+            },
+        }*/
+        )
+            .then((res) => {
+                setUsers(res.data);
+                setUserId(res.data[0].id);
+                // console.log(res);
+            })
+            .catch((err) => {
+                // console.log(err);
+                throw Error;
+            });
+    };
+
     const handleSave = async () => {
         let req = async () => {};
 
@@ -77,8 +108,11 @@ const Sales = ({ user, setAuth }) => {
         let errMsg = "";
 
         let obj = {
-            name: name,
-            description: desc,
+            sellingDate: sellingDate,
+            totalValue: totalValue,
+            paymentMethod: paymentMethod,
+            status: status,
+            userId: userId,
         };
 
         if (!isEditing) {
@@ -189,8 +223,11 @@ const Sales = ({ user, setAuth }) => {
     };
 
     const clearForm = () => {
-        setName("");
-        setDesc("");
+        setSellingDate(new Date());
+        setTotalValue(0);
+        setPaymentMethod("");
+        setStatus("");
+        setUserId(1);
         setIsEditing(false);
         setSelected(null);
     };
@@ -209,13 +246,13 @@ const Sales = ({ user, setAuth }) => {
             <div className="sales-wrapper flex-center flex-column">
                 <CrudContainer
                     changePage={triggerChangePage}
-                    icon={<Tag color="var(--color-darkgrey)" />}
-                    title={"Categorias"}
+                    icon={<Money color="var(--color-darkgrey)" />}
+                    title={"Vendas"}
                     list={
                         <>
                             <div style={{ height: "50vh", width: "60vw" }}>
                                 <DataGrid
-                                    rows={salesList? salesList : []}
+                                    rows={salesList ? salesList : []}
                                     columns={columns}
                                     onRowClick={(e) => {
                                         handleSelectItem(e);
@@ -233,6 +270,23 @@ const Sales = ({ user, setAuth }) => {
                                     <ArrowCycle color="var(--color-white)" />
                                 </IconBtn>
                                 <div className="flex-row  gap-10 ">
+                                    <ShrinkBtn
+                                        // action={() =>
+                                        //     selected
+                                        //         ? navigate(
+                                        //               `/sales/${selected.id}/products`
+                                        //           )
+                                        //         : toast("Selecione um produto comercial!")
+                                        // }
+                                        action={() => navigate(`/sales/0/products`)}
+                                        text={"Associação de produtos"}
+                                        backgroundColor={"var(--color-green)"}
+                                        mouseOnBg={"var(--color-green)"}
+                                        shrink={true}
+                                        width={250}
+                                    >
+                                        <ShippingBoxV1 color="white"></ShippingBoxV1>
+                                    </ShrinkBtn>
                                     <IconBtn
                                         onClick={() => {
                                             if (selected) {
@@ -282,8 +336,11 @@ const Sales = ({ user, setAuth }) => {
                                     <IconBtn
                                         onClick={() => {
                                             if (selected) {
-                                                setName(selected?.name);
-                                                setDesc(selected?.description);
+                                                setSellingDate(selected?.sellingDate.split("T")[0]);
+                                                setTotalValue(selected?.totalValue);
+                                                setPaymentMethod(selected?.paymentMethod);
+                                                setStatus(selected?.status);
+                                                setUserId(selected?.userId);
                                                 setTriggerChangePage(!triggerChangePage);
                                                 setIsEditing(true);
                                             }
@@ -302,26 +359,59 @@ const Sales = ({ user, setAuth }) => {
                             <form className="sales-form flex-column">
                                 {isEditing && <p>{`Editando registro ${selected?.id}`}</p>}
                                 <div>
-                                    <p className="p-text">Nome da venda *</p>
+                                    <p className="p-text">Vendedor</p>
+                                    <select
+                                        value={userId}
+                                        onChange={(e) => setUserId(e.currentTarget.value)}
+                                    >
+                                        {users?.map((element) => {
+                                            return (
+                                                <option
+                                                    key={element.id}
+                                                    value={element.id}
+                                                    label={element.name}
+                                                >
+                                                    {element.name}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </div>
+                                <div>
+                                    <p className="p-text">Data da venda *</p>
                                     <TextInput
-                                        value={name}
-                                        setValue={setName}
+                                        value={sellingDate}
+                                        setValue={setSellingDate}
                                         required={true}
-                                        minLength={3}
-                                        maxLength={50}
-                                        placeholder={"Nome da categoria"}
+                                        type="date"
                                     ></TextInput>
                                 </div>
                                 <div>
-                                    <p className="p-text">Descrição da categoria</p>
+                                    <p className="p-text">Valor da venda</p>
                                     <TextInput
-                                        value={desc}
-                                        setValue={setDesc}
-                                        type={"textarea"}
-                                        maxLength={255}
-                                        placeholder={"Descreva a categoria (opcional)"}
+                                        value={totalValue}
+                                        setValue={setTotalValue}
+                                        required={true}
+                                        type="number"
+                                        min="0"
+                                        step="any"
+                                        icoLeft={<p className="p-text p-price">R$</p>}
+                                        placeholder={"0,00"}
                                     ></TextInput>
                                 </div>
+                                <div>
+                                    <p className="p-text">Método de pagamento</p>
+                                    <select
+                                        value={userId}
+                                        onChange={(e) => setUserId(e.currentTarget.value)}
+                                    >
+                                        <option value={"Débito"}>{"Débito"}</option>
+                                        <option value={"Crédito"}>{"Crédito"}</option>
+                                        <option value={"Dinheiro"}>{"Dinheiro"}</option>
+                                        <option value={"Boleto"}>{"Boleto"}</option>
+                                    </select>
+                                </div>
+
                                 <div></div>
                                 <div></div>
                                 <div className="sales-form-submit-wrapper flex-row gap-10">

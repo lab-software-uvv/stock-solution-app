@@ -21,6 +21,7 @@ import ShrinkBtn from "../../components/ui/shrink.btn";
 
 //settings
 const columns = [
+    { field: "id", headerName: "id", width: 50 },
     { field: "name", headerName: "Nome", width: 100 },
     { field: "code", headerName: "Código", width: 125 },
     { field: "price", headerName: "Valor", width: 75 },

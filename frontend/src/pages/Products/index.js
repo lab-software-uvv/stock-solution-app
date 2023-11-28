@@ -19,6 +19,7 @@ import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, TrashCan } from "akar-i
 
 //settings
 const columns = [
+    { field: "id", headerName: "id", width: 50 },
     { field: "name", headerName: "Nome", width: 100 },
     { field: "code", headerName: "Código", width: 125 },
     { field: "quantity", headerName: "Quantidade", width: 100 },
@@ -478,7 +479,6 @@ const Products = ({ user, setAuth }) => {
                                         setValue={setAquisitionDate}
                                         required={true}
                                         type="date"
-                                        placeholder={"0,00"}
                                     ></TextInput>
                                 </div>
                                 <div>
@@ -488,7 +488,6 @@ const Products = ({ user, setAuth }) => {
                                         setValue={setExpirationDate}
                                         required={true}
                                         type="date"
-                                        placeholder={"0,00"}
                                     ></TextInput>
                                 </div>
                                 <div>
