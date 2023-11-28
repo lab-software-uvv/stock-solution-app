@@ -28,7 +28,7 @@ const PrivateRoutes = ({ setAuth, user, setUser }) => {
             <Route path="/suppliers" element={<Suppliers user={user} setAuth={setAuth}/>} />
             <Route path="/categories" element={<Categories user={user} setAuth={setAuth}/>} />
             <Route path="/comercial-products" element={<ComercialProducts user={user} setAuth={setAuth}/>} />
-            <Route path="/comercial-products/products/:id" element={<CPProducts user={user} setAuth={setAuth}/>} />
+            <Route path="/comercial-products/:id/products" element={<CPProducts user={user} setAuth={setAuth}/>} />
         </Routes>
     );
 };

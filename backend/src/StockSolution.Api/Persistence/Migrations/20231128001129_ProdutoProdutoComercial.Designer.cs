@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using StockSolution.Api.Persistence;
@@ -11,9 +12,11 @@ using StockSolution.Api.Persistence;
 namespace StockSolution.Api.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231128001129_ProdutoProdutoComercial")]
+    partial class ProdutoProdutoComercial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,84 +165,6 @@ namespace StockSolution.Api.Persistence.Migrations
                     b.ToTable("ProductComercialProducts");
                 });
 
-            modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Sale", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("PaymentMethod")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("SellingDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("TotalValue")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Sales");
-                });
-
-            modelBuilder.Entity("StockSolution.Api.Persistence.Entities.SaleComercialProduct", b =>
-                {
-                    b.Property<int>("SaleId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ComercialProductId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("SaleId", "ComercialProductId");
-
-                    b.HasIndex("ComercialProductId");
-
-                    b.ToTable("SaleComercialProduct");
-                });
-
-            modelBuilder.Entity("StockSolution.Api.Persistence.Entities.SaleProduct", b =>
-                {
-                    b.Property<int>("SaleId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("SaleId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("SaleProduct");
-                });
-
             modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Supplier", b =>
                 {
                     b.Property<int>("Id")
@@ -341,55 +266,6 @@ namespace StockSolution.Api.Persistence.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Sale", b =>
-                {
-                    b.HasOne("StockSolution.Api.Persistence.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("StockSolution.Api.Persistence.Entities.SaleComercialProduct", b =>
-                {
-                    b.HasOne("StockSolution.Api.Persistence.Entities.ComercialProduct", "ComercialProduct")
-                        .WithMany("SaleComercialProducts")
-                        .HasForeignKey("ComercialProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("StockSolution.Api.Persistence.Entities.Sale", "Sale")
-                        .WithMany("ComercialProducts")
-                        .HasForeignKey("SaleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ComercialProduct");
-
-                    b.Navigation("Sale");
-                });
-
-            modelBuilder.Entity("StockSolution.Api.Persistence.Entities.SaleProduct", b =>
-                {
-                    b.HasOne("StockSolution.Api.Persistence.Entities.Product", "Product")
-                        .WithMany("SaleProducts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("StockSolution.Api.Persistence.Entities.Sale", "Sale")
-                        .WithMany("Products")
-                        .HasForeignKey("SaleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Sale");
-                });
-
             modelBuilder.Entity("StockSolution.Api.Persistence.Entities.User", b =>
                 {
                     b.HasOne("StockSolution.Api.Persistence.Entities.EmployeeRole", "EmployeeRole")
@@ -404,8 +280,6 @@ namespace StockSolution.Api.Persistence.Migrations
             modelBuilder.Entity("StockSolution.Api.Persistence.Entities.ComercialProduct", b =>
                 {
                     b.Navigation("ProductComercialProduct");
-
-                    b.Navigation("SaleComercialProducts");
                 });
 
             modelBuilder.Entity("StockSolution.Api.Persistence.Entities.EmployeeRole", b =>
@@ -416,15 +290,6 @@ namespace StockSolution.Api.Persistence.Migrations
             modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Product", b =>
                 {
                     b.Navigation("ProductComercialProduct");
-
-                    b.Navigation("SaleProducts");
-                });
-
-            modelBuilder.Entity("StockSolution.Api.Persistence.Entities.Sale", b =>
-                {
-                    b.Navigation("ComercialProducts");
-
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
