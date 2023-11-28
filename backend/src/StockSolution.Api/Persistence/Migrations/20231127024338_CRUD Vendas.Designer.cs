@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using StockSolution.Api.Persistence;
@@ -11,9 +12,11 @@ using StockSolution.Api.Persistence;
 namespace StockSolution.Api.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231127024338_CRUD Vendas")]
+    partial class CRUDVendas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,26 +146,18 @@ namespace StockSolution.Api.Persistence.Migrations
 
             modelBuilder.Entity("StockSolution.Api.Persistence.Entities.ProductComercialProduct", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("ProductId")
                         .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ComercialProductId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("Id")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
+                    b.HasKey("ProductId", "ComercialProductId");
 
                     b.HasIndex("ComercialProductId");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("ProductComercialProducts");
                 });
@@ -179,7 +174,7 @@ namespace StockSolution.Api.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("SellingDate")
-                        .HasColumnType("date");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");

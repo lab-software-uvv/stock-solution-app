@@ -25,7 +25,7 @@ public class Product : BaseEntity, IProductModel
     public string Name { get; set; }
     public string? Description { get; set; }
     public decimal Quantity { get; set; }
-    public Supplier Supplier { get; set; }
+    public virtual Supplier Supplier { get; set; }
     public int SupplierId { get; set; }
     public decimal Price { get; set; }
     public Category? Category { get; set; }
@@ -33,4 +33,5 @@ public class Product : BaseEntity, IProductModel
     public DateTime AquisitionDate { get; set; }
     public DateTime ExpirationDate { get; set; }
     public ICollection<ProductComercialProduct> ProductComercialProduct { get; set; }
+    public ICollection<SaleProduct> SaleProducts { get; set; }
 }

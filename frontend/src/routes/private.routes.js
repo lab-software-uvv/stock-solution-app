@@ -8,6 +8,7 @@ import Suppliers from "../pages/Suppliers";
 import ComercialProducts from "../pages/ComercialProducts";
 import CPProducts from "../pages/CPProducts";
 import Sales from "../pages/Sales";
+import ReportScreen from "../pages/SalesReport";
 
 const PrivateRoutes = ({ setAuth, user, setUser }) => {
     const navigate = useNavigate();
@@ -28,7 +29,8 @@ const PrivateRoutes = ({ setAuth, user, setUser }) => {
             <Route path="/suppliers" element={<Suppliers user={user} setAuth={setAuth}/>} />
             <Route path="/categories" element={<Categories user={user} setAuth={setAuth}/>} />
             <Route path="/comercial-products" element={<ComercialProducts user={user} setAuth={setAuth}/>} />
-            <Route path="/comercial-products/products/:id" element={<CPProducts user={user} setAuth={setAuth}/>} />
+            <Route path="/comercial-products/:id/products" element={<CPProducts user={user} setAuth={setAuth}/>} />
+            <Route path="/salesreport" element={<ReportScreen user={user} setAuth={setAuth}/>} />
         </Routes>
     );
 };
