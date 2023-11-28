@@ -23,6 +23,7 @@ public class AppDbContext : DbContext
     public required DbSet<Supplier> Suppliers { get; set; }
     public required DbSet<ComercialProduct> ComercialProducts { get; set; }
     public required DbSet<ProductComercialProduct> ProductComercialProducts { get; set; }
+    public required DbSet<Sale> Sales { get; set; }
     
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -89,6 +90,42 @@ public class AppDbContext : DbContext
            .HasOne(sc => sc.ComercialProduct)
            .WithMany(s => s.ProductComercialProduct)
            .HasForeignKey(sc => sc.ComercialProductId);
+
+        #endregion
+
+        #region Venda Produto Comercial
+
+        builder.Entity<SaleComercialProduct>()
+            .HasKey(scp => new { scp.SaleId, scp.ComercialProductId });
+        
+        builder.Entity<SaleComercialProduct>()
+            .HasOne(sp => sp.Sale)
+            .WithMany(s => s.ComercialProducts)
+            .HasForeignKey(sp => sp.SaleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<SaleComercialProduct>()
+            .HasOne(scp => scp.ComercialProduct)
+            .WithMany(scp => scp.SaleComercialProducts)
+            .HasForeignKey(sp => sp.ComercialProductId);
+
+        #endregion
+        
+        #region Venda Produto
+
+        builder.Entity<SaleProduct>()
+            .HasKey(scp => new { scp.SaleId, scp.ProductId });
+        
+        builder.Entity<SaleProduct>()
+            .HasOne(sp => sp.Sale)
+            .WithMany(s => s.Products)
+            .HasForeignKey(sp => sp.SaleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<SaleProduct>()
+            .HasOne(scp => scp.Product)
+            .WithMany(scp => scp.SaleProducts)
+            .HasForeignKey(sp => sp.ProductId);
 
         #endregion
 

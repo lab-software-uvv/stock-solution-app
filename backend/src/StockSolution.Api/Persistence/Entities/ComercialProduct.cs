@@ -17,9 +17,12 @@ namespace StockSolution.Api.Persistence.Entities
 
         public string Code { get; set; }
         public string Name { get; set; }
+        
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public ICollection<ProductComercialProduct> ProductComercialProduct { get; set; }
+        
+        public ICollection<SaleComercialProduct> SaleComercialProducts { get; set; }
 
     }
 }
