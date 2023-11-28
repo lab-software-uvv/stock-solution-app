@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 namespace StockSolution.Api.Features.Products;
 
-public record DeleteProducts(int Id) : IRequest;
+public record DeleteProductCommand(int Id) : IRequest;
 
-public sealed class DeleteProductsEndpoint : Endpoint<DeleteProducts>
+public sealed class DeleteProductsEndpoint : Endpoint<DeleteProductCommand>
 {
     private readonly ISender _mediator;
 
@@ -12,22 +12,23 @@ public sealed class DeleteProductsEndpoint : Endpoint<DeleteProducts>
 
     public override void Configure()
     {
-        Delete("/products/{id}");
-        AllowAnonymous();
+        Delete("{id}");
+        Group<ProductsGroup>();
+        
         Description(c => c
                     .Produces(200)
                     .ProducesProblem(404)
                     );
     }
 
-    public override async Task HandleAsync(DeleteProducts req, CancellationToken ct) 
+    public override async Task HandleAsync(DeleteProductCommand req, CancellationToken ct) 
     {
         await _mediator.Send(req);
         await SendOkAsync();
     } 
 }
 
-public sealed class DeleteProductsCommandHandler : IRequestHandler<DeleteProducts>
+public sealed class DeleteProductsCommandHandler : IRequestHandler<DeleteProductCommand>
 {
     private readonly AppDbContext _context;
 
@@ -36,10 +37,8 @@ public sealed class DeleteProductsCommandHandler : IRequestHandler<DeleteProduct
         _context = context;
     }
 
-    public async Task Handle(DeleteProducts req, CancellationToken ct)
+    public async Task Handle(DeleteProductCommand req, CancellationToken ct)
     {
         await _context.Products.Where(c => c.Id == req.Id).ExecuteDeleteAsync(ct);
-
-        return;
     }
 }

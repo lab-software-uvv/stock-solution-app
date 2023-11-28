@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NodaTime;
 
 namespace StockSolution.Api.Features.Products;
 
 public record GetProductByIdQuery(int Id) : IRequest<GetProductByIdResponse>;
+public record GetProductByIdResponse(int Id, string Name, string Code, decimal Quantity, int SupplierId, decimal Price, int? CategoryId, Instant AquisitionDate, Instant ExpirationDate, string? Description);
 
 public sealed class GetProductByIdEndpoint : Endpoint<GetProductByIdQuery, GetProductByIdResponse>
 {
@@ -36,8 +38,6 @@ public sealed class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQ
 
         return entity is null
             ? throw new Exception($"Produto {req.Id} Não Encontrado!", new KeyNotFoundException())
-            : new GetProductByIdResponse(entity!.Id, entity.Name, entity.Code, entity.Quantity, entity.SupplierId, entity.Price, entity.CategoryId, entity.AquisitionDate, entity.ExpirationDate, entity.Description);
+            : new GetProductByIdResponse(entity!.Id, entity.Name, entity.Code, entity.Quantity, entity.SupplierId, entity.Price, entity.CategoryId, entity.AcquisitionDate, entity.ExpirationDate, entity.Description);
     }
 }
-
-public record GetProductByIdResponse(int Id, string Name, string Code, decimal Quantity, int SupplierId, decimal Price, int? CategoryId, DateTime AquisitionDate, DateTime ExpirationDate, string? Description);

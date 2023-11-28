@@ -3,6 +3,7 @@
 namespace StockSolution.Api.Features.Categories;
 
 public record GetCategoriesQuery : IRequest<List<GetCategoriesResponse>>;
+public record GetCategoriesResponse(int Id, string Name, string? Description);
 
 public sealed class GetCategoriesEndpoint : Endpoint<GetCategoriesQuery, List<GetCategoriesResponse>>
 {
@@ -37,5 +38,3 @@ public sealed class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQue
             .ToListAsync(ct);
     }
 }
-
-public record GetCategoriesResponse(int Id, string Name, string? Description);

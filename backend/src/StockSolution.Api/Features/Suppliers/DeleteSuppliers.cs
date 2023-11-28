@@ -45,7 +45,5 @@ public sealed class DeleteSuppliersCommandHandler : IRequestHandler<DeleteSuppli
         }
 
         await _context.Suppliers.Where(c => c.Id == req.Id).ExecuteDeleteAsync(ct);
-
-        return;
     }
 }

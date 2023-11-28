@@ -3,6 +3,7 @@
 namespace StockSolution.Api.Features.Suppliers;
 
 public record EditSupplierCommand(int Id, string Code, string TradingName, string CNPJ) : IRequest<EditSuppliersResponse>;
+public record EditSuppliersResponse(int Id, string Code, string TradingName, string CNPJ);
 
 public sealed class EditSupplierEndpoint  : Endpoint<EditSupplierCommand, EditSuppliersResponse>
 {
@@ -47,5 +48,3 @@ public sealed class EditSupplierCommandHandler  : IRequestHandler<EditSupplierCo
 
     }
 }
-
-public record EditSuppliersResponse(int Id, string Code, string TradingName, string CNPJ);

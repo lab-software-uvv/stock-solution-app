@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -30,7 +30,7 @@ public class ExceptionHandlingMiddleware
         var errorMessage = new { Erro = "" };
         string jsonResponse;
 
-        if (exception is Microsoft.EntityFrameworkCore.DbUpdateException dbUpdateException)
+        if (exception is DbUpdateException dbUpdateException)
         {
             var sqlException = (dbUpdateException.InnerException as PostgresException)!;
 
@@ -45,7 +45,7 @@ public class ExceptionHandlingMiddleware
                 return;
             }
         }
-        else if (exception.InnerException.Message.Equals("The given key was not present in the dictionary."))
+        else if (exception.InnerException?.Message.Equals("The given key was not present in the dictionary.") ?? false)
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             context.Response.ContentType = "application/json";
@@ -65,11 +65,8 @@ public class ExceptionHandlingMiddleware
         await context.Response.WriteAsync(jsonResponse);
     }
 
-    private bool IsUniqueIndexViolationError(PostgresException ex)
+    private static bool IsUniqueIndexViolationError(DbException ex)
     {
-        if (ex!.SqlState == "23505")
-            return true;
-        else
-            return false;
+        return ex.SqlState == "23505";
     }
 }

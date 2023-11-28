@@ -2,9 +2,9 @@
 
 namespace StockSolution.Api.Features.Categories;
 
-public record DeleteCategory(int Id) : IRequest;
+public record DeleteCategoryCommand(int Id) : IRequest;
 
-public sealed class DeleteCategoryEndpoint : Endpoint<DeleteCategory>
+public sealed class DeleteCategoryEndpoint : Endpoint<DeleteCategoryCommand>
 {
     private readonly ISender _mediator;
 
@@ -21,14 +21,14 @@ public sealed class DeleteCategoryEndpoint : Endpoint<DeleteCategory>
         );
     }
 
-    public override async Task HandleAsync(DeleteCategory req, CancellationToken ct)
+    public override async Task HandleAsync(DeleteCategoryCommand req, CancellationToken ct)
     {
         await _mediator.Send(req);
         await SendOkAsync();
     }
 }
 
-public sealed class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategory>
+public sealed class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand>
 {
     private readonly AppDbContext _context;
 
@@ -37,16 +37,23 @@ public sealed class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategor
         _context = context;
     }
 
-    public async Task Handle(DeleteCategory req, CancellationToken ct)
+    public async Task Handle(DeleteCategoryCommand req, CancellationToken ct)
     {
-        var produtosComCategoria = await _context.Products.Where(p => p.CategoryId == req.Id).ToListAsync(ct);
-        if (produtosComCategoria.Any())
+        var products = await _context.Products
+            .Where(p => p.CategoryId == req.Id)
+            .ToListAsync(ct);
+
+        if (products.Any())
         {
-            produtosComCategoria.ForEach(p => p.CategoryId = null);
+            foreach (var product in products)
+            {
+                product.CategoryId = null;
+            }
+
             await _context.SaveChangesAsync(ct);
         }
 
-
-        await _context.Categories.Where(c => c.Id == req.Id).ExecuteDeleteAsync(ct);
+        await _context.Categories.Where(c => c.Id == req.Id)
+            .ExecuteDeleteAsync(ct);
     }
 }

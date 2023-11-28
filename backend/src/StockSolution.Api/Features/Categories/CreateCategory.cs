@@ -4,6 +4,7 @@ using StockSolution.Api.Persistence.Entities;
 namespace StockSolution.Api.Features.Categories;
 
 public record CreateCategoryRequest(string Name, string Description) : IRequest<CreateCategoryResponse>;
+public record CreateCategoryResponse(int Id, string Name, string? Description);
 
 public sealed class CreateCategoryEndpoint : Endpoint<CreateCategoryRequest, CreateCategoryResponse>
 {
@@ -63,5 +64,3 @@ public sealed class CreateCategoryCommandHandler : IRequestHandler<CreateCategor
         return new CreateCategoryResponse(category.Id, category.Name, category.Description);
     }
 }
-
-public record CreateCategoryResponse(int Id, string Name, string? Description);

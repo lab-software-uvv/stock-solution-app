@@ -3,7 +3,8 @@ using System.Linq;
 
 namespace StockSolution.Api.Features.ComercialProducts;
 
-public record GetComercialProductsQuery() : IRequest<List<GetComercialProductsResponse>>;
+public record GetComercialProductsQuery : IRequest<List<GetComercialProductsResponse>>;
+public record GetComercialProductsResponse(int Id, string Name, string Code, string? Description, decimal Price);
 
 public sealed class GetComercialProductsEndpoint : Endpoint<GetComercialProductsQuery, List<GetComercialProductsResponse>>
 {
@@ -14,8 +15,8 @@ public sealed class GetComercialProductsEndpoint : Endpoint<GetComercialProducts
 
     public override void Configure()
     {
-        Get("/comercial-products");
-        AllowAnonymous();
+        Get();
+        Group<ComercialProductsGroup>();
     }
 
     public override async Task HandleAsync(GetComercialProductsQuery req, CancellationToken ct)
@@ -31,12 +32,10 @@ public sealed class GetComercialProductsQueryHandler : IRequestHandler<GetComerc
         _context = context;
     }
 
-    public async Task<List<GetComercialProductsResponse>> Handle(GetComercialProductsQuery req, CancellationToken ct)
+    public Task<List<GetComercialProductsResponse>> Handle(GetComercialProductsQuery req, CancellationToken ct)
     {
-        return await _context.ComercialProducts.AsNoTracking()
-                    .Select(x => new GetComercialProductsResponse(x.Id, x.Name, x.Code, x.Description, x.Price))
-                    .ToListAsync(ct);
+        return _context.ComercialProducts
+            .Select(x => new GetComercialProductsResponse(x.Id, x.Name, x.Code, x.Description, x.Price))
+            .ToListAsync(ct);
     }
 }
-
-public record GetComercialProductsResponse(int Id, string Name, string Code, string? Description, decimal Price);

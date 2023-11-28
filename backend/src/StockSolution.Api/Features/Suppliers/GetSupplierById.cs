@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 namespace StockSolution.Api.Features.Suppliers;
 
 public record GetSupplierByIdQuery(int Id) : IRequest<GetSupplierByIdResponse>;
+public record GetSupplierByIdResponse(int Id, string Code, string TradingName, string CNPJ);
 
 public sealed class GetSupplierByIdEndpoint : Endpoint<GetSupplierByIdQuery, GetSupplierByIdResponse>
 {
@@ -40,5 +41,3 @@ public sealed class GetSupplierByIdQueryHandler : IRequestHandler<GetSupplierByI
             : new GetSupplierByIdResponse(entity!.Id, entity.Code, entity.TradingName, entity.CNPJ);
     }
 }
-
-public record GetSupplierByIdResponse(int Id, string Code, string TradingName, string CNPJ);

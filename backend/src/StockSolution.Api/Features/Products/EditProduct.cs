@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NodaTime;
 
 namespace StockSolution.Api.Features.Products;
 
-public record EditProductCommand(int Id, string Name, string Code, decimal Quantity, int SupplierId, decimal Price, int? CategoryId, DateTime AquisitionDate, DateTime ExpirationDate, string? Description) : IRequest<EditProductsResponse>;
+public record EditProductCommand(int Id, string Name, string Code, decimal Quantity, int SupplierId, decimal Price, int? CategoryId, Instant AquisitionDate, Instant ExpirationDate, string? Description) : IRequest<EditProductResponse>;
+public record EditProductResponse(int Id, string Name, string Code, decimal Quantity, int SupplierId, decimal Price, int? CategoryId, Instant AquisitionDate, Instant ExpirationDate, string? Description);
 
-public sealed class EditProductEndpoint  : Endpoint<EditProductCommand, EditProductsResponse>
+public sealed class EditProductEndpoint  : Endpoint<EditProductCommand, EditProductResponse>
 {
     private readonly ISender _mediator;
 
@@ -17,7 +19,7 @@ public sealed class EditProductEndpoint  : Endpoint<EditProductCommand, EditProd
         AllowAnonymous();
         Description(c => c
                    .Accepts<EditProductCommand>("application/json")
-                   .Produces<EditProductsResponse>(200, "application/json")
+                   .Produces<EditProductResponse>(200, "application/json")
                    .ProducesValidationProblem(400)
                    );
     }
@@ -26,7 +28,7 @@ public sealed class EditProductEndpoint  : Endpoint<EditProductCommand, EditProd
         => await SendAsync(await _mediator.Send(req));
 }
 
-public sealed class EditProductCommandHandler  : IRequestHandler<EditProductCommand, EditProductsResponse>
+public sealed class EditProductCommandHandler  : IRequestHandler<EditProductCommand, EditProductResponse>
 {
     private readonly AppDbContext _context;
 
@@ -35,7 +37,7 @@ public sealed class EditProductCommandHandler  : IRequestHandler<EditProductComm
         _context = context;
     }
 
-    public async Task<EditProductsResponse> Handle(EditProductCommand req, CancellationToken ct)
+    public async Task<EditProductResponse> Handle(EditProductCommand req, CancellationToken ct)
     {
         var entity = await _context.Products.FirstOrDefaultAsync(f => f.Id == req.Id, ct) ?? throw new Exception($"Produto {req.Id} Não Encontrado!", new KeyNotFoundException());
         var supplier = await _context.Suppliers.FirstOrDefaultAsync(f => f.Id == req.SupplierId, ct);
@@ -46,15 +48,13 @@ public sealed class EditProductCommandHandler  : IRequestHandler<EditProductComm
         entity.Supplier = supplier!;
         entity.Price = req.Price;
         entity.Category = category;
-        entity.AquisitionDate = req.AquisitionDate;
+        entity.AcquisitionDate = req.AquisitionDate;
         entity.ExpirationDate = req.ExpirationDate;
         entity.Description = req.Description;
 
         await _context.SaveChangesAsync(ct);
 
-        return new EditProductsResponse(entity.Id, entity.Name, entity.Code, entity.Quantity, entity.Supplier.Id, entity.Price, entity.Category?.Id, entity.AquisitionDate, entity.ExpirationDate, entity.Description);
+        return new EditProductResponse(entity.Id, entity.Name, entity.Code, entity.Quantity, entity.Supplier.Id, entity.Price, entity.Category?.Id, entity.AcquisitionDate, entity.ExpirationDate, entity.Description);
 
     }
 }
-
-public record EditProductsResponse(int Id, string Name, string Code, decimal Quantity, int SupplierId, decimal Price, int? CategoryId, DateTime AquisitionDate, DateTime ExpirationDate, string? Description);

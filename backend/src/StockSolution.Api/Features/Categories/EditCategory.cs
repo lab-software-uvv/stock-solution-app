@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace StockSolution.Api.Features.Categories;
 
 public record EditCategoryCommand(int Id, string Name, string Description) : IRequest<EditCategoriesResponse>;
+public record EditCategoriesResponse(int Id, string Name, string Description);
 
 public sealed class EditCategoryEndpoint : Endpoint<EditCategoryCommand, EditCategoriesResponse>
 {
@@ -67,5 +68,3 @@ public sealed class EditCategoryCommandHandler : IRequestHandler<EditCategoryCom
         return new EditCategoriesResponse(entity.Id, entity.Name, entity.Description);
     }
 }
-
-public record EditCategoriesResponse(int Id, string Name, string Description);

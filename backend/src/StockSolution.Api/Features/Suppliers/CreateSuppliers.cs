@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using StockSolution.Api.Persistence.Entities;
+﻿using StockSolution.Api.Persistence.Entities;
 
 namespace StockSolution.Api.Features.Suppliers;
 
 public record CreateSupplierRequest(string Code, string TradingName, string CNPJ) : IRequest<CreateSupplierResponse>;
+public record CreateSupplierResponse(int Id, string Code, string TradingName, string CNPJ);
 
 public sealed class CreateSupplierEndpoint : Endpoint<CreateSupplierRequest, CreateSupplierResponse>
 {
@@ -38,12 +38,15 @@ public sealed class CreateSupplierCommandHandler : IRequestHandler<CreateSupplie
 
     public async Task<CreateSupplierResponse> Handle(CreateSupplierRequest req, CancellationToken ct)
     {
-        Supplier supplier = new(req.Code, req.TradingName, req.CNPJ);
+        var supplier = new Supplier
+        {
+            Code = req.Code,
+            TradingName = req.TradingName,
+            CNPJ = req.CNPJ
+        };
         _context.Suppliers.Add(supplier);
         await _context.SaveChangesAsync(ct);
 
         return new CreateSupplierResponse(supplier.Id, supplier.Code, supplier.TradingName, supplier.CNPJ);
     }
 }
-
-public record CreateSupplierResponse(int Id, string Code, string TradingName, string CNPJ);

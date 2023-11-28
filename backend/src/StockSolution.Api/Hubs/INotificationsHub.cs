@@ -1,12 +1,11 @@
 ﻿using SignalRSwaggerGen.Attributes;
 using StockSolution.Api.Persistence.Entities;
 
-namespace StockSolution.Api.Hubs
+namespace StockSolution.Api.Hubs;
+
+[SignalRHub(path: "/notification-hub")]
+public interface INotificationsHub
 {
-    [SignalRHub(path: "/notification-hub")]
-    public interface INotificationsHub
-    {
-        [SignalRMethod("SendProductsNearExpiration")]
-        Task SendProductsNearExpiration(List<Product> products);
-    }
+    [SignalRMethod("SendProductsNearExpiration")]
+    Task SendProductsNearExpiration(List<Product> products);
 }

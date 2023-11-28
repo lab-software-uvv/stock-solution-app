@@ -1,25 +1,29 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
 
 namespace StockSolution.Api.Hubs;
 
 public sealed class NotificationsHub : Hub<INotificationsHub>
 {
     private readonly AppDbContext _context;
-    public NotificationsHub(AppDbContext context)
+    private readonly IClock _clock;
+
+    public NotificationsHub(AppDbContext context, IClock clock)
     {
         _context = context;
+        _clock = clock;
     }
 
-    public async Task SendProductsNearExpiration(string daysAfterToday)
+    public Task SendProductsNearExpiration(string daysAfterToday)
     {
+        var days = int.Parse(daysAfterToday);
         var productsNearExpiration = _context.Products
             .AsNoTracking()
-            .Where(p => p.ExpirationDate <= DateTime.Now.AddDays(int.Parse(daysAfterToday)))
+            .Where(p => p.ExpirationDate <= _clock.GetCurrentInstant().Plus(Duration.FromDays(days)))
             .ToList();
 
         
-        await Clients.All.SendProductsNearExpiration(productsNearExpiration);
-
+        return Clients.All.SendProductsNearExpiration(productsNearExpiration);
     }
 }

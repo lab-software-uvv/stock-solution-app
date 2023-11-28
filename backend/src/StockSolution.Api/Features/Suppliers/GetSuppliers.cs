@@ -2,7 +2,8 @@
 
 namespace StockSolution.Api.Features.Suppliers;
 
-public record GetSuppliersQuery() : IRequest<List<GetSuppliersResponse>>;
+public record GetSuppliersQuery : IRequest<List<GetSuppliersResponse>>;
+public record GetSuppliersResponse(int Id, string Code, string TradingName, string CNPJ);
 
 public sealed class GetSuppliersEndpoint : Endpoint<GetSuppliersQuery, List<GetSuppliersResponse>>
 {
@@ -37,5 +38,3 @@ public sealed class GetSuppliersQueryHandler : IRequestHandler<GetSuppliersQuery
                     .ToListAsync(ct);
     }
 }
-
-public record GetSuppliersResponse(int Id, string Code, string TradingName, string CNPJ);

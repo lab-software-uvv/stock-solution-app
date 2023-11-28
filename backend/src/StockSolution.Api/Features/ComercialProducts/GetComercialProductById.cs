@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StockSolution.Api.Common.Exceptions;
 
 namespace StockSolution.Api.Features.ComercialProducts;
 
 public record GetComercialProductByIdQuery(int Id) : IRequest<GetComercialProductByIdResponse>;
+public record GetComercialProductByIdResponse(int Id, string Name, string Code, string? Description, decimal Price);
 
 public sealed class GetComercialProductByIdEndpoint : Endpoint<GetComercialProductByIdQuery, GetComercialProductByIdResponse>
 {
@@ -13,8 +15,8 @@ public sealed class GetComercialProductByIdEndpoint : Endpoint<GetComercialProdu
 
     public override void Configure()
     {
-        Get("/comercial-products/{id}");
-        AllowAnonymous();
+        Get("{id}");
+        Group<ComercialProductsGroup>();
     }
 
     public override async Task HandleAsync(GetComercialProductByIdQuery req, CancellationToken ct)
@@ -35,9 +37,7 @@ public sealed class GetComercialProductByIdQueryHandler : IRequestHandler<GetCom
         var entity = await _context.ComercialProducts.AsNoTracking().FirstOrDefaultAsync(f => f.Id == req.Id, ct);
 
         return entity is null
-            ? throw new Exception($"Produto {req.Id} Não Encontrado!", new KeyNotFoundException())
-            : new GetComercialProductByIdResponse(entity!.Id, entity.Name, entity.Code, entity.Description, entity.Price);
+            ? throw new NotFoundException($"Produto {req.Id} Não Encontrado!")
+            : new GetComercialProductByIdResponse(entity.Id, entity.Name, entity.Code, entity.Description, entity.Price);
     }
 }
-
-public record GetComercialProductByIdResponse(int Id, string Name, string Code, string? Description, decimal Price);

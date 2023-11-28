@@ -67,17 +67,17 @@ public static class DataFactory
     {
         var employeeRoles = new List<Role>
         {
-            new Role
+            new()
             {
                 Id = 1,
                 Name = "Admin",
             },
-            new Role
+            new()
             {
                 Id = 2,
                 Name = "Manager",
             },
-            new Role
+            new()
             {
                 Id = 3,
                 Name = "Employee",

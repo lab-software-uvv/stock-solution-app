@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 namespace StockSolution.Api.Features.Categories;
 
 public record GetCategoryByIdQuery(int Id) : IRequest<GetCategoryByIdResponse>;
+public record GetCategoryByIdResponse(int Id, string Name, string? Description);
 
 public sealed class GetCategoryByIdEndpoint : Endpoint<GetCategoryByIdQuery, GetCategoryByIdResponse>
 {
@@ -40,5 +41,3 @@ public sealed class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByI
             : new GetCategoryByIdResponse(entity.Id, entity.Name, entity.Description);
     }
 }
-
-public record GetCategoryByIdResponse(int Id, string Name, string? Description);

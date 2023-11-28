@@ -19,14 +19,14 @@ builder.Services.SwaggerDocument();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
-        builder => builder
-            .WithOrigins("http://localhost:3000", "https://stock-solution-app.vercel.app") // Update with your React app's URL
+        b => b
+            .WithOrigins("http://localhost:3000",
+                "https://stock-solution-app.vercel.app") // Update with your React app's URL
             .AllowAnyMethod()
             .AllowAnyHeader()
             .WithExposedHeaders("Content-Disposition")
             .AllowCredentials());
 });
-
 
 
 var app = builder.Build();
@@ -46,14 +46,11 @@ app.UseFastEndpoints(c =>
     c.Endpoints.RoutePrefix = "api";
     c.Serializer.Options.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 });
-app.UseMiddleware<ExceptionHandlingMiddleware>();
-
-app.UseFastEndpoints(c => {
-    c.Endpoints.RoutePrefix = "api";
-});
 
 app.UseSwaggerGen();
 
 app.Run();
 
-public partial class Program { }
+public partial class Program
+{
+}
