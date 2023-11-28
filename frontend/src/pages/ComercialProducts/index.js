@@ -289,7 +289,7 @@ const ComercialProducts = ({ user, setAuth }) => {
                         <>
                             <div style={{ height: "50vh", width: "60vw" }}>
                                 <DataGrid
-                                    rows={comercialProductList}
+                                    rows={comercialProductList? comercialProductList : []}
                                     columns={columns}
                                     onRowClick={(e) => {
                                         handleSelectItem(e);

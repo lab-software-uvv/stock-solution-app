@@ -24,6 +24,8 @@ const SignIn = ({ setCurrentPage, handleMove, setAuth, setUser }) => {
         password: "var(--color-black)",
     });
 
+    let logged = false;
+
     const handleSignIn = async (e) => {
         e.preventDefault();
         if (validateFields()) {
@@ -33,21 +35,17 @@ const SignIn = ({ setCurrentPage, handleMove, setAuth, setUser }) => {
             };
 
             const req = async () => {
-                await Requests.post("/auth/login", {
-                    body: objUser,
-                    // headers: {
-                    //     authentication: `bearer ${JSON.parse(localStorage.getItem("token"))}`,
-                    // },
-                })
+                await Requests.post("/auth/login", objUser)
                     .then((res) => {
                         let a = { auth: true, token: res.token };
-                        let u = res.user || {};
+                        let u = { name: res.name, email: res.email, role: "Gestor"};
                         localStorage.setItem("token", res.token);
                         localStorage.setItem("auth", JSON.stringfy(a));
                         localStorage.setItem("user", JSON.stringify(u));
                         setAuth(a);
                         setUser(u);
                         console.log(res);
+                        logged = true;
                     })
                     .catch((err) => {
                         console.log(err);
@@ -70,12 +68,20 @@ const SignIn = ({ setCurrentPage, handleMove, setAuth, setUser }) => {
             );
         }
 
-        localStorage.setItem("token", "514564sa87q6we121x");
-        localStorage.setItem("auth", JSON.stringify({ auth: true, token: "514564sa87q6we121x" }));
-        localStorage.setItem("user", JSON.stringify({ name: `Fabiano Rabelo`, role: `Gestor` }));
-        setUser({ name: `Fabiano Rabelo`, role: `Gestor` });
-        setAuth({ auth: true, token: "" });
-        console.log("logou");
+        if (logged === false) {
+            localStorage.setItem("token", "514564sa87q6we121x");
+            localStorage.setItem(
+                "auth",
+                JSON.stringify({ auth: true, token: "514564sa87q6we121x" })
+            );
+            localStorage.setItem(
+                "user",
+                JSON.stringify({ name: `Fabiano Rabelo`, role: `Gestor` })
+            );
+            setUser({ name: `Fabiano Rabelo`, role: `Gestor` });
+            setAuth({ auth: true, token: "" });
+            console.log("logou");
+        }
     };
 
     const validateFields = () => {

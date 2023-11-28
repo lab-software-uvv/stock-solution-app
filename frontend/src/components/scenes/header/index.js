@@ -57,6 +57,10 @@ const Header = ({ user = { name: "", role: "" }, width, setShrinkState, shrinkSt
             setPageTitle("Fornecedores");
             return;
         }
+        if (location.pathname.includes("employees")) {
+            setPageTitle("Funcionários");
+            return;
+        }
         setPageTitle("Painel inicial");
     }, [location]);
 

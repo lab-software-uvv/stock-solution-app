@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSpring } from "@react-spring/web";
 import "./styles.css";
 
@@ -15,6 +15,16 @@ import SSLogo from "../../assets/logo/LOGO.png";
 
 const Login = ({ setAuth, setUser }) => {
     const [currentPage, setCurrentPage] = useState(0);
+
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+
+    useEffect(() => {
+        if (params.get("invite") || params.get("email")) {
+            handleMove();
+            setCurrentPage(1);
+        }
+    }, []);
 
     const pages = [
         {
@@ -71,7 +81,7 @@ const Login = ({ setAuth, setUser }) => {
         <div className="container login-wrapper">
             <div>
                 <Toaster />
-            </div>           
+            </div>
             <img className="login-img-bg" src={BgLogin} alt={"background-restaurant"}></img>
             <div
                 className="login-logo-wrapper"

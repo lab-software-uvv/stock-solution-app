@@ -14,29 +14,36 @@ import toast from "react-hot-toast";
 import { DataGrid } from "@mui/x-data-grid";
 
 //assets
-import { ArrowCycle, Cross, Pencil, Save, ShippingBoxV1, Tag, TrashCan } from "akar-icons";
+import {
+    ArrowCycle,
+    ArrowForwardThickFill,
+    Cross,
+    Pencil,
+    PeopleMultiple,
+    Save,
+    ShippingBoxV1,
+    Tag,
+    TrashCan,
+} from "akar-icons";
 
 //settings
 const columns = [
     { field: "id", headerName: "id", width: 25 },
     { field: "name", headerName: "Nome", width: 200 },
-    { field: "description", headerName: "Descrição", width: 400 },
+    { field: "role", headerName: "Cargo", width: 400 },
 ];
 
-const Categories = ({ user, setAuth }) => {
+const Employees = ({ user, setAuth }) => {
     const [popupOn, setPopupOn] = useState(false);
     const [popup, setPopup] = useState(<></>);
 
     const [triggerChangePage, setTriggerChangePage] = useState(true);
 
-    const [categoriesList, setCategoriesList] = useState([
-        { id: 1, Name: `Categoria teste`, Description: `Desc test` },
-    ]);
+    const [usersList, setUsersList] = useState(null);
 
     const [selected, setSelected] = useState(null);
-    const [isEditing, setIsEditing] = useState(false);
-    const [name, setName] = useState("");
-    const [desc, setDesc] = useState("");
+
+    const [email, setEmail] = useState("");
 
     useEffect(() => {
         loadContent();
@@ -45,14 +52,26 @@ const Categories = ({ user, setAuth }) => {
     const loadContent = async () => {
         const req = async () => {
             await Requests.get(
-                `/categories` /*, {
+                `/users` /*, {
                 headers: {
                     authentication: `bearer ${localStorage.getItem("token")}`,
                 },
             }*/
             )
                 .then((res) => {
-                    setCategoriesList(res.data);
+                    let aux = [];
+                    res.data.forEach((element) =>
+                        aux.push({
+                            ...element,
+                            role:
+                                element.role === 1
+                                    ? "Admin"
+                                    : element.role === 2
+                                    ? "Manager"
+                                    : "Employee",
+                        })
+                    );
+                    setUsersList(aux);
                     setPopupOn(false);
                     console.log(res);
                 })
@@ -64,7 +83,7 @@ const Categories = ({ user, setAuth }) => {
 
         toast.promise(req(), {
             loading: "Carregando...",
-            success: "Categorias carregadas!",
+            success: "Funcionários carregados!",
             error: "Erro, tente novamente mais tarde",
         });
     };
@@ -76,65 +95,37 @@ const Categories = ({ user, setAuth }) => {
         let errMsg = "";
 
         let obj = {
-            name: name,
-            description: desc,
+            email: email,
         };
 
-        if (!isEditing) {
-            req = async () => {
-                await Requests.post(
-                    `/categories`,
-                    obj /*{
-                    obj,
-                    headers: {
-                        authentication: `bearer ${localStorage.getItem("token")}`,
-                    }
-                }*/
-                )
-                    .then((res) => {
-                        statuscode = res.status;
-                        setPopupOn(false);
-                        clearForm();
-                        console.log(res);
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        throw Error;
-                    });
-            };
-        } else {
-            req = async () => {
-                await Requests.put(
-                    `/categories/${selected.id}`,
-                    obj /*{
-                    body: obj,
-                    headers: {
-                        authentication: `bearer ${localStorage.getItem("token")}`,
-                    }
-                }*/
-                )
-                    .then((res) => {
-                        statuscode = res.status;
-                        setPopupOn(false);
-                        clearForm();
-                        console.log(res);
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        throw Error;
-                    });
-            };
-        }
+        req = async () => {
+            await Requests.post(`/invites`, obj)
+                .then((res) => {
+                    statuscode = res.status;
+                    clearForm();
+                    setPopupOn(true);
+                    setPopup(
+                        <div style={{ padding: 25 }}>
+                            <p>{`Convite: ${res.data.id}`}</p>
+                            <RoundedBtn title={"OK"} onClick={() => setPopup(false)}></RoundedBtn>
+                        </div>
+                    );
+                })
+                .catch((err) => {
+                    console.log(err);
+                    throw Error;
+                });
+        };
 
         switch (statuscode) {
             case 404:
-                errMsg = "Categoria não encontrada";
+                errMsg = "Usuário não encontrado";
                 throw Error;
             case 400:
                 errMsg = "Erro no formulário";
                 throw Error;
             case 409:
-                errMsg = "O item já existe";
+                errMsg = "O usuário já existe";
                 throw Error;
 
             default:
@@ -143,7 +134,7 @@ const Categories = ({ user, setAuth }) => {
 
         toast.promise(req(), {
             loading: "Salvando...",
-            success: "Categoria salva!",
+            success: "Convite enviado!",
             error: `Erro: ${errMsg}`,
         });
         loadContent();
@@ -153,7 +144,7 @@ const Categories = ({ user, setAuth }) => {
         if (selected) {
             const req = async () => {
                 await Requests.delete(
-                    `/categories/${selected.id}` /*, {
+                    `/users/${selected.id}` /*, {
                     headers: {
                         authentication: `bearer ${localStorage.getItem("token")}`,
                     },
@@ -172,7 +163,7 @@ const Categories = ({ user, setAuth }) => {
 
             toast.promise(req(), {
                 loading: "Deletando...",
-                success: "Categoria excluida!",
+                success: "Funcionário excluido!",
                 error: "Erro, tente novamente mais tarde!",
             });
         }
@@ -188,9 +179,7 @@ const Categories = ({ user, setAuth }) => {
     };
 
     const clearForm = () => {
-        setName("");
-        setDesc("");
-        setIsEditing(false);
+        setEmail("");
         setSelected(null);
     };
 
@@ -205,23 +194,23 @@ const Categories = ({ user, setAuth }) => {
     return (
         <Navigator user={user} setAuth={setAuth}>
             {popupOn && <Popup>{popup}</Popup>}
-            <div className="categories-wrapper flex-center flex-column">
+            <div className="employees-wrapper flex-center flex-column">
                 <CrudContainer
                     changePage={triggerChangePage}
-                    icon={<Tag color="var(--color-darkgrey)" />}
-                    title={"Categorias"}
+                    icon={<PeopleMultiple color="var(--color-darkgrey)" />}
+                    title={"Funcionários"}
                     list={
                         <>
                             <div style={{ height: "50vh", width: "60vw" }}>
                                 <DataGrid
-                                    rows={categoriesList? categoriesList : []}
+                                    rows={usersList ? usersList : []}
                                     columns={columns}
                                     onRowClick={(e) => {
                                         handleSelectItem(e);
                                     }}
                                 />
                             </div>
-                            <div className="flex-row categories-list-btn-wrapper">
+                            <div className="flex-row employees-list-btn-wrapper">
                                 <IconBtn
                                     onClick={() => {
                                         loadContent();
@@ -245,15 +234,10 @@ const Categories = ({ user, setAuth }) => {
                                                                 size={58}
                                                                 color="var(--color-red)"
                                                             />
-                                                            <p>Deletar categoria selecionada?</p>
+                                                            <p>Deletar funcionário selecionada?</p>
                                                             <p className="p-subtitle">{`id: ${selected.id}`}</p>
                                                             <p className="p-subtitle">{`Nome: ${selected.name}`}</p>
-                                                            <p
-                                                                className="p-subtitle"
-                                                                style={{ marginBottom: 10 }}
-                                                            >
-                                                                {`Descrição: ${selected.description}`}
-                                                            </p>
+
                                                             <RoundedBtn
                                                                 onClick={() => {
                                                                     handleDelete(selected);
@@ -278,52 +262,28 @@ const Categories = ({ user, setAuth }) => {
                                     >
                                         <TrashCan color="white" />
                                     </IconBtn>
-                                    <IconBtn
-                                        onClick={() => {
-                                            if (selected) {
-                                                setName(selected?.name);
-                                                setDesc(selected?.description);
-                                                setTriggerChangePage(!triggerChangePage);
-                                                setIsEditing(true);
-                                            }
-                                        }}
-                                        className=""
-                                        backgroundColor={"var(--color-black)"}
-                                    >
-                                        <Pencil color="white" />
-                                    </IconBtn>
                                 </div>
                             </div>
                         </>
                     }
                     form={
                         <>
-                            <form className="categories-form flex-column">
-                                {isEditing && <p>{`Editando registro ${selected?.id}`}</p>}
+                            <form className="employees-form flex-column">
                                 <div>
-                                    <p className="p-text">Nome da categoria *</p>
+                                    <p className="p-text">Email para convite *</p>
                                     <TextInput
-                                        value={name}
-                                        setValue={setName}
+                                        type="email"
+                                        value={email}
+                                        setValue={setEmail}
                                         required={true}
                                         minLength={3}
                                         maxLength={50}
-                                        placeholder={"Nome da categoria"}
-                                    ></TextInput>
-                                </div>
-                                <div>
-                                    <p className="p-text">Descrição da categoria</p>
-                                    <TextInput
-                                        value={desc}
-                                        setValue={setDesc}
-                                        type={"textarea"}
-                                        maxLength={255}
-                                        placeholder={"Descreva a categoria (opcional)"}
+                                        placeholder={"Email"}
                                     ></TextInput>
                                 </div>
                                 <div></div>
                                 <div></div>
-                                <div className="categories-form-submit-wrapper flex-row gap-10">
+                                <div className="employees-form-submit-wrapper flex-row gap-10">
                                     <IconBtn
                                         onClick={() => {
                                             clearForm();
@@ -340,14 +300,12 @@ const Categories = ({ user, setAuth }) => {
                                                         className="flex-center flex-column gap-10"
                                                         style={{ padding: 20 }}
                                                     >
-                                                        <Save
+                                                        <ArrowForwardThickFill
                                                             size={58}
                                                             color="var(--color-green)"
                                                         />
                                                         <p style={{ marginBottom: 10 }}>
-                                                            {isEditing
-                                                                ? "Deseja salvar suas mudanças?"
-                                                                : "Deseja confirmar o cadastro?"}
+                                                            Deseja enviar o convite?
                                                         </p>
                                                         <RoundedBtn
                                                             onClick={() => {
@@ -369,7 +327,7 @@ const Categories = ({ user, setAuth }) => {
                                         }}
                                         backgroundColor={"var(--color-primary)"}
                                     >
-                                        <Save color="white" />
+                                        <ArrowForwardThickFill color="white" />
                                     </IconBtn>
                                 </div>
                             </form>
@@ -381,4 +339,4 @@ const Categories = ({ user, setAuth }) => {
     );
 };
 
-export default Categories;
+export default Employees;
