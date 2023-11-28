@@ -310,7 +310,7 @@ const ComercialProducts = ({ user, setAuth }) => {
                                         action={() =>
                                             selected
                                                 ? navigate(
-                                                      `/comercial-products/products/${selected.id}`
+                                                      `/comercial-products/${selected.id}/products`
                                                   )
                                                 : toast("Selecione um produto comercial!")
                                         }

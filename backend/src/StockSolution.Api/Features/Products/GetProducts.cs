@@ -34,9 +34,11 @@ public sealed class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, 
     public async Task<List<GetProductsResponse>> Handle(GetProductsQuery req, CancellationToken ct)
     {
         return await _context.Products.AsNoTracking()
-                    .Select(x => new GetProductsResponse(x.Id, x.Name, x.Code, x.Quantity, x.SupplierId, x.Price, x.CategoryId, x.AquisitionDate, x.ExpirationDate, x.Description))
+                    .Include(p => p.Supplier)
+                    .Include(p => p.Category)
+                    .Select(x => new GetProductsResponse(x.Id, x.Name, x.Code, x.Quantity, x.Supplier.Code, x.Price, x.Category!.Name, x.AquisitionDate, x.ExpirationDate, x.Description))
                     .ToListAsync(ct);
     }
 }
 
-public record GetProductsResponse(int Id, string Name, string Code, decimal Quantity, int SupplierId, decimal Price, int? CategoryId, DateTime AquisitionDate, DateTime ExpirationDate, string? Description);
+public record GetProductsResponse(int Id, string Name, string Code, decimal Quantity, string SupplierCode, decimal Price, string? CategoryName, DateTime AquisitionDate, DateTime ExpirationDate, string? Description);
