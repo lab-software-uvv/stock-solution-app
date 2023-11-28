@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
+namespace StockSolution.Api.Common;
 public class CsvWriter<T>
 {
     private readonly CsvConfiguration _csvConfig;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using StockSolution.Api.Common;
 using StockSolution.Api.Persistence.Entities;
 using System.IO;
 
