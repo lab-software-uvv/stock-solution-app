@@ -1,9 +1,8 @@
 const backend = () => {
     let link;
 
-    link = "http://localhost:5186/api"
     //ip local
-    // link = "https://stocksolutionapp.azurewebsites.net/api"
+    link = "https://stocksolutionapp.azurewebsites.net/api"
     //link = "https://localhost:7156/api"
     // link = "http://192.168.15.11:3001"
     //production
